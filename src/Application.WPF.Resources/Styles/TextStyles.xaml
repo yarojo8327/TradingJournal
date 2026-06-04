@@ -1,0 +1,56 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="H1" TargetType="TextBlock">
+        <Setter Property="FontSize"   Value="28" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextWhiteBrush}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+    </Style>
+
+    <Style x:Key="H2" TargetType="TextBlock">
+        <Setter Property="FontSize"   Value="18" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+    </Style>
+
+    <Style x:Key="H3" TargetType="TextBlock">
+        <Setter Property="FontSize"   Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+    </Style>
+
+    <Style x:Key="Body" TargetType="TextBlock">
+        <Setter Property="FontSize"    Value="14" />
+        <Setter Property="Foreground"  Value="{DynamicResource TextSecondaryBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="FontFamily"  Value="Segoe UI" />
+    </Style>
+
+    <Style x:Key="Caption" TargetType="TextBlock">
+        <Setter Property="FontSize"   Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+    </Style>
+
+    <!-- Cyan accent label (metric values, highlights) -->
+    <Style x:Key="CyanLabel" TargetType="TextBlock">
+        <Setter Property="FontSize"   Value="24" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
+    </Style>
+
+    <!-- Positive P&L (green) -->
+    <Style x:Key="PositiveLabel" TargetType="TextBlock" BasedOn="{StaticResource CyanLabel}">
+        <Setter Property="Foreground" Value="{DynamicResource AccentGreenBrush}" />
+    </Style>
+
+    <!-- Negative P&L (red) -->
+    <Style x:Key="NegativeLabel" TargetType="TextBlock" BasedOn="{StaticResource CyanLabel}">
+        <Setter Property="Foreground" Value="{DynamicResource AccentRedBrush}" />
+    </Style>
+
+</ResourceDictionary>

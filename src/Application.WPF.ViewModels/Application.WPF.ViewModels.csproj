@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.WPF.Common\Application.WPF.Common.csproj" />
+    <ProjectReference Include="..\Application.WPF.Models\Application.WPF.Models.csproj" />
+    <ProjectReference Include="..\Application.WPF.Services\Application.WPF.Services.csproj" />
+  </ItemGroup>
+
+</Project>

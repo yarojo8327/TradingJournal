@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="xml:space" use="default" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- App -->
+  <data name="App_Title" xml:space="preserve"><value>Diario de Trading</value></data>
+  <data name="App_Subtitle" xml:space="preserve"><value>Sistema Profesional de Seguimiento de Operaciones</value></data>
+  <data name="App_Version" xml:space="preserve"><value>v1.0.0</value></data>
+
+  <!-- Splash -->
+  <data name="Splash_Loading" xml:space="preserve"><value>Cargando tu espacio de trabajo...</value></data>
+  <data name="Splash_InitConfig" xml:space="preserve"><value>Cargando configuración...</value></data>
+  <data name="Splash_InitServices" xml:space="preserve"><value>Inicializando servicios...</value></data>
+  <data name="Splash_InitWorkspace" xml:space="preserve"><value>Preparando espacio de trabajo...</value></data>
+  <data name="Splash_Ready" xml:space="preserve"><value>Listo.</value></data>
+
+  <!-- Navigation -->
+  <data name="Nav_Dashboard" xml:space="preserve"><value>Panel</value></data>
+  <data name="Nav_Journal" xml:space="preserve"><value>Diario</value></data>
+  <data name="Nav_Analytics" xml:space="preserve"><value>Análisis</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Configuración</value></data>
+  <data name="Nav_Live" xml:space="preserve"><value>EN VIVO</value></data>
+  <data name="Nav_Language" xml:space="preserve"><value>Idioma</value></data>
+
+  <!-- Status bar -->
+  <data name="StatusBar_Ready" xml:space="preserve"><value>Listo — Datos de mercado conectados</value></data>
+
+  <!-- Dashboard -->
+  <data name="Dashboard_Title" xml:space="preserve"><value>Panel</value></data>
+  <data name="Dashboard_Welcome" xml:space="preserve"><value>Bienvenido al Diario de Trading</value></data>
+  <data name="Dashboard_NewTrade" xml:space="preserve"><value>+ Nueva Operación</value></data>
+  <data name="Dashboard_Refresh" xml:space="preserve"><value>Actualizar</value></data>
+  <data name="Dashboard_SampleDialog" xml:space="preserve"><value>Diálogo de Ejemplo</value></data>
+  <data name="Dashboard_ImportCsv" xml:space="preserve"><value>Importar CSV</value></data>
+
+  <!-- KPI Cards -->
+  <data name="Kpi_TotalTrades" xml:space="preserve"><value>TOTAL OPERACIONES</value></data>
+  <data name="Kpi_WinRate" xml:space="preserve"><value>TASA DE ACIERTO</value></data>
+  <data name="Kpi_NetPnl" xml:space="preserve"><value>P&amp;G NETO</value></data>
+  <data name="Kpi_AvgRR" xml:space="preserve"><value>R:R PROMEDIO</value></data>
+  <data name="Kpi_AllTime" xml:space="preserve"><value>Todo el tiempo</value></data>
+  <data name="Kpi_Last30Days" xml:space="preserve"><value>Últimos 30 días</value></data>
+  <data name="Kpi_ThisMonth" xml:space="preserve"><value>Este mes</value></data>
+  <data name="Kpi_RiskReward" xml:space="preserve"><value>Riesgo / Beneficio</value></data>
+
+  <!-- Trades table -->
+  <data name="Trades_RecentTrades" xml:space="preserve"><value>OPERACIONES RECIENTES</value></data>
+  <data name="Trades_ViewAll" xml:space="preserve"><value>Ver todo →</value></data>
+  <data name="Trades_Symbol" xml:space="preserve"><value>SÍMBOLO</value></data>
+  <data name="Trades_Side" xml:space="preserve"><value>DIRECCIÓN</value></data>
+  <data name="Trades_Result" xml:space="preserve"><value>RESULTADO</value></data>
+  <data name="Trades_Pnl" xml:space="preserve"><value>P&amp;G</value></data>
+  <data name="Trades_Empty" xml:space="preserve"><value>No hay operaciones registradas aún</value></data>
+  <data name="Trades_EmptyHint" xml:space="preserve"><value>Agrega tu primera operación para comenzar</value></data>
+
+  <!-- Quick actions -->
+  <data name="Actions_QuickActions" xml:space="preserve"><value>ACCIONES RÁPIDAS</value></data>
+  <data name="Actions_MarketStatus" xml:space="preserve"><value>ESTADO DEL MERCADO</value></data>
+  <data name="Actions_ForexOpen" xml:space="preserve"><value>Forex — Abierto</value></data>
+  <data name="Actions_FuturesPremarket" xml:space="preserve"><value>Futuros — Pre-mercado</value></data>
+
+  <!-- Dialogs -->
+  <data name="Dialog_SampleMessage" xml:space="preserve"><value>La arquitectura base está lista.</value></data>
+  <data name="Dialog_SampleTitle" xml:space="preserve"><value>Diario de Trading</value></data>
+
+  <!-- Languages -->
+  <data name="Lang_EnUS" xml:space="preserve"><value>English (US)</value></data>
+  <data name="Lang_EsCO" xml:space="preserve"><value>Español (Colombia)</value></data>
+</root>
