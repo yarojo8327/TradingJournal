@@ -7,5 +7,10 @@ public partial class StrategyRuleItem : ObservableObject
     public int? ExistingId { get; set; }
 
     [ObservableProperty] private string _description = string.Empty;
-    [ObservableProperty] private int    _orderIndex;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayIndex))]
+    private int _orderIndex;
+
+    public int DisplayIndex => OrderIndex + 1;
 }

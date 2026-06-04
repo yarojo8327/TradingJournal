@@ -148,9 +148,13 @@
                                                 CornerRadius="6" ClipToBounds="True"
                                                 Background="{DynamicResource SurfaceElevatedBrush}"
                                                 Margin="0,0,12,0"
+                                                Cursor="Hand"
+                                                ToolTip="Clic para ampliar"
                                                 Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
                                             <Image Source="{Binding ImageData, Converter={StaticResource BytesToImage}}"
-                                                   Stretch="UniformToFill" />
+                                                   Stretch="UniformToFill"
+                                                   Tag="{Binding}"
+                                                   MouseLeftButtonDown="OnCardImageClick" />
                                         </Border>
 
                                         <!-- Ícono cuando no hay imagen -->
@@ -336,10 +340,13 @@
                                    Foreground="{DynamicResource CyanGlowBrush}"
                                    Margin="0,0,0,16" />
 
-                        <!-- Preview de imagen -->
+                        <!-- Preview de imagen (clic para ampliar) -->
                         <Border CornerRadius="8" ClipToBounds="True"
                                 MaxHeight="180" Margin="0,0,0,12"
-                                Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
+                                Cursor="Hand"
+                                ToolTip="Clic para ampliar"
+                                Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}"
+                                MouseLeftButtonDown="OnFormImageClick">
                             <Image Source="{Binding ImagePreview}"
                                    Stretch="Uniform" />
                         </Border>
@@ -421,7 +428,7 @@
                                                     CornerRadius="11"
                                                     Background="{DynamicResource PrimaryBrush}"
                                                     Margin="0,0,10,0">
-                                                <TextBlock Text="{Binding OrderIndex, StringFormat={}{0}}"
+                                                <TextBlock Text="{Binding DisplayIndex}"
                                                            FontSize="10" FontWeight="Bold"
                                                            Foreground="#0A0E1A"
                                                            HorizontalAlignment="Center"
