@@ -1,0 +1,82 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════
+         TRADING JOURNAL — Brand Color System
+         Inspired by dark trading platform aesthetic
+         ═══════════════════════════════════════════ -->
+
+    <!-- Core background palette -->
+    <Color x:Key="BgDeepColor">#0A0E1A</Color>
+    <Color x:Key="BgBaseColor">#0D1117</Color>
+    <Color x:Key="BgSurfaceColor">#111827</Color>
+    <Color x:Key="BgElevatedColor">#1A2236</Color>
+    <Color x:Key="BgCardColor">#1E293B</Color>
+
+    <!-- Brand accents -->
+    <Color x:Key="CyanColor">#00D4FF</Color>
+    <Color x:Key="CyanDimColor">#007A99</Color>
+    <Color x:Key="BlueColor">#0066FF</Color>
+    <Color x:Key="BlueDimColor">#003D99</Color>
+
+    <!-- Semantic colors -->
+    <Color x:Key="GreenColor">#00E676</Color>
+    <Color x:Key="RedColor">#FF3333</Color>
+    <Color x:Key="YellowColor">#FFD600</Color>
+    <Color x:Key="GrayColor">#334155</Color>
+
+    <!-- Text -->
+    <Color x:Key="TextWhiteColor">#FFFFFF</Color>
+    <Color x:Key="TextPrimaryColor">#F1F5F9</Color>
+    <Color x:Key="TextSecondaryColor">#94A3B8</Color>
+    <Color x:Key="TextMutedColor">#475569</Color>
+
+    <!-- Border / dividers -->
+    <Color x:Key="BorderSubtleColor">#1E3A5F</Color>
+    <Color x:Key="BorderColor">#0066FF33</Color>
+    <Color x:Key="BorderBrightColor">#00D4FF55</Color>
+
+    <!-- ── Brushes ── -->
+    <SolidColorBrush x:Key="BackgroundBrush"       Color="{StaticResource BgDeepColor}" />
+    <SolidColorBrush x:Key="SurfaceBrush"          Color="{StaticResource BgSurfaceColor}" />
+    <SolidColorBrush x:Key="SurfaceElevatedBrush"  Color="{StaticResource BgElevatedColor}" />
+    <SolidColorBrush x:Key="CardBrush"             Color="{StaticResource BgCardColor}" />
+    <SolidColorBrush x:Key="PrimaryBrush"          Color="{StaticResource CyanColor}" />
+    <SolidColorBrush x:Key="PrimaryDimBrush"       Color="{StaticResource CyanDimColor}" />
+    <SolidColorBrush x:Key="SecondaryBrush"        Color="{StaticResource BlueColor}" />
+    <SolidColorBrush x:Key="AccentGreenBrush"      Color="{StaticResource GreenColor}" />
+    <SolidColorBrush x:Key="AccentRedBrush"        Color="{StaticResource RedColor}" />
+    <SolidColorBrush x:Key="AccentYellowBrush"     Color="{StaticResource YellowColor}" />
+    <SolidColorBrush x:Key="BorderBrush"           Color="{StaticResource BorderSubtleColor}" />
+    <SolidColorBrush x:Key="BorderBrightBrush"     Color="{StaticResource BorderBrightColor}" />
+    <SolidColorBrush x:Key="TextPrimaryBrush"      Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush"    Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextMutedBrush"        Color="{StaticResource TextMutedColor}" />
+    <SolidColorBrush x:Key="TextWhiteBrush"        Color="{StaticResource TextWhiteColor}" />
+
+    <!-- Cyan glow gradient (used in headers / accents) -->
+    <LinearGradientBrush x:Key="CyanGlowBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#00D4FF" Offset="0" />
+        <GradientStop Color="#0066FF" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Deep background gradient -->
+    <LinearGradientBrush x:Key="DeepBgGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#0A0E1A" Offset="0" />
+        <GradientStop Color="#0D1B2A" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Card top-border highlight -->
+    <LinearGradientBrush x:Key="CardTopBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#00D4FF" Offset="0" />
+        <GradientStop Color="#0066FF" Offset="0.5" />
+        <GradientStop Color="#00000000" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Spacing / corner radius tokens -->
+    <CornerRadius x:Key="RadiusSm">4</CornerRadius>
+    <CornerRadius x:Key="RadiusMd">8</CornerRadius>
+    <CornerRadius x:Key="RadiusLg">12</CornerRadius>
+    <CornerRadius x:Key="RadiusXl">16</CornerRadius>
+
+</ResourceDictionary>

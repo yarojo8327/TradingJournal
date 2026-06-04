@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base dark card -->
+    <Style x:Key="Card" TargetType="Border">
+        <Setter Property="Background"      Value="{DynamicResource CardBrush}" />
+        <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius"    Value="10" />
+        <Setter Property="Padding"         Value="20" />
+    </Style>
+
+    <!-- Card with cyan top accent line -->
+    <Style x:Key="AccentCard" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="BorderThickness" Value="0,2,0,0" />
+        <Setter Property="BorderBrush"     Value="{DynamicResource PrimaryBrush}" />
+    </Style>
+
+    <!-- Metric stat card -->
+    <Style x:Key="StatCard" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="2" Opacity="0.4" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

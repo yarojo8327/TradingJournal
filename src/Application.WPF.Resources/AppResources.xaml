@@ -1,0 +1,11 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Themes/TradingTheme.xaml" />
+        <ResourceDictionary Source="Styles/ButtonStyles.xaml" />
+        <ResourceDictionary Source="Styles/TextStyles.xaml" />
+        <ResourceDictionary Source="Styles/CardStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

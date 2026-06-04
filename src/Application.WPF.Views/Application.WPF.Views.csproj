@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.WPF.ViewModels\Application.WPF.ViewModels.csproj" />
+    <ProjectReference Include="..\Application.WPF.Common\Application.WPF.Common.csproj" />
+    <ProjectReference Include="..\Application.WPF.Resources\Application.WPF.Resources.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+</Project>
