@@ -8,8 +8,10 @@ public class TradingJournalDbContext : DbContext
 {
     public TradingJournalDbContext(DbContextOptions<TradingJournalDbContext> options) : base(options) { }
 
-    public DbSet<User>           Users           => Set<User>();
-    public DbSet<TradingAccount> TradingAccounts => Set<TradingAccount>();
+    public DbSet<User>             Users             => Set<User>();
+    public DbSet<TradingAccount>   TradingAccounts   => Set<TradingAccount>();
+    public DbSet<TradingStrategy>  TradingStrategies => Set<TradingStrategy>();
+    public DbSet<StrategyRule>     StrategyRules     => Set<StrategyRule>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,6 +25,28 @@ public class TradingJournalDbContext : DbContext
             e.Property(u => u.Username).IsRequired().HasMaxLength(50);
             e.Property(u => u.PasswordHash).IsRequired();
             e.Property(u => u.CreatedAt).IsRequired();
+        });
+
+        modelBuilder.Entity<TradingStrategy>(e =>
+        {
+            e.HasKey(s => s.Id);
+            e.HasIndex(s => s.UserId);
+            e.Property(s => s.Title).IsRequired().HasMaxLength(200);
+            e.Property(s => s.Description).HasMaxLength(2000);
+            e.Property(s => s.ImageData).HasColumnType("BLOB");
+            e.Property(s => s.ImageMimeType).HasMaxLength(50);
+            e.HasOne(s => s.User).WithMany().HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasMany(s => s.Rules).WithOne(r => r.Strategy)
+                .HasForeignKey(r => r.StrategyId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<StrategyRule>(e =>
+        {
+            e.HasKey(r => r.Id);
+            e.HasIndex(r => r.StrategyId);
+            e.Property(r => r.Description).IsRequired().HasMaxLength(2000);
         });
 
         modelBuilder.Entity<TradingAccount>(e =>

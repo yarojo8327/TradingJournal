@@ -3,6 +3,7 @@ using Application.WPF.ViewModels.Main;
 using Application.WPF.ViewModels.Profile;
 using Application.WPF.ViewModels.Register;
 using Application.WPF.ViewModels.Splash;
+using Application.WPF.ViewModels.Strategies;
 using Application.WPF.ViewModels.TradingAccount;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,7 @@ public static class ViewModelsRegistration
         services.AddTransient<LoginViewModel>();
         services.AddTransient<ProfileViewModel>();
         services.AddTransient<TradingAccountViewModel>();
+        services.AddTransient<TradingStrategyViewModel>();
         return services;
     }
 }

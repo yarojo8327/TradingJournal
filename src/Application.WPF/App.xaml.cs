@@ -99,6 +99,35 @@ public partial class App : System.Windows.Application
             @"DROP INDEX IF EXISTS ""IX_TradingAccounts_UserId"";");
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE INDEX IF NOT EXISTS ""IX_TradingAccounts_UserId"" ON ""TradingAccounts"" (""UserId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""TradingStrategies"" (
+                ""Id""            INTEGER NOT NULL CONSTRAINT ""PK_TradingStrategies"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""        INTEGER NOT NULL,
+                ""Title""         TEXT    NOT NULL,
+                ""Description""   TEXT,
+                ""ImageData""     BLOB,
+                ""ImageMimeType"" TEXT,
+                ""CreatedAt""     TEXT    NOT NULL,
+                ""UpdatedAt""     TEXT,
+                CONSTRAINT ""FK_TradingStrategies_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_TradingStrategies_UserId"" ON ""TradingStrategies"" (""UserId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""StrategyRules"" (
+                ""Id""          INTEGER NOT NULL CONSTRAINT ""PK_StrategyRules"" PRIMARY KEY AUTOINCREMENT,
+                ""StrategyId""  INTEGER NOT NULL,
+                ""Description"" TEXT    NOT NULL,
+                ""OrderIndex""  INTEGER NOT NULL,
+                ""CreatedAt""   TEXT    NOT NULL,
+                CONSTRAINT ""FK_StrategyRules_TradingStrategies_StrategyId""
+                    FOREIGN KEY (""StrategyId"") REFERENCES ""TradingStrategies"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_StrategyRules_StrategyId"" ON ""StrategyRules"" (""StrategyId"");");
     }
 
     private static IHost BuildHost()
