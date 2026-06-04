@@ -41,15 +41,17 @@ public partial class App : System.Windows.Application
         var locService = _host.Services.GetRequiredService<ILocalizationService>();
         Resources["Loc"] = locService;
 
+        // Resolve MainWindow/MainViewModel BEFORE the splash runs so that MainViewModel
+        // subscribes to INavigationService.Navigated before InitializeAsync fires it.
+        var mainWindow  = _host.Services.GetRequiredService<MainWindow>();
+        var mainViewModel = _host.Services.GetRequiredService<ViewModels.Main.MainViewModel>();
+        await mainViewModel.InitializeAsync();
+
         var splashViewModel = _host.Services.GetRequiredService<SplashViewModel>();
         var splash = new SplashView(splashViewModel);
         splash.Show();
 
         await splashViewModel.InitializeAsync();
-
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        var mainViewModel = _host.Services.GetRequiredService<ViewModels.Main.MainViewModel>();
-        await mainViewModel.InitializeAsync();
 
         mainWindow.Show();
         splash.Close();

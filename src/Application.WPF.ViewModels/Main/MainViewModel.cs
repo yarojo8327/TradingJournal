@@ -31,6 +31,7 @@ public partial class MainViewModel : BaseViewModel
         Title              = "Trading Journal";
 
         _navigationService.Navigated += OnNavigated;
+        _currentView = navigationService.CurrentViewModel;
 
         // Keep selector in sync with current service culture
         _selectedLanguage = SupportedLanguage.All
