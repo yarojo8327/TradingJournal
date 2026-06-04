@@ -14,14 +14,20 @@ public static class InfrastructureServiceRegistration
     {
         services.Configure<AppSettings>(configuration.GetSection(AppSettings.SectionName));
 
-        var dbFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "TradingJournal");
-        Directory.CreateDirectory(dbFolder);
-        var dbPath = Path.Combine(dbFolder, "tradingjournal.db");
+        var rawConnectionString = configuration.GetConnectionString("TradingJournal")
+            ?? throw new InvalidOperationException("ConnectionStrings:TradingJournal not found in configuration.");
+
+        var connectionString = rawConnectionString.Replace(
+            "%APPDATA%",
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+        var dbFolder = Path.GetDirectoryName(
+            connectionString.Replace("Data Source=", string.Empty).Trim());
+        if (!string.IsNullOrEmpty(dbFolder))
+            Directory.CreateDirectory(dbFolder);
 
         services.AddDbContext<TradingJournalDbContext>(
-            options => options.UseSqlite($"Data Source={dbPath}"),
+            options => options.UseSqlite(connectionString),
             ServiceLifetime.Transient);
 
         return services;
