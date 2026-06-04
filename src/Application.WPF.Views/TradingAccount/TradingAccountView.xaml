@@ -23,49 +23,7 @@
             <Setter Property="Margin"    Value="4,0" />
         </Style>
 
-        <!-- Estilo para ComboBox con fuente negra (controles nativos) -->
-        <Style x:Key="FormComboBox" TargetType="ComboBox">
-            <Setter Property="Height"          Value="40" />
-            <Setter Property="FontSize"        Value="13" />
-            <Setter Property="Foreground"      Value="Black" />
-            <Setter Property="Background"      Value="White" />
-            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding"         Value="8,0" />
-        </Style>
-
-        <!-- Estilo para DatePicker con fuente negra -->
-        <Style x:Key="FormDatePicker" TargetType="DatePicker">
-            <Setter Property="Height"          Value="40" />
-            <Setter Property="FontSize"        Value="13" />
-            <Setter Property="Foreground"      Value="Black" />
-            <Setter Property="Background"      Value="White" />
-            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CalendarStyle">
-                <Setter.Value>
-                    <Style TargetType="Calendar">
-                        <Setter Property="Foreground" Value="Black" />
-                        <Setter Property="Background" Value="White" />
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Items negros en ComboBox -->
-        <Style x:Key="ComboBoxItemDark" TargetType="ComboBoxItem">
-            <Setter Property="Foreground" Value="Black" />
-            <Setter Property="Background" Value="White" />
-            <Setter Property="Padding"    Value="10,6" />
-            <Style.Triggers>
-                <Trigger Property="IsHighlighted" Value="True">
-                    <Setter Property="Background" Value="#E8F4FD" />
-                    <Setter Property="Foreground" Value="Black" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- Botón editar de tabla -->
+<!-- Botón editar de tabla -->
         <Style x:Key="TableEditButton" TargetType="Button">
             <Setter Property="Background"      Value="Transparent" />
             <Setter Property="Foreground"      Value="{DynamicResource CyanGlowBrush}" />
@@ -367,15 +325,15 @@
                                 <ComboBox ItemsSource="{Binding AccountTypes}"
                                           SelectedItem="{Binding SelectedAccountType}"
                                           DisplayMemberPath="Display"
-                                          Style="{StaticResource FormComboBox}"
-                                          ItemContainerStyle="{StaticResource ComboBoxItemDark}" />
+                                          Style="{DynamicResource FormComboBox}"
+                                           />
                             </StackPanel>
 
                             <!-- Fecha de inicio -->
                             <StackPanel Margin="0,0,0,16">
                                 <TextBlock Text="Fecha de inicio de operación *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
                                 <DatePicker SelectedDate="{Binding StartDate}"
-                                            Style="{StaticResource FormDatePicker}" />
+                                            Style="{DynamicResource FormDatePicker}" />
                             </StackPanel>
 
                         </StackPanel>
@@ -406,8 +364,8 @@
                                 <TextBlock Text="Divisa base *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
                                 <ComboBox ItemsSource="{Binding Currencies}"
                                           SelectedItem="{Binding BaseCurrency}"
-                                          Style="{StaticResource FormComboBox}"
-                                          ItemContainerStyle="{StaticResource ComboBoxItemDark}" />
+                                          Style="{DynamicResource FormComboBox}"
+                                           />
                             </StackPanel>
 
                             <!-- Apalancamiento -->
@@ -416,8 +374,8 @@
                                 <ComboBox ItemsSource="{Binding LeverageOptions}"
                                           Text="{Binding Leverage, UpdateSourceTrigger=PropertyChanged}"
                                           IsEditable="True"
-                                          Style="{StaticResource FormComboBox}"
-                                          ItemContainerStyle="{StaticResource ComboBoxItemDark}" />
+                                          Style="{DynamicResource FormComboBox}"
+                                           />
                                 <ItemsControl ItemsSource="{Binding (Validation.Errors),
                                               RelativeSource={RelativeSource AncestorType=ComboBox}}">
                                     <ItemsControl.ItemTemplate>
