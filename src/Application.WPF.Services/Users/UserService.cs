@@ -1,0 +1,46 @@
+using Application.WPF.Infrastructure.Data;
+using Application.WPF.Models.Entities;
+using Application.WPF.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+namespace Application.WPF.Services.Users;
+
+public class UserService : IUserService
+{
+    private readonly TradingJournalDbContext _db;
+    private readonly ILogger<UserService> _logger;
+
+    public UserService(TradingJournalDbContext db, ILogger<UserService> logger)
+    {
+        _db     = db;
+        _logger = logger;
+    }
+
+    public async Task<bool> AnyUserExistsAsync() =>
+        await _db.Users.AnyAsync();
+
+    public async Task<bool> EmailExistsAsync(string email) =>
+        await _db.Users.AnyAsync(u => u.Email == email.Trim().ToLower());
+
+    public async Task<bool> UsernameExistsAsync(string username) =>
+        await _db.Users.AnyAsync(u => u.Username.ToLower() == username.Trim().ToLower());
+
+    public async Task<User> RegisterAsync(string fullName, string email, string username, string password)
+    {
+        var user = new User
+        {
+            FullName     = fullName.Trim(),
+            Email        = email.Trim().ToLower(),
+            Username     = username.Trim(),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+            CreatedAt    = DateTime.UtcNow
+        };
+
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+
+        _logger.LogInformation("User registered: {Username}", user.Username);
+        return user;
+    }
+}

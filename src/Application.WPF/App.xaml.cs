@@ -1,3 +1,4 @@
+using Application.WPF.Infrastructure.Data;
 using Application.WPF.Infrastructure.DependencyInjection;
 using Application.WPF.Infrastructure.Logging;
 using Application.WPF.Models.Configuration;
@@ -31,6 +32,10 @@ public partial class App : System.Windows.Application
 
         _host = BuildHost();
         await _host.StartAsync();
+
+        // Initialize database schema
+        using (var db = _host.Services.GetRequiredService<TradingJournalDbContext>())
+            await db.Database.EnsureCreatedAsync();
 
         // Expose LocalizationService as "Loc" in Application.Resources for {loc:Tr} bindings
         var locService = _host.Services.GetRequiredService<ILocalizationService>();
