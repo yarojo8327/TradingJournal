@@ -2,6 +2,8 @@ using Application.WPF.Common.Localization;
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Services.Interfaces;
 using Application.WPF.ViewModels.Login;
+using Application.WPF.ViewModels.Profile;
+using Application.WPF.ViewModels.Register;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -10,16 +12,17 @@ namespace Application.WPF.ViewModels.Main;
 
 public partial class MainViewModel : BaseViewModel
 {
-    private readonly INavigationService _navigationService;
+    private readonly INavigationService  _navigationService;
     private readonly ILocalizationService _localization;
-    private readonly ISessionService _sessionService;
+    private readonly ISessionService     _sessionService;
     private readonly ILogger<MainViewModel> _logger;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowShell))]
     private BaseViewModel? _currentView;
 
     [ObservableProperty]
-    private SupportedLanguage _selectedLanguage = SupportedLanguage.EnUS;
+    private SupportedLanguage _selectedLanguage = SupportedLanguage.EsCO;
 
     [ObservableProperty]
     private string _currentUsername = string.Empty;
@@ -27,12 +30,16 @@ public partial class MainViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isAuthenticated;
 
+    public bool ShowShell => CurrentView is not RegisterViewModel
+                                        and not LoginViewModel
+                                        and not null;
+
     public IReadOnlyList<SupportedLanguage> AvailableLanguages => _localization.AvailableLanguages;
 
     public MainViewModel(
-        INavigationService navigationService,
+        INavigationService  navigationService,
         ILocalizationService localization,
-        ISessionService sessionService,
+        ISessionService     sessionService,
         ILogger<MainViewModel> logger)
     {
         _navigationService = navigationService;
@@ -41,13 +48,13 @@ public partial class MainViewModel : BaseViewModel
         _logger            = logger;
         Title              = "Trading Journal";
 
-        _navigationService.Navigated += OnNavigated;
+        _navigationService.Navigated   += OnNavigated;
         _sessionService.SessionChanged += OnSessionChanged;
         _currentView = navigationService.CurrentViewModel;
 
         _selectedLanguage = SupportedLanguage.All
             .FirstOrDefault(l => l.CultureCode == localization.CurrentCulture)
-            ?? SupportedLanguage.EnUS;
+            ?? SupportedLanguage.EsCO;
     }
 
     partial void OnSelectedLanguageChanged(SupportedLanguage value)
@@ -76,6 +83,10 @@ public partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private void GoToSettings() =>
+        _navigationService.NavigateTo<ProfileViewModel>();
+
+    [RelayCommand]
     private void Logout()
     {
         _sessionService.Clear();
@@ -85,8 +96,8 @@ public partial class MainViewModel : BaseViewModel
 
     public override void Dispose()
     {
-        _navigationService.Navigated    -= OnNavigated;
-        _sessionService.SessionChanged  -= OnSessionChanged;
+        _navigationService.Navigated   -= OnNavigated;
+        _sessionService.SessionChanged -= OnSessionChanged;
         base.Dispose();
     }
 }

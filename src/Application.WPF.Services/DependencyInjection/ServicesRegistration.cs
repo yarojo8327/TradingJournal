@@ -19,7 +19,7 @@ public static class ServicesRegistration
         services.AddSingleton<ILocalizationService>(sp =>
             new LocalizationService(
                 sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<LocalizationService>>(),
-                "en-US"));
+                "es-CO"));
         services.AddTransient<IUserService, UserService>();
         services.AddSingleton<ISessionService, SessionService>();
         return services;

@@ -56,4 +56,28 @@ public class UserService : IUserService
         _logger.LogInformation("User authenticated: {Username}", user.Username);
         return user;
     }
+
+    public async Task<User> UpdateProfileAsync(int userId, string fullName, string email, string username)
+    {
+        var user = await _db.Users.FindAsync(userId)
+            ?? throw new InvalidOperationException("Usuario no encontrado.");
+
+        user.FullName = fullName.Trim();
+        user.Email    = email.Trim().ToLower();
+        user.Username = username.Trim();
+
+        await _db.SaveChangesAsync();
+        _logger.LogInformation("Profile updated for user {Id}", userId);
+        return user;
+    }
+
+    public async Task ChangePasswordAsync(int userId, string newPassword)
+    {
+        var user = await _db.Users.FindAsync(userId)
+            ?? throw new InvalidOperationException("Usuario no encontrado.");
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        await _db.SaveChangesAsync();
+        _logger.LogInformation("Password changed for user {Id}", userId);
+    }
 }

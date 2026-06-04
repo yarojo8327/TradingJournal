@@ -9,4 +9,6 @@ public interface IUserService
     Task<bool> UsernameExistsAsync(string username);
     Task<User> RegisterAsync(string fullName, string email, string username, string password);
     Task<User?> AuthenticateAsync(string usernameOrEmail, string password);
+    Task<User> UpdateProfileAsync(int userId, string fullName, string email, string username);
+    Task ChangePasswordAsync(int userId, string newPassword);
 }

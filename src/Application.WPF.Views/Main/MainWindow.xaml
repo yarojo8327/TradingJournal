@@ -29,13 +29,15 @@
         </Grid.RowDefinitions>
 
         <!-- Top cyan line -->
-        <Border Grid.Row="0" Background="{DynamicResource CyanGlowBrush}" />
+        <Border Grid.Row="0" Background="{DynamicResource CyanGlowBrush}"
+                Visibility="{Binding ShowShell, Converter={StaticResource BoolToVisibility}}" />
 
         <!-- Navbar -->
         <Border Grid.Row="1"
                 Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0,0,0,1"
+                Visibility="{Binding ShowShell, Converter={StaticResource BoolToVisibility}}">
             <Grid Margin="20,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -62,7 +64,8 @@
                             Foreground="{DynamicResource PrimaryBrush}" />
                     <Button Content="{loc:Tr Nav_Journal}"   Style="{DynamicResource GhostButton}" />
                     <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}" />
-                    <Button Content="{loc:Tr Nav_Settings}"  Style="{DynamicResource GhostButton}" />
+                    <Button Content="{loc:Tr Nav_Settings}"  Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToSettingsCommand}" />
                 </StackPanel>
 
                 <!-- Right side: Language selector + LIVE badge -->
@@ -180,7 +183,8 @@
         <Border Grid.Row="3"
                 Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="0,1,0,0">
+                BorderThickness="0,1,0,0"
+                Visibility="{Binding ShowShell, Converter={StaticResource BoolToVisibility}}">
             <Grid Margin="20,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
