@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json" CopyToOutputDirectory="Always" />
+    <Content Include="appsettings.Development.json" CopyToOutputDirectory="Always" />
+    <Content Include="appsettings.Production.json" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.WPF.Views\Application.WPF.Views.csproj" />
+    <ProjectReference Include="..\Application.WPF.ViewModels\Application.WPF.ViewModels.csproj" />
+    <ProjectReference Include="..\Application.WPF.Services\Application.WPF.Services.csproj" />
+    <ProjectReference Include="..\Application.WPF.Infrastructure\Application.WPF.Infrastructure.csproj" />
+    <ProjectReference Include="..\Application.WPF.Common\Application.WPF.Common.csproj" />
+  </ItemGroup>
+
+</Project>

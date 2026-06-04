@@ -1,0 +1,117 @@
+<Window x:Class="Application.WPF.Views.Splash.SplashView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Application.WPF.ViewModels.Splash;assembly=Application.WPF.ViewModels"
+        xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:SplashViewModel}"
+        Title="{loc:Tr App_Title}"
+        Height="380" Width="560"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True">
+
+    <Border CornerRadius="14"
+            Background="{DynamicResource DeepBgGradientBrush}"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource BorderBrightBrush}">
+        <Border.Effect>
+            <DropShadowEffect Color="#00D4FF" BlurRadius="30" ShadowDepth="0" Opacity="0.25" />
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" CornerRadius="14,14,0,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#00D4FF" Offset="0" />
+                        <GradientStop Color="#0066FF" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <Grid Grid.Row="1" Margin="48,36,48,40">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="24" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="16" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" HorizontalAlignment="Center">
+                    <TextBlock HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               FontSize="34"
+                               FontWeight="Black"
+                               Text="{loc:Tr App_Title}">
+                        <TextBlock.Foreground>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#00D4FF" Offset="0" />
+                                <GradientStop Color="#0066FF" Offset="1" />
+                            </LinearGradientBrush>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                    <TextBlock Text="{loc:Tr App_Subtitle}"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               Margin="0,6,0,0" />
+                </StackPanel>
+
+                <Rectangle Grid.Row="2" Height="1" Opacity="0.15">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="Transparent" Offset="0" />
+                            <GradientStop Color="#00D4FF"     Offset="0.5" />
+                            <GradientStop Color="Transparent" Offset="1" />
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+                <TextBlock Grid.Row="4"
+                           Text="{Binding LoadingStatus}"
+                           HorizontalAlignment="Center"
+                           FontFamily="Segoe UI"
+                           FontSize="12"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                <ProgressBar Grid.Row="6"
+                             Value="{Binding LoadingProgress}"
+                             Minimum="0" Maximum="100"
+                             Height="4"
+                             BorderThickness="0">
+                    <ProgressBar.Foreground>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#00D4FF" Offset="0" />
+                            <GradientStop Color="#0066FF" Offset="1" />
+                        </LinearGradientBrush>
+                    </ProgressBar.Foreground>
+                    <ProgressBar.Template>
+                        <ControlTemplate TargetType="ProgressBar">
+                            <Border CornerRadius="2" Background="#1A2236">
+                                <Border x:Name="PART_Track">
+                                    <Border x:Name="PART_Indicator"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="2"
+                                            Background="{TemplateBinding Foreground}" />
+                                </Border>
+                            </Border>
+                        </ControlTemplate>
+                    </ProgressBar.Template>
+                </ProgressBar>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
