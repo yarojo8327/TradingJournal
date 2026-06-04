@@ -14,6 +14,8 @@
         <converters:StringToVisibilityConverter x:Key="StringToVisibility" />
         <converters:InverseBoolConverter        x:Key="InverseBool" />
         <converters:BoolToVisibilityConverter   x:Key="BoolToVisibility" />
+        <converters:ByteArrayToImageConverter   x:Key="BytesToImage" />
+        <converters:IntToVisibilityConverter    x:Key="IntToVisibility" />
 
         <!-- Botón de acción en tarjeta -->
         <Style x:Key="CardActionButton" TargetType="Button">
@@ -141,42 +143,31 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
-                                        <!-- Miniatura de imagen -->
+                                        <!-- Miniatura de imagen (solo si HasImage) -->
                                         <Border Grid.Column="0" Width="48" Height="48"
                                                 CornerRadius="6" ClipToBounds="True"
+                                                Background="{DynamicResource SurfaceElevatedBrush}"
                                                 Margin="0,0,12,0"
-                                                Visibility="{Binding ImageData, Converter={StaticResource BoolToVisibility}}">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="Background" Value="{DynamicResource SurfaceElevatedBrush}"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ImageData}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <Image Stretch="UniformToFill">
-                                                <Image.Source>
-                                                    <Binding Path="ImageData"
-                                                             Converter="{StaticResource BoolToVisibility}" />
-                                                </Image.Source>
-                                            </Image>
+                                                Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
+                                            <Image Source="{Binding ImageData, Converter={StaticResource BytesToImage}}"
+                                                   Stretch="UniformToFill" />
                                         </Border>
 
                                         <!-- Ícono cuando no hay imagen -->
                                         <Border Grid.Column="0" Width="48" Height="48"
                                                 CornerRadius="6"
                                                 Background="{DynamicResource SurfaceElevatedBrush}"
-                                                Margin="0,0,12,0">
+                                                Margin="0,0,12,0"
+                                                Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility},
+                                                             ConverterParameter=inverse}">
                                             <Border.Style>
                                                 <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Visible" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ImageData}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
                                                 </Style>
                                             </Border.Style>
                                             <TextBlock Text="📊" FontSize="22"
@@ -234,12 +225,12 @@
                                     <Rectangle Grid.Row="2" Height="1"
                                                Fill="{DynamicResource BorderBrush}"
                                                Margin="0,0,0,8"
-                                               Visibility="{Binding Rules.Count, Converter={StaticResource BoolToVisibility}}" />
+                                               Visibility="{Binding Rules.Count, Converter={StaticResource IntToVisibility}}" />
 
                                     <!-- Primeras 2 reglas como preview -->
                                     <ItemsControl Grid.Row="3"
                                                   ItemsSource="{Binding Rules}"
-                                                  Visibility="{Binding Rules.Count, Converter={StaticResource BoolToVisibility}}">
+                                                  Visibility="{Binding Rules.Count, Converter={StaticResource IntToVisibility}}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" Margin="0,2">

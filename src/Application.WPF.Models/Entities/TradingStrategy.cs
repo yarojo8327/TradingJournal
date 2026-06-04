@@ -11,6 +11,8 @@ public class TradingStrategy
     public DateTime  CreatedAt     { get; set; }
     public DateTime? UpdatedAt     { get; set; }
 
-    public User                  User  { get; set; } = null!;
+    public bool HasImage => ImageData != null && ImageData.Length > 0;
+
+    public User                      User  { get; set; } = null!;
     public ICollection<StrategyRule> Rules { get; set; } = new List<StrategyRule>();
 }
