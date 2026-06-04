@@ -18,6 +18,39 @@
     <Window.Resources>
         <converters:ViewModelToViewConverter   x:Key="ViewModelToView" />
         <converters:BoolToVisibilityConverter  x:Key="BoolToVisibility" />
+
+        <!-- ToggleButton con aspecto idéntico a GhostButton -->
+        <Style x:Key="GhostToggleButton" TargetType="ToggleButton">
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="Foreground"      Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="FontSize"        Value="13" />
+            <Setter Property="Padding"         Value="12,8" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#0FFFFFFF" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#15FFFFFF" />
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -59,13 +92,82 @@
                 <!-- Nav links -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                    <!-- Dashboard -->
                     <Button Content="{loc:Tr Nav_Dashboard}"
                             Style="{DynamicResource GhostButton}"
-                            Foreground="{DynamicResource PrimaryBrush}" />
+                            Foreground="{DynamicResource PrimaryBrush}"
+                            Command="{Binding GoToDashboardCommand}" />
+
                     <Button Content="{loc:Tr Nav_Journal}"   Style="{DynamicResource GhostButton}" />
                     <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}" />
-                    <Button Content="{loc:Tr Nav_Settings}"  Style="{DynamicResource GhostButton}"
-                            Command="{Binding GoToSettingsCommand}" />
+
+                    <!-- Configuración con submenú desplegable -->
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        <ToggleButton x:Name="SettingsToggle"
+                                      Style="{StaticResource GhostToggleButton}"
+                                      Content="{loc:Tr Nav_Settings}"
+                                      VerticalAlignment="Center" />
+
+                        <Popup x:Name="SettingsPopup"
+                               IsOpen="{Binding IsChecked, ElementName=SettingsToggle}"
+                               PlacementTarget="{Binding ElementName=SettingsToggle}"
+                               Placement="Bottom"
+                               StaysOpen="False"
+                               AllowsTransparency="True"
+                               PopupAnimation="Fade">
+                            <Border Background="{DynamicResource SurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    MinWidth="200"
+                                    Margin="0,4,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" BlurRadius="16"
+                                                      ShadowDepth="4" Opacity="0.5" />
+                                </Border.Effect>
+                                <StackPanel Margin="4">
+
+                                    <!-- Cabecera del submenú -->
+                                    <TextBlock Text="CONFIGURACIÓN"
+                                               FontSize="9" FontWeight="Bold"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               Margin="12,10,12,6" />
+                                    <Rectangle Height="1" Fill="{DynamicResource BorderBrush}"
+                                               Margin="8,0,8,4" />
+
+                                    <!-- Perfil de usuario -->
+                                    <Button Style="{DynamicResource GhostButton}"
+                                            HorizontalContentAlignment="Left"
+                                            HorizontalAlignment="Stretch"
+                                            Padding="12,10"
+                                            Command="{Binding GoToSettingsCommand}"
+                                            CommandParameter="Profile">
+                                        <Button.Resources>
+                                            <Style TargetType="Button" BasedOn="{StaticResource GhostButton}">
+                                                <Setter Property="Foreground"
+                                                        Value="{DynamicResource TextSecondaryBrush}" />
+                                            </Style>
+                                        </Button.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="👤" FontSize="13" Margin="0,0,10,0"
+                                                       VerticalAlignment="Center" />
+                                            <StackPanel>
+                                                <TextBlock Text="Perfil de usuario"
+                                                           FontSize="13" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                <TextBlock Text="Ver y editar tu cuenta"
+                                                           FontSize="11"
+                                                           Foreground="{DynamicResource TextMutedBrush}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Button>
+
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                    </StackPanel>
+
                 </StackPanel>
 
                 <!-- Right side: Language selector + LIVE badge -->

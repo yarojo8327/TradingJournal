@@ -83,6 +83,10 @@ public partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private void GoToDashboard() =>
+        _navigationService.NavigateTo<DashboardViewModel>();
+
+    [RelayCommand]
     private void GoToSettings() =>
         _navigationService.NavigateTo<ProfileViewModel>();
 
