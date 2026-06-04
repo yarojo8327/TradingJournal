@@ -1,4 +1,5 @@
 using Application.WPF.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Application.WPF.Infrastructure.DependencyInjection;
 using Application.WPF.Infrastructure.Logging;
 using Application.WPF.Models.Configuration;
