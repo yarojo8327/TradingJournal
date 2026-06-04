@@ -1,6 +1,6 @@
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Services.Interfaces;
-using Application.WPF.ViewModels;
+using Application.WPF.ViewModels.Login;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -11,15 +11,16 @@ namespace Application.WPF.ViewModels.Register;
 
 public partial class RegisterViewModel : BaseViewModel
 {
-    private readonly IUserService _userService;
+    private readonly IUserService       _userService;
+    private readonly ISessionService    _sessionService;
     private readonly INavigationService _navigationService;
-    private readonly IDialogService _dialogService;
+    private readonly IDialogService     _dialogService;
     private readonly ILogger<RegisterViewModel> _logger;
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required(ErrorMessage = "El nombre completo es requerido.")]
-    [MinLength(2, ErrorMessage = "Debe tener al menos 2 caracteres.")]
+    [MinLength(2,   ErrorMessage = "Debe tener al menos 2 caracteres.")]
     [MaxLength(150, ErrorMessage = "No puede superar 150 caracteres.")]
     private string _fullName = string.Empty;
 
@@ -33,7 +34,7 @@ public partial class RegisterViewModel : BaseViewModel
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required(ErrorMessage = "El nombre de usuario es requerido.")]
-    [MinLength(3, ErrorMessage = "Debe tener al menos 3 caracteres.")]
+    [MinLength(3,  ErrorMessage = "Debe tener al menos 3 caracteres.")]
     [MaxLength(50, ErrorMessage = "No puede superar 50 caracteres.")]
     [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Solo letras, números y guión bajo.")]
     private string _username = string.Empty;
@@ -54,12 +55,14 @@ public partial class RegisterViewModel : BaseViewModel
     private string _generalError = string.Empty;
 
     public RegisterViewModel(
-        IUserService userService,
+        IUserService       userService,
+        ISessionService    sessionService,
         INavigationService navigationService,
-        IDialogService dialogService,
+        IDialogService     dialogService,
         ILogger<RegisterViewModel> logger)
     {
         _userService       = userService;
+        _sessionService    = sessionService;
         _navigationService = navigationService;
         _dialogService     = dialogService;
         _logger            = logger;
@@ -75,8 +78,7 @@ public partial class RegisterViewModel : BaseViewModel
         GeneralError = string.Empty;
         ValidateAll();
 
-        if (HasErrors)
-            return;
+        if (HasErrors) return;
 
         IsBusy = true;
         try
@@ -93,13 +95,10 @@ public partial class RegisterViewModel : BaseViewModel
                 return;
             }
 
-            await _userService.RegisterAsync(FullName, Email, Username, Password);
+            var user = await _userService.RegisterAsync(FullName, Email, Username, Password);
             _logger.LogInformation("Registration successful for {Username}", Username);
 
-            _dialogService.ShowInformation(
-                "Tu cuenta ha sido creada exitosamente. Bienvenido a TradingJournal.",
-                "Registro exitoso");
-
+            _sessionService.SetUser(user);
             _navigationService.NavigateTo<DashboardViewModel>();
         }
         catch (Exception ex)
@@ -113,35 +112,26 @@ public partial class RegisterViewModel : BaseViewModel
         }
     }
 
+    [RelayCommand]
+    private void GoToLogin() =>
+        _navigationService.NavigateTo<LoginViewModel>();
+
     public static ValidationResult? ValidatePasswordComplexity(string value, ValidationContext _)
     {
-        if (string.IsNullOrEmpty(value))
-            return ValidationResult.Success;
-
-        if (value.Length < 8)
-            return new ValidationResult("Mínimo 8 caracteres.");
-
-        if (!Regex.IsMatch(value, @"[A-Z]"))
-            return new ValidationResult("Debe contener al menos una mayúscula.");
-
-        if (!Regex.IsMatch(value, @"[a-z]"))
-            return new ValidationResult("Debe contener al menos una minúscula.");
-
-        if (!Regex.IsMatch(value, @"[0-9]"))
-            return new ValidationResult("Debe contener al menos un número.");
-
-        if (!Regex.IsMatch(value, @"[^a-zA-Z0-9]"))
-            return new ValidationResult("Debe contener al menos un carácter especial.");
-
+        if (string.IsNullOrEmpty(value)) return ValidationResult.Success;
+        if (value.Length < 8)                        return new ValidationResult("Mínimo 8 caracteres.");
+        if (!Regex.IsMatch(value, @"[A-Z]"))         return new ValidationResult("Debe contener al menos una mayúscula.");
+        if (!Regex.IsMatch(value, @"[a-z]"))         return new ValidationResult("Debe contener al menos una minúscula.");
+        if (!Regex.IsMatch(value, @"[0-9]"))         return new ValidationResult("Debe contener al menos un número.");
+        if (!Regex.IsMatch(value, @"[^a-zA-Z0-9]")) return new ValidationResult("Debe contener al menos un carácter especial.");
         return ValidationResult.Success;
     }
 
     public static ValidationResult? ValidateConfirmPassword(string value, ValidationContext context)
     {
         var vm = (RegisterViewModel)context.ObjectInstance;
-        if (value != vm.Password)
-            return new ValidationResult("Las contraseñas no coinciden.");
-
-        return ValidationResult.Success;
+        return value != vm.Password
+            ? new ValidationResult("Las contraseñas no coinciden.")
+            : ValidationResult.Success;
     }
 }

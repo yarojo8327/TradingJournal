@@ -16,7 +16,8 @@
         FontFamily="Segoe UI">
 
     <Window.Resources>
-        <converters:ViewModelToViewConverter x:Key="ViewModelToView" />
+        <converters:ViewModelToViewConverter   x:Key="ViewModelToView" />
+        <converters:BoolToVisibilityConverter  x:Key="BoolToVisibility" />
     </Window.Resources>
 
     <Grid>
@@ -102,6 +103,31 @@
                                     </Style>
                                 </ComboBox.ItemContainerStyle>
                             </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Usuario autenticado -->
+                    <Border CornerRadius="4"
+                            Background="{DynamicResource SurfaceElevatedBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            Padding="10,5"
+                            Margin="0,0,10,0"
+                            Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="22" Height="22" CornerRadius="11"
+                                    Background="{DynamicResource CyanGlowBrush}"
+                                    Margin="0,0,7,0">
+                                <TextBlock Text="{Binding CurrentUsername[0], FallbackValue=?}"
+                                           FontSize="11" FontWeight="Bold"
+                                           Foreground="#0A0E1A"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="{Binding CurrentUsername}"
+                                       FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"
+                                       VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
 

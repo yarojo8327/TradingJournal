@@ -43,4 +43,17 @@ public class UserService : IUserService
         _logger.LogInformation("User registered: {Username}", user.Username);
         return user;
     }
+
+    public async Task<User?> AuthenticateAsync(string usernameOrEmail, string password)
+    {
+        var input = usernameOrEmail.Trim().ToLower();
+        var user  = await _db.Users.FirstOrDefaultAsync(
+            u => u.Email == input || u.Username.ToLower() == input);
+
+        if (user is null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            return null;
+
+        _logger.LogInformation("User authenticated: {Username}", user.Username);
+        return user;
+    }
 }

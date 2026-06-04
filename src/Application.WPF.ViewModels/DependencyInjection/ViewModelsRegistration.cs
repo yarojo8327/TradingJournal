@@ -1,3 +1,4 @@
+using Application.WPF.ViewModels.Login;
 using Application.WPF.ViewModels.Main;
 using Application.WPF.ViewModels.Register;
 using Application.WPF.ViewModels.Splash;
@@ -13,6 +14,7 @@ public static class ViewModelsRegistration
         services.AddTransient<SplashViewModel>();
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<RegisterViewModel>();
+        services.AddTransient<LoginViewModel>();
         return services;
     }
 }

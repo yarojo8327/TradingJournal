@@ -10,6 +10,7 @@ public partial class MainViewModel : BaseViewModel
 {
     private readonly INavigationService _navigationService;
     private readonly ILocalizationService _localization;
+    private readonly ISessionService _sessionService;
     private readonly ILogger<MainViewModel> _logger;
 
     [ObservableProperty]
@@ -18,22 +19,30 @@ public partial class MainViewModel : BaseViewModel
     [ObservableProperty]
     private SupportedLanguage _selectedLanguage = SupportedLanguage.EnUS;
 
+    [ObservableProperty]
+    private string _currentUsername = string.Empty;
+
+    [ObservableProperty]
+    private bool _isAuthenticated;
+
     public IReadOnlyList<SupportedLanguage> AvailableLanguages => _localization.AvailableLanguages;
 
     public MainViewModel(
         INavigationService navigationService,
         ILocalizationService localization,
+        ISessionService sessionService,
         ILogger<MainViewModel> logger)
     {
         _navigationService = navigationService;
         _localization      = localization;
+        _sessionService    = sessionService;
         _logger            = logger;
         Title              = "Trading Journal";
 
         _navigationService.Navigated += OnNavigated;
+        _sessionService.SessionChanged += OnSessionChanged;
         _currentView = navigationService.CurrentViewModel;
 
-        // Keep selector in sync with current service culture
         _selectedLanguage = SupportedLanguage.All
             .FirstOrDefault(l => l.CultureCode == localization.CurrentCulture)
             ?? SupportedLanguage.EnUS;
@@ -58,9 +67,16 @@ public partial class MainViewModel : BaseViewModel
         _logger.LogInformation("View changed to {ViewModel}", e.ViewModel.GetType().Name);
     }
 
+    private void OnSessionChanged(object? sender, Models.Entities.User? user)
+    {
+        IsAuthenticated  = user is not null;
+        CurrentUsername  = user?.Username ?? string.Empty;
+    }
+
     public override void Dispose()
     {
-        _navigationService.Navigated -= OnNavigated;
+        _navigationService.Navigated    -= OnNavigated;
+        _sessionService.SessionChanged  -= OnSessionChanged;
         base.Dispose();
     }
 }

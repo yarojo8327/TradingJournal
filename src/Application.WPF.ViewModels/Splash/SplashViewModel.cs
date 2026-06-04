@@ -1,6 +1,6 @@
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Services.Interfaces;
-using Application.WPF.ViewModels;
+using Application.WPF.ViewModels.Login;
 using Application.WPF.ViewModels.Register;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
@@ -47,7 +47,7 @@ public partial class SplashViewModel : BaseViewModel
         _logger.LogInformation("Startup complete, checking user registration");
 
         if (await _userService.AnyUserExistsAsync())
-            _navigationService.NavigateTo<DashboardViewModel>();
+            _navigationService.NavigateTo<LoginViewModel>();
         else
             _navigationService.NavigateTo<RegisterViewModel>();
     }

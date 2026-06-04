@@ -8,4 +8,5 @@ public interface IUserService
     Task<bool> EmailExistsAsync(string email);
     Task<bool> UsernameExistsAsync(string username);
     Task<User> RegisterAsync(string fullName, string email, string username, string password);
+    Task<User?> AuthenticateAsync(string usernameOrEmail, string password);
 }
