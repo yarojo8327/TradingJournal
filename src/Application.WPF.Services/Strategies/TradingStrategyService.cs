@@ -38,7 +38,7 @@ public class TradingStrategyService : ITradingStrategyService
         {
             UserId        = userId,
             Title         = title.Trim(),
-            Description   = description?.Trim(),
+            Description   = string.IsNullOrWhiteSpace(description) ? null : description.Trim(),
             ImageData     = imageData,
             ImageMimeType = imageMimeType,
             CreatedAt     = DateTime.UtcNow
@@ -67,26 +67,27 @@ public class TradingStrategyService : ITradingStrategyService
         byte[]? imageData, string? imageMimeType,
         IEnumerable<string> rules)
     {
-        var strategy = await _db.TradingStrategies
-                                .Include(s => s.Rules)
-                                .FirstOrDefaultAsync(s => s.Id == strategyId)
+        var strategy = await _db.TradingStrategies.FindAsync(strategyId)
             ?? throw new InvalidOperationException("Estrategia no encontrada.");
 
         strategy.Title         = title.Trim();
-        strategy.Description   = description?.Trim();
+        strategy.Description   = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
         strategy.ImageData     = imageData;
         strategy.ImageMimeType = imageMimeType;
         strategy.UpdatedAt     = DateTime.UtcNow;
 
-        // Reemplazar todas las reglas
-        _db.StrategyRules.RemoveRange(strategy.Rules);
-        strategy.Rules.Clear();
+        // Eliminar reglas existentes mediante SQL directo para evitar conflictos de
+        // change-tracker: RemoveRange + Clear() en FK NOT NULL genera constraint violation.
+        await _db.Database.ExecuteSqlRawAsync(
+            @"DELETE FROM ""StrategyRules"" WHERE ""StrategyId"" = {0}", strategyId);
 
+        // Insertar nuevas reglas directamente en DbSet
         var ruleList = rules.Where(r => !string.IsNullOrWhiteSpace(r)).ToList();
         for (int i = 0; i < ruleList.Count; i++)
         {
-            strategy.Rules.Add(new StrategyRule
+            _db.StrategyRules.Add(new StrategyRule
             {
+                StrategyId  = strategyId,
                 Description = ruleList[i].Trim(),
                 OrderIndex  = i,
                 CreatedAt   = DateTime.UtcNow
@@ -94,8 +95,17 @@ public class TradingStrategyService : ITradingStrategyService
         }
 
         await _db.SaveChangesAsync();
+
+        // Limpiar el change tracker: las reglas antiguas eliminadas por SQL raw
+        // permanecen en estado Unchanged y el relationship fixup las añadiría
+        // a la colección de la estrategia al recargar con Include.
+        _db.ChangeTracker.Clear();
+
         _logger.LogInformation("Strategy {Id} updated", strategyId);
-        return strategy;
+
+        return await _db.TradingStrategies
+                        .Include(s => s.Rules.OrderBy(r => r.OrderIndex))
+                        .FirstAsync(s => s.Id == strategyId);
     }
 
     public async Task DeleteAsync(int strategyId)

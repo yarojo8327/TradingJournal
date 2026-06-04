@@ -222,7 +222,9 @@ public partial class TradingStrategyViewModel : BaseViewModel
         var user = _sessionService.CurrentUser;
         if (user is null) return;
 
-        var ruleDescriptions = Rules.Select(r => r.Description);
+        // Materializar antes de entrar al bloque async para evitar iterar
+        // la colección después de que ClearForm() la haya vaciado.
+        var ruleDescriptions = Rules.Select(r => r.Description).ToList();
 
         IsBusy = true;
         try
