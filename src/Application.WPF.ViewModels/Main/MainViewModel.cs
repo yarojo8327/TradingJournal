@@ -1,7 +1,9 @@
 using Application.WPF.Common.Localization;
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Services.Interfaces;
+using Application.WPF.ViewModels.Login;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
 namespace Application.WPF.ViewModels.Main;
@@ -69,8 +71,16 @@ public partial class MainViewModel : BaseViewModel
 
     private void OnSessionChanged(object? sender, Models.Entities.User? user)
     {
-        IsAuthenticated  = user is not null;
-        CurrentUsername  = user?.Username ?? string.Empty;
+        IsAuthenticated = user is not null;
+        CurrentUsername = user?.Username ?? string.Empty;
+    }
+
+    [RelayCommand]
+    private void Logout()
+    {
+        _sessionService.Clear();
+        _logger.LogInformation("User logged out");
+        _navigationService.NavigateTo<LoginViewModel>();
     }
 
     public override void Dispose()
