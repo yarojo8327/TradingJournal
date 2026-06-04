@@ -35,7 +35,10 @@ public partial class App : System.Windows.Application
 
         // Initialize database schema
         using (var db = _host.Services.GetRequiredService<TradingJournalDbContext>())
+        {
             await db.Database.EnsureCreatedAsync();
+            await EnsureSchemaUpToDateAsync(db);
+        }
 
         // Expose LocalizationService as "Loc" in Application.Resources for {loc:Tr} bindings
         var locService = _host.Services.GetRequiredService<ILocalizationService>();
@@ -66,6 +69,33 @@ public partial class App : System.Windows.Application
         }
         Log.CloseAndFlush();
         base.OnExit(e);
+    }
+
+    private static async Task EnsureSchemaUpToDateAsync(TradingJournalDbContext db)
+    {
+        // EnsureCreated only creates the schema if the DB is new.
+        // This method creates any tables that were added after the initial DB creation,
+        // preserving existing data. Each statement is idempotent.
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""TradingAccounts"" (
+                ""Id""             INTEGER NOT NULL CONSTRAINT ""PK_TradingAccounts"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""         INTEGER NOT NULL,
+                ""Broker""         TEXT    NOT NULL,
+                ""AccountNumber""  TEXT    NOT NULL,
+                ""AccountType""    TEXT    NOT NULL,
+                ""InitialCapital"" TEXT    NOT NULL,
+                ""BaseCurrency""   TEXT    NOT NULL,
+                ""Leverage""       TEXT    NOT NULL,
+                ""StartDate""      TEXT    NOT NULL,
+                ""CreatedAt""      TEXT    NOT NULL,
+                ""UpdatedAt""      TEXT,
+                CONSTRAINT ""FK_TradingAccounts_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE
+            );");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE UNIQUE INDEX IF NOT EXISTS ""IX_TradingAccounts_UserId""
+            ON ""TradingAccounts"" (""UserId"");");
     }
 
     private static IHost BuildHost()
