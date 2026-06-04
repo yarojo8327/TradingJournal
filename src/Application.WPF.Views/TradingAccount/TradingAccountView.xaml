@@ -14,268 +14,443 @@
         <converters:StringToVisibilityConverter x:Key="StringToVisibility" />
         <converters:InverseBoolConverter        x:Key="InverseBool" />
         <converters:BoolToVisibilityConverter   x:Key="BoolToVisibility" />
+
+        <!-- Estilo de celda en DataGrid -->
+        <Style x:Key="DataGridCellText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="FontSize"   Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin"    Value="4,0" />
+        </Style>
+
+        <!-- Estilo para ComboBox con fuente negra (controles nativos) -->
+        <Style x:Key="FormComboBox" TargetType="ComboBox">
+            <Setter Property="Height"          Value="40" />
+            <Setter Property="FontSize"        Value="13" />
+            <Setter Property="Foreground"      Value="Black" />
+            <Setter Property="Background"      Value="White" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding"         Value="8,0" />
+        </Style>
+
+        <!-- Estilo para DatePicker con fuente negra -->
+        <Style x:Key="FormDatePicker" TargetType="DatePicker">
+            <Setter Property="Height"          Value="40" />
+            <Setter Property="FontSize"        Value="13" />
+            <Setter Property="Foreground"      Value="Black" />
+            <Setter Property="Background"      Value="White" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CalendarStyle">
+                <Setter.Value>
+                    <Style TargetType="Calendar">
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="Background" Value="White" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Items negros en ComboBox -->
+        <Style x:Key="ComboBoxItemDark" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Padding"    Value="10,6" />
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#E8F4FD" />
+                    <Setter Property="Foreground" Value="Black" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Botón editar de tabla -->
+        <Style x:Key="TableEditButton" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="Foreground"      Value="{DynamicResource CyanGlowBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource CyanGlowBrush}" />
+            <Setter Property="Padding"         Value="10,4" />
+            <Setter Property="FontSize"        Value="11" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1500D4FF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Background="Transparent">
-        <Grid Margin="40,32,40,40">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MaxWidth="540" />
-                <ColumnDefinition Width="28" />
-                <ColumnDefinition Width="*" MaxWidth="480" />
-            </Grid.ColumnDefinitions>
+        <StackPanel Margin="40,32,40,40">
 
-            <!-- ═══════════════════════════════════════
-                 COLUMNA IZQUIERDA — Datos de la cuenta
-                 ═══════════════════════════════════════ -->
-            <StackPanel Grid.Column="0">
+            <!-- ══════════════════════════════════
+                 ENCABEZADO
+                 ══════════════════════════════════ -->
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-                <!-- Encabezado -->
-                <StackPanel Margin="0,0,0,28">
+                <StackPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                         <Border Width="3" Height="22" CornerRadius="1.5"
                                 Background="{DynamicResource CyanGlowBrush}"
                                 Margin="0,0,10,0" VerticalAlignment="Center" />
-                        <TextBlock FontSize="20" FontWeight="Bold"
-                                   Foreground="{DynamicResource TextPrimaryBrush}"
-                                   VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text" Value="Registrar cuenta de trading" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsEditMode}" Value="True">
-                                            <Setter Property="Text" Value="Editar cuenta de trading" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
-                    <TextBlock Text="Información de tu cuenta en el broker"
-                               FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
-                               Margin="13,0,0,0" />
-                </StackPanel>
-
-                <!-- Broker -->
-                <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Broker" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,0,0,6" />
-                    <TextBox Text="{Binding Broker, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{DynamicResource FormTextBox}"
-                             Tag="Ej: Interactive Brokers, Pepperstone…" />
-                    <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource AncestorType=TextBox}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ErrorContent}" FontSize="11"
-                                           Foreground="{DynamicResource AccentRedBrush}" Margin="2,3,0,0" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
-                <!-- Número de cuenta -->
-                <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Número de cuenta" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,0,0,6" />
-                    <TextBox Text="{Binding AccountNumber, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{DynamicResource FormTextBox}"
-                             Tag="Ej: 12345678" />
-                    <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource AncestorType=TextBox}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ErrorContent}" FontSize="11"
-                                           Foreground="{DynamicResource AccentRedBrush}" Margin="2,3,0,0" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
-                <!-- Tipo de cuenta -->
-                <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Tipo de cuenta" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,0,0,6" />
-                    <ComboBox ItemsSource="{Binding AccountTypes}"
-                              SelectedItem="{Binding SelectedAccountType}"
-                              DisplayMemberPath="Display"
-                              Height="40"
-                              Background="{DynamicResource SurfaceElevatedBrush}"
-                              Foreground="{DynamicResource TextPrimaryBrush}"
-                              BorderBrush="{DynamicResource BorderBrush}"
-                              BorderThickness="1"
-                              FontSize="13">
-                        <ComboBox.ItemContainerStyle>
-                            <Style TargetType="ComboBoxItem">
-                                <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
-                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-                                <Setter Property="Padding"    Value="12,8" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource SurfaceElevatedBrush}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.ItemContainerStyle>
-                    </ComboBox>
-                    <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource AncestorType=ComboBox}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ErrorContent}" FontSize="11"
-                                           Foreground="{DynamicResource AccentRedBrush}" Margin="2,3,0,0" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
-                <!-- Fecha de inicio -->
-                <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Fecha de inicio de operación" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,0,0,6" />
-                    <DatePicker SelectedDate="{Binding StartDate}"
-                                Height="40"
-                                Background="{DynamicResource SurfaceElevatedBrush}"
-                                Foreground="{DynamicResource TextPrimaryBrush}"
-                                BorderBrush="{DynamicResource BorderBrush}"
-                                BorderThickness="1"
-                                FontSize="13" />
-                </StackPanel>
-
-            </StackPanel>
-
-            <!-- ════════════════════════════════════
-                 COLUMNA DERECHA — Datos financieros
-                 ════════════════════════════════════ -->
-            <StackPanel Grid.Column="2">
-
-                <!-- Encabezado -->
-                <StackPanel Margin="0,0,0,28">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                        <Border Width="3" Height="22" CornerRadius="1.5"
-                                Background="{DynamicResource PrimaryBrush}"
-                                Margin="0,0,10,0" VerticalAlignment="Center" />
-                        <TextBlock Text="Datos financieros"
+                        <TextBlock Text="Cuentas de Trading"
                                    FontSize="20" FontWeight="Bold"
                                    Foreground="{DynamicResource TextPrimaryBrush}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
-                    <TextBlock Text="Capital y condiciones de la cuenta"
+                    <TextBlock Text="Gestiona las cuentas de tu broker"
                                FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
                                Margin="13,0,0,0" />
                 </StackPanel>
 
-                <!-- Capital inicial -->
-                <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Capital inicial" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,0,0,6" />
-                    <TextBox Text="{Binding InitialCapitalText, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{DynamicResource FormTextBox}"
-                             Tag="Ej: 10000.00" />
-                    <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource AncestorType=TextBox}}">
+                <Button Grid.Column="1" VerticalAlignment="Center"
+                        Style="{DynamicResource PrimaryButton}"
+                        Command="{Binding NewAccountCommand}"
+                        Height="36" Padding="16,0" FontSize="13">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="+" FontSize="16" FontWeight="Bold"
+                                   Margin="0,0,6,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Nueva cuenta" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Mensajes globales -->
+            <Border Background="#1A00E676" BorderBrush="#00E676" BorderThickness="1"
+                    CornerRadius="6" Padding="14,10" Margin="0,0,0,12"
+                    Visibility="{Binding GeneralSuccess, Converter={StaticResource StringToVisibility}}">
+                <TextBlock Text="{Binding GeneralSuccess}" FontSize="12"
+                           Foreground="#00E676" TextWrapping="Wrap" />
+            </Border>
+            <Border Background="#1AFF4444" BorderBrush="{DynamicResource AccentRedBrush}" BorderThickness="1"
+                    CornerRadius="6" Padding="14,10" Margin="0,0,0,12"
+                    Visibility="{Binding GeneralError, Converter={StaticResource StringToVisibility}}">
+                <TextBlock Text="{Binding GeneralError}" FontSize="12"
+                           Foreground="{DynamicResource AccentRedBrush}" TextWrapping="Wrap" />
+            </Border>
+
+            <!-- ══════════════════════════════════
+                 TABLA DE CUENTAS
+                 ══════════════════════════════════ -->
+            <Border Style="{DynamicResource Card}" Margin="0,0,0,24" Padding="0">
+                <StackPanel>
+                    <!-- Cabecera de tabla -->
+                    <Border Background="{DynamicResource SurfaceElevatedBrush}"
+                            CornerRadius="6,6,0,0" Padding="16,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="130" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="BROKER"         Style="{StaticResource DataGridCellText}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
+                            <TextBlock Grid.Column="1" Text="N. DE CUENTA"   Style="{StaticResource DataGridCellText}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
+                            <TextBlock Grid.Column="2" Text="TIPO"           Style="{StaticResource DataGridCellText}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
+                            <TextBlock Grid.Column="3" Text="CAPITAL"        Style="{StaticResource DataGridCellText}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
+                            <TextBlock Grid.Column="4" Text="DIVISA"         Style="{StaticResource DataGridCellText}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
+                            <TextBlock Grid.Column="5" Text="APALANCAM."     Style="{StaticResource DataGridCellText}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
+                            <TextBlock Grid.Column="6" Text="INICIO"         Style="{StaticResource DataGridCellText}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
+                            <TextBlock Grid.Column="7" Text=""               Style="{StaticResource DataGridCellText}" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Filas de cuentas -->
+                    <ItemsControl ItemsSource="{Binding Accounts}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ErrorContent}" FontSize="11"
-                                           Foreground="{DynamicResource AccentRedBrush}" Margin="2,3,0,0" />
+                                <Border BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="0,1,0,0"
+                                        Padding="16,12">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{DynamicResource SurfaceElevatedBrush}" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150" />
+                                            <ColumnDefinition Width="130" />
+                                            <ColumnDefinition Width="100" />
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="70" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="80" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Text="{Binding Broker}"
+                                                   Style="{StaticResource DataGridCellText}"
+                                                   FontWeight="SemiBold" />
+                                        <TextBlock Grid.Column="1" Text="{Binding AccountNumber}"
+                                                   Style="{StaticResource DataGridCellText}" />
+                                        <Border Grid.Column="2" CornerRadius="4" Padding="6,2"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#1500D4FF" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding AccountType}" Value="Real">
+                                                            <Setter Property="Background" Value="#1500E676" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding AccountType}" Value="Prop">
+                                                            <Setter Property="Background" Value="#15FF9800" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontSize="11" FontWeight="SemiBold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text"       Value="Demo" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource CyanGlowBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AccountType}" Value="Real">
+                                                                <Setter Property="Text"       Value="Real" />
+                                                                <Setter Property="Foreground" Value="#00E676" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding AccountType}" Value="Prop">
+                                                                <Setter Property="Text"       Value="Prop" />
+                                                                <Setter Property="Foreground" Value="#FF9800" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                        <TextBlock Grid.Column="3"
+                                                   Text="{Binding InitialCapital, StringFormat={}{0:N2}}"
+                                                   Style="{StaticResource DataGridCellText}" />
+                                        <TextBlock Grid.Column="4" Text="{Binding BaseCurrency}"
+                                                   Style="{StaticResource DataGridCellText}" />
+                                        <TextBlock Grid.Column="5" Text="{Binding Leverage}"
+                                                   Style="{StaticResource DataGridCellText}" />
+                                        <TextBlock Grid.Column="6"
+                                                   Text="{Binding StartDate, StringFormat={}{0:dd/MM/yyyy}}"
+                                                   Style="{StaticResource DataGridCellText}" />
+                                        <Button Grid.Column="7"
+                                                Content="Editar"
+                                                Style="{StaticResource TableEditButton}"
+                                                Command="{Binding DataContext.EditAccountCommand,
+                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" />
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </StackPanel>
 
-                <!-- Divisa base -->
-                <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Divisa base" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,0,0,6" />
-                    <TextBox Text="{Binding BaseCurrency, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{DynamicResource FormTextBox}"
-                             Tag="Ej: USD, EUR, GBP" />
-                    <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource AncestorType=TextBox}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ErrorContent}" FontSize="11"
-                                           Foreground="{DynamicResource AccentRedBrush}" Margin="2,3,0,0" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <!-- Estado vacío -->
+                    <Border Padding="24,32"
+                            Visibility="{Binding HasNoAccounts, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="📊" FontSize="32" HorizontalAlignment="Center"
+                                       Margin="0,0,0,10" />
+                            <TextBlock Text="No hay cuentas de trading registradas"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Text="Haz clic en «Nueva cuenta» para registrar la primera"
+                                       FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
+            </Border>
 
-                <!-- Apalancamiento -->
-                <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Apalancamiento" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,0,0,6" />
-                    <TextBox Text="{Binding Leverage, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{DynamicResource FormTextBox}"
-                             Tag="Ej: 1:100" />
-                    <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource AncestorType=TextBox}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ErrorContent}" FontSize="11"
-                                           Foreground="{DynamicResource AccentRedBrush}" Margin="2,3,0,0" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
+            <!-- ══════════════════════════════════
+                 FORMULARIO (nueva / editar cuenta)
+                 ══════════════════════════════════ -->
+            <Border Style="{DynamicResource Card}"
+                    Visibility="{Binding IsFormVisible, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
 
-                <!-- Resumen card (modo edición) -->
-                <Border Style="{DynamicResource AccentCard}" Margin="0,8,0,20"
-                        Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibility}}">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="📊" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" />
-                            <TextBlock Text="Cuenta activa"
-                                       FontSize="14" FontWeight="Bold"
-                                       Foreground="{DynamicResource CyanGlowBrush}"
+                    <!-- Encabezado del formulario -->
+                    <Grid Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="3" Height="20" CornerRadius="1.5"
+                                    Background="{DynamicResource PrimaryBrush}"
+                                    Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding FormTitle}"
+                                       FontSize="16" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
-                        <TextBlock FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}">
-                            <Run Text="{Binding Broker, FallbackValue=—}" />
-                            <Run Text=" · " Foreground="{DynamicResource TextMutedBrush}" />
-                            <Run Text="{Binding AccountNumber, FallbackValue=—}" />
-                        </TextBlock>
-                        <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,4,0,0">
-                            <Run Text="Capital: " />
-                            <Run Text="{Binding InitialCapitalText, FallbackValue=0}" FontWeight="SemiBold"
-                                 Foreground="{DynamicResource TextPrimaryBrush}" />
-                            <Run Text=" " />
-                            <Run Text="{Binding BaseCurrency, FallbackValue=—}" />
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
+                        <Button Grid.Column="1" Content="✕ Cancelar"
+                                Style="{DynamicResource GhostButton}"
+                                Command="{Binding CancelCommand}"
+                                FontSize="12" Padding="10,6" />
+                    </Grid>
 
-                <!-- Mensajes de estado -->
-                <Border Background="#1A00E676" BorderBrush="#00E676" BorderThickness="1"
-                        CornerRadius="6" Padding="14,10" Margin="0,0,0,12"
-                        Visibility="{Binding GeneralSuccess, Converter={StaticResource StringToVisibility}}">
-                    <TextBlock Text="{Binding GeneralSuccess}" FontSize="12"
-                               Foreground="#00E676" TextWrapping="Wrap" />
-                </Border>
-                <Border Background="#1AFF4444" BorderBrush="{DynamicResource AccentRedBrush}" BorderThickness="1"
-                        CornerRadius="6" Padding="14,10" Margin="0,0,0,16"
-                        Visibility="{Binding GeneralError, Converter={StaticResource StringToVisibility}}">
-                    <TextBlock Text="{Binding GeneralError}" FontSize="12"
-                               Foreground="{DynamicResource AccentRedBrush}" TextWrapping="Wrap" />
-                </Border>
+                    <!-- Campos en dos columnas -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MaxWidth="520" />
+                            <ColumnDefinition Width="28" />
+                            <ColumnDefinition Width="*" MaxWidth="480" />
+                        </Grid.ColumnDefinitions>
 
-                <!-- Botón guardar -->
-                <Button Command="{Binding SaveCommand}"
-                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
-                        Height="44" FontSize="14" FontWeight="SemiBold">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
-                            <Setter Property="Content" Value="Guardar cuenta" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
-                                    <Setter Property="Content" Value="Guardando…" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                        <!-- Columna izquierda -->
+                        <StackPanel Grid.Column="0">
 
-            </StackPanel>
-        </Grid>
+                            <!-- Broker -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Broker *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                                <TextBox Text="{Binding Broker, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{DynamicResource FormTextBox}"
+                                         Tag="Ej: Interactive Brokers, Pepperstone…" />
+                                <ItemsControl ItemsSource="{Binding (Validation.Errors),
+                                              RelativeSource={RelativeSource AncestorType=TextBox}}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ErrorContent}" FontSize="11"
+                                                       Foreground="{DynamicResource AccentRedBrush}"
+                                                       Margin="2,3,0,0" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <!-- Número de cuenta -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Número de cuenta *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                                <TextBox Text="{Binding AccountNumber, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{DynamicResource FormTextBox}"
+                                         Tag="Ej: 12345678" />
+                                <ItemsControl ItemsSource="{Binding (Validation.Errors),
+                                              RelativeSource={RelativeSource AncestorType=TextBox}}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ErrorContent}" FontSize="11"
+                                                       Foreground="{DynamicResource AccentRedBrush}"
+                                                       Margin="2,3,0,0" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <!-- Tipo de cuenta -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Tipo de cuenta *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                                <ComboBox ItemsSource="{Binding AccountTypes}"
+                                          SelectedItem="{Binding SelectedAccountType}"
+                                          DisplayMemberPath="Display"
+                                          Style="{StaticResource FormComboBox}"
+                                          ItemContainerStyle="{StaticResource ComboBoxItemDark}" />
+                            </StackPanel>
+
+                            <!-- Fecha de inicio -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Fecha de inicio de operación *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                                <DatePicker SelectedDate="{Binding StartDate}"
+                                            Style="{StaticResource FormDatePicker}" />
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <!-- Columna derecha -->
+                        <StackPanel Grid.Column="2">
+
+                            <!-- Capital inicial -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Capital inicial *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                                <TextBox Text="{Binding InitialCapitalText, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{DynamicResource FormTextBox}"
+                                         Tag="Ej: 10000.00" />
+                                <ItemsControl ItemsSource="{Binding (Validation.Errors),
+                                              RelativeSource={RelativeSource AncestorType=TextBox}}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ErrorContent}" FontSize="11"
+                                                       Foreground="{DynamicResource AccentRedBrush}"
+                                                       Margin="2,3,0,0" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <!-- Divisa base -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Divisa base *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                                <ComboBox ItemsSource="{Binding Currencies}"
+                                          SelectedItem="{Binding BaseCurrency}"
+                                          Style="{StaticResource FormComboBox}"
+                                          ItemContainerStyle="{StaticResource ComboBoxItemDark}" />
+                            </StackPanel>
+
+                            <!-- Apalancamiento -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Apalancamiento *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                                <ComboBox ItemsSource="{Binding LeverageOptions}"
+                                          Text="{Binding Leverage, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEditable="True"
+                                          Style="{StaticResource FormComboBox}"
+                                          ItemContainerStyle="{StaticResource ComboBoxItemDark}" />
+                                <ItemsControl ItemsSource="{Binding (Validation.Errors),
+                                              RelativeSource={RelativeSource AncestorType=ComboBox}}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ErrorContent}" FontSize="11"
+                                                       Foreground="{DynamicResource AccentRedBrush}"
+                                                       Margin="2,3,0,0" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <!-- Botón guardar -->
+                            <Button Command="{Binding SaveCommand}"
+                                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
+                                    Height="44" Margin="0,8,0,0">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+                                        <Setter Property="Content" Value="Guardar cuenta" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                                <Setter Property="Content" Value="Guardando…" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
     </ScrollViewer>
 </UserControl>

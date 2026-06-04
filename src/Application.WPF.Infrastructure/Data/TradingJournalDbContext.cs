@@ -28,7 +28,7 @@ public class TradingJournalDbContext : DbContext
         modelBuilder.Entity<TradingAccount>(e =>
         {
             e.HasKey(a => a.Id);
-            e.HasIndex(a => a.UserId).IsUnique();
+            e.HasIndex(a => a.UserId);
             e.Property(a => a.Broker).IsRequired().HasMaxLength(100);
             e.Property(a => a.AccountNumber).IsRequired().HasMaxLength(50);
             e.Property(a => a.AccountType).IsRequired()

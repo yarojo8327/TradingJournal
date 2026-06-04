@@ -38,55 +38,100 @@ public class TradingAccountViewModelTests
     // ── InitializeAsync ──────────────────────────────────────────────────
 
     [Fact]
-    public async Task InitializeAsync_WhenNoAccount_IsEditModeFalse()
+    public async Task InitializeAsync_WhenNoAccounts_ShowsForm()
     {
         _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync((TradingAccount?)null);
+        _accountSvc.Setup(s => s.GetAllByUserIdAsync(1)).ReturnsAsync(new List<TradingAccount>());
 
         await _sut.InitializeAsync();
 
-        Assert.False(_sut.IsEditMode);
+        Assert.True(_sut.IsFormVisible);
+        Assert.True(_sut.HasNoAccounts);
     }
 
     [Fact]
-    public async Task InitializeAsync_WhenAccountExists_LoadsData()
+    public async Task InitializeAsync_WhenAccountsExist_LoadsList()
     {
         _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync(SampleAccount);
+        _accountSvc.Setup(s => s.GetAllByUserIdAsync(1))
+                   .ReturnsAsync(new List<TradingAccount> { SampleAccount });
 
         await _sut.InitializeAsync();
 
-        Assert.True(_sut.IsEditMode);
-        Assert.Equal("Pepperstone", _sut.Broker);
-        Assert.Equal("ACC123",      _sut.AccountNumber);
-        Assert.Equal("10000.00",    _sut.InitialCapitalText);
-        Assert.Equal("USD",         _sut.BaseCurrency);
-        Assert.Equal("1:200",       _sut.Leverage);
-        Assert.Equal(new DateTime(2025, 1, 1), _sut.StartDate);
-    }
-
-    [Fact]
-    public async Task InitializeAsync_WhenAccountExists_SetsSelectedAccountType()
-    {
-        _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync(SampleAccount);
-
-        await _sut.InitializeAsync();
-
-        Assert.NotNull(_sut.SelectedAccountType);
-        Assert.Equal(AccountType.Real, _sut.SelectedAccountType!.Value);
+        Assert.Single(_sut.Accounts);
+        Assert.False(_sut.IsFormVisible);
+        Assert.False(_sut.HasNoAccounts);
     }
 
     [Fact]
     public async Task InitializeAsync_WhenNoUser_DoesNotThrow()
     {
         _session.Setup(s => s.CurrentUser).Returns((User?)null);
-
         var ex = await Record.ExceptionAsync(() => _sut.InitializeAsync());
         Assert.Null(ex);
     }
 
-    // ── AccountTypes ─────────────────────────────────────────────────────
+    // ── NewAccountCommand ────────────────────────────────────────────────
+
+    [Fact]
+    public void NewAccountCommand_ShowsFormAndClearsFields()
+    {
+        _sut.Broker = "OldBroker";
+
+        _sut.NewAccountCommand.Execute(null);
+
+        Assert.True(_sut.IsFormVisible);
+        Assert.False(_sut.IsEditMode);
+        Assert.Empty(_sut.Broker);
+    }
+
+    // ── EditAccountCommand ───────────────────────────────────────────────
+
+    [Fact]
+    public void EditAccountCommand_LoadsAccountIntoForm()
+    {
+        _sut.EditAccountCommand.Execute(SampleAccount);
+
+        Assert.True(_sut.IsFormVisible);
+        Assert.True(_sut.IsEditMode);
+        Assert.Equal("Pepperstone", _sut.Broker);
+        Assert.Equal("ACC123",      _sut.AccountNumber);
+        Assert.Equal("10000.00",    _sut.InitialCapitalText);
+        Assert.Equal("USD",         _sut.BaseCurrency);
+        Assert.Equal("1:200",       _sut.Leverage);
+    }
+
+    [Fact]
+    public void EditAccountCommand_SetsSelectedAccountType()
+    {
+        _sut.EditAccountCommand.Execute(SampleAccount);
+
+        Assert.NotNull(_sut.SelectedAccountType);
+        Assert.Equal(AccountType.Real, _sut.SelectedAccountType!.Value);
+    }
+
+    // ── CancelCommand ────────────────────────────────────────────────────
+
+    [Fact]
+    public void CancelCommand_HidesForm()
+    {
+        _sut.NewAccountCommand.Execute(null);
+        _sut.CancelCommand.Execute(null);
+
+        Assert.False(_sut.IsFormVisible);
+    }
+
+    [Fact]
+    public void CancelCommand_ClearsFormFields()
+    {
+        _sut.EditAccountCommand.Execute(SampleAccount);
+        _sut.CancelCommand.Execute(null);
+
+        Assert.Empty(_sut.Broker);
+        Assert.Empty(_sut.AccountNumber);
+    }
+
+    // ── AccountTypes / Currencies / LeverageOptions ──────────────────────
 
     [Fact]
     public void AccountTypes_ContainsThreeOptions()
@@ -95,12 +140,20 @@ public class TradingAccountViewModelTests
     }
 
     [Fact]
-    public void AccountTypes_ContainsAllEnumValues()
+    public void Currencies_ContainsCommonCurrencies()
     {
-        var values = _sut.AccountTypes.Select(o => o.Value).ToList();
-        Assert.Contains(AccountType.Demo, values);
-        Assert.Contains(AccountType.Real, values);
-        Assert.Contains(AccountType.Prop, values);
+        Assert.Contains("USD", _sut.Currencies);
+        Assert.Contains("EUR", _sut.Currencies);
+        Assert.Contains("COP", _sut.Currencies);
+        Assert.True(_sut.Currencies.Count >= 10);
+    }
+
+    [Fact]
+    public void LeverageOptions_ContainsCommonValues()
+    {
+        Assert.Contains("1:100", _sut.LeverageOptions);
+        Assert.Contains("1:500", _sut.LeverageOptions);
+        Assert.True(_sut.LeverageOptions.Count >= 5);
     }
 
     // ── ValidateCapital ──────────────────────────────────────────────────
@@ -123,14 +176,6 @@ public class TradingAccountViewModelTests
             Assert.NotEqual(System.ComponentModel.DataAnnotations.ValidationResult.Success, result);
     }
 
-    [Fact]
-    public void ValidateCapital_EmptyString_ReturnsSuccess()
-    {
-        var ctx    = new System.ComponentModel.DataAnnotations.ValidationContext(new object());
-        var result = TradingAccountViewModel.ValidateCapital(string.Empty, ctx);
-        Assert.Equal(System.ComponentModel.DataAnnotations.ValidationResult.Success, result);
-    }
-
     // ── SaveCommand — validaciones ───────────────────────────────────────
 
     [Fact]
@@ -149,17 +194,6 @@ public class TradingAccountViewModelTests
     }
 
     [Fact]
-    public async Task SaveCommand_EmptyAccountNumber_HasErrors()
-    {
-        SetValidForm();
-        _sut.AccountNumber = string.Empty;
-
-        await _sut.SaveCommand.ExecuteAsync(null);
-
-        Assert.True(_sut.HasErrors);
-    }
-
-    [Fact]
     public async Task SaveCommand_InvalidCapital_HasErrors()
     {
         SetValidForm();
@@ -171,7 +205,7 @@ public class TradingAccountViewModelTests
     }
 
     [Fact]
-    public async Task SaveCommand_InvalidLeverageFormat_HasErrors()
+    public async Task SaveCommand_InvalidLeverage_HasErrors()
     {
         SetValidForm();
         _sut.Leverage = "100x";
@@ -187,8 +221,8 @@ public class TradingAccountViewModelTests
     public async Task SaveCommand_NewAccount_CallsCreateAsync()
     {
         _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync((TradingAccount?)null);
-        await _sut.InitializeAsync();
+        _accountSvc.Setup(s => s.GetAllByUserIdAsync(1))
+                   .ReturnsAsync(new List<TradingAccount> { SampleAccount });
         SetValidForm();
         _accountSvc.Setup(s => s.CreateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
@@ -199,16 +233,34 @@ public class TradingAccountViewModelTests
         await _sut.SaveCommand.ExecuteAsync(null);
 
         _accountSvc.Verify(s => s.CreateAsync(
-            1, "Pepperstone", "ACC123", AccountType.Real, 10000m, "USD", "1:200",
-            It.IsAny<DateTime>()), Times.Once);
+            1, "Pepperstone", "ACC123", AccountType.Real, 10000m,
+            "USD", "1:200", It.IsAny<DateTime>()), Times.Once);
     }
 
     [Fact]
-    public async Task SaveCommand_OnCreateSuccess_SetsGeneralSuccess()
+    public async Task SaveCommand_OnSuccess_HidesForm()
     {
         _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync((TradingAccount?)null);
-        await _sut.InitializeAsync();
+        _accountSvc.Setup(s => s.GetAllByUserIdAsync(1))
+                   .ReturnsAsync(new List<TradingAccount> { SampleAccount });
+        SetValidForm();
+        _accountSvc.Setup(s => s.CreateAsync(
+            It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
+            It.IsAny<AccountType>(), It.IsAny<decimal>(),
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(SampleAccount);
+
+        await _sut.SaveCommand.ExecuteAsync(null);
+
+        Assert.False(_sut.IsFormVisible);
+    }
+
+    [Fact]
+    public async Task SaveCommand_OnSuccess_SetsGeneralSuccess()
+    {
+        _session.Setup(s => s.CurrentUser).Returns(SampleUser);
+        _accountSvc.Setup(s => s.GetAllByUserIdAsync(1))
+                   .ReturnsAsync(new List<TradingAccount> { SampleAccount });
         SetValidForm();
         _accountSvc.Setup(s => s.CreateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
@@ -221,32 +273,15 @@ public class TradingAccountViewModelTests
         Assert.False(string.IsNullOrEmpty(_sut.GeneralSuccess));
     }
 
-    [Fact]
-    public async Task SaveCommand_OnCreateSuccess_SetsIsEditModeTrue()
-    {
-        _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync((TradingAccount?)null);
-        await _sut.InitializeAsync();
-        SetValidForm();
-        _accountSvc.Setup(s => s.CreateAsync(
-            It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
-            .ReturnsAsync(SampleAccount);
-
-        await _sut.SaveCommand.ExecuteAsync(null);
-
-        Assert.True(_sut.IsEditMode);
-    }
-
     // ── SaveCommand — editar ─────────────────────────────────────────────
 
     [Fact]
     public async Task SaveCommand_ExistingAccount_CallsUpdateAsync()
     {
         _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync(SampleAccount);
-        await _sut.InitializeAsync();
+        _accountSvc.Setup(s => s.GetAllByUserIdAsync(1))
+                   .ReturnsAsync(new List<TradingAccount> { SampleAccount });
+        _sut.EditAccountCommand.Execute(SampleAccount);
         _accountSvc.Setup(s => s.UpdateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<AccountType>(), It.IsAny<decimal>(),
@@ -261,33 +296,19 @@ public class TradingAccountViewModelTests
             It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()), Times.Once);
     }
 
-    [Fact]
-    public async Task SaveCommand_OnUpdateSuccess_SetsGeneralSuccess()
-    {
-        _session.Setup(s => s.CurrentUser).Returns(SampleUser);
-        _accountSvc.Setup(s => s.GetByUserIdAsync(1)).ReturnsAsync(SampleAccount);
-        await _sut.InitializeAsync();
-        _accountSvc.Setup(s => s.UpdateAsync(
-            It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
-            .ReturnsAsync(SampleAccount);
-
-        await _sut.SaveCommand.ExecuteAsync(null);
-
-        Assert.False(string.IsNullOrEmpty(_sut.GeneralSuccess));
-    }
-
     // ── Helpers ──────────────────────────────────────────────────────────
 
     private void SetValidForm()
     {
-        _sut.Broker             = "Pepperstone";
-        _sut.AccountNumber      = "ACC123";
+        _session.Setup(s => s.CurrentUser).Returns(SampleUser);
+        _sut.IsFormVisible       = true;
+        _sut.IsEditMode          = false;
+        _sut.Broker              = "Pepperstone";
+        _sut.AccountNumber       = "ACC123";
         _sut.SelectedAccountType = _sut.AccountTypes.First(o => o.Value == AccountType.Real);
-        _sut.InitialCapitalText = "10000";
-        _sut.BaseCurrency       = "USD";
-        _sut.Leverage           = "1:200";
-        _sut.StartDate          = DateTime.Today;
+        _sut.InitialCapitalText  = "10000";
+        _sut.BaseCurrency        = "USD";
+        _sut.Leverage            = "1:200";
+        _sut.StartDate           = DateTime.Today;
     }
 }

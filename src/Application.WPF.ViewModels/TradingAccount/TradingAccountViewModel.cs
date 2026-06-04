@@ -1,20 +1,33 @@
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Models.Enums;
+using TradingAccountEntity = Application.WPF.Models.Entities.TradingAccount;
 using Application.WPF.Services.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.WPF.ViewModels.TradingAccount;
 
 public partial class TradingAccountViewModel : BaseViewModel
 {
-    private readonly ITradingAccountService _accountService;
-    private readonly ISessionService        _sessionService;
+    private readonly ITradingAccountService          _accountService;
+    private readonly ISessionService                 _sessionService;
     private readonly ILogger<TradingAccountViewModel> _logger;
 
     private int _accountId;
+
+    // ── Lista de cuentas ──────────────────────────────────────────────────
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasNoAccounts))]
+    private ObservableCollection<TradingAccountEntity> _accounts = new();
+
+    [ObservableProperty] private bool _isFormVisible;
+    [ObservableProperty] private string _formTitle = "Nueva cuenta de trading";
+
+    public bool HasNoAccounts => !Accounts.Any();
 
     // ── Campos del formulario ─────────────────────────────────────────────
 
@@ -44,18 +57,15 @@ public partial class TradingAccountViewModel : BaseViewModel
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required(ErrorMessage = "La divisa base es requerida.")]
-    [MaxLength(10, ErrorMessage = "No puede superar 10 caracteres.")]
-    [RegularExpression(@"^[A-Za-z]{2,10}$", ErrorMessage = "Ingresa un código de divisa válido (ej: USD).")]
     private string _baseCurrency = string.Empty;
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required(ErrorMessage = "El apalancamiento es requerido.")]
-    [RegularExpression(@"^1:[0-9]{1,4}$", ErrorMessage = "Formato requerido: 1:100")]
+    [RegularExpression(@"^1:[0-9]{1,4}$", ErrorMessage = "Formato requerido: 1:100  (ej: 1:50, 1:200, 1:500)")]
     private string _leverage = string.Empty;
 
-    [ObservableProperty]
-    private DateTime _startDate = DateTime.Today;
+    [ObservableProperty] private DateTime _startDate = DateTime.Today;
 
     // ── Estado ────────────────────────────────────────────────────────────
 
@@ -63,7 +73,7 @@ public partial class TradingAccountViewModel : BaseViewModel
     [ObservableProperty] private string _generalError   = string.Empty;
     [ObservableProperty] private string _generalSuccess = string.Empty;
 
-    // ── Opciones de tipo de cuenta ────────────────────────────────────────
+    // ── Catálogos ─────────────────────────────────────────────────────────
 
     public IReadOnlyList<AccountTypeOption> AccountTypes { get; } = new List<AccountTypeOption>
     {
@@ -72,15 +82,28 @@ public partial class TradingAccountViewModel : BaseViewModel
         new(AccountType.Prop, "Prop Trading")
     };
 
+    public IReadOnlyList<string> Currencies { get; } = new List<string>
+    {
+        "USD", "EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD",
+        "COP", "MXN", "BRL", "CLP", "ARS",
+        "HKD", "SGD", "NOK", "SEK", "DKK", "ZAR", "TRY", "CNH"
+    };
+
+    public IReadOnlyList<string> LeverageOptions { get; } = new List<string>
+    {
+        "1:1", "1:2", "1:5", "1:10", "1:20", "1:30",
+        "1:50", "1:100", "1:200", "1:300", "1:500"
+    };
+
     public TradingAccountViewModel(
-        ITradingAccountService accountService,
-        ISessionService        sessionService,
+        ITradingAccountService           accountService,
+        ISessionService                  sessionService,
         ILogger<TradingAccountViewModel> logger)
     {
         _accountService = accountService;
         _sessionService = sessionService;
         _logger         = logger;
-        Title           = "Cuenta de Trading";
+        Title           = "Cuentas de Trading";
     }
 
     public override async Task InitializeAsync()
@@ -88,22 +111,60 @@ public partial class TradingAccountViewModel : BaseViewModel
         var user = _sessionService.CurrentUser;
         if (user is null) return;
 
-        var account = await _accountService.GetByUserIdAsync(user.Id);
-        if (account is null)
-        {
-            IsEditMode = false;
-            return;
-        }
+        await LoadAccountsAsync(user.Id);
 
-        IsEditMode          = true;
+        if (!Accounts.Any())
+        {
+            IsFormVisible = true;
+            FormTitle     = "Registrar cuenta de trading";
+        }
+    }
+
+    private async Task LoadAccountsAsync(int userId)
+    {
+        var list = await _accountService.GetAllByUserIdAsync(userId);
+        Accounts = new ObservableCollection<TradingAccountEntity>(list);
+    }
+
+    // ── Comandos de lista ─────────────────────────────────────────────────
+
+    [RelayCommand]
+    private void NewAccount()
+    {
+        ClearForm();
+        IsEditMode    = false;
+        IsFormVisible = true;
+        FormTitle     = "Nueva cuenta de trading";
+        GeneralError  = string.Empty;
+        GeneralSuccess = string.Empty;
+    }
+
+    [RelayCommand]
+    private void EditAccount(TradingAccountEntity account)
+    {
         _accountId          = account.Id;
         Broker              = account.Broker;
         AccountNumber       = account.AccountNumber;
         SelectedAccountType = AccountTypes.FirstOrDefault(o => o.Value == account.AccountType);
-        InitialCapitalText  = account.InitialCapital.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+        InitialCapitalText  = account.InitialCapital.ToString("F2",
+                                  System.Globalization.CultureInfo.InvariantCulture);
         BaseCurrency        = account.BaseCurrency;
         Leverage            = account.Leverage;
         StartDate           = account.StartDate;
+        IsEditMode          = true;
+        IsFormVisible       = true;
+        FormTitle           = "Editar cuenta de trading";
+        GeneralError        = string.Empty;
+        GeneralSuccess      = string.Empty;
+    }
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        ClearForm();
+        IsFormVisible  = false;
+        GeneralError   = string.Empty;
+        GeneralSuccess = string.Empty;
     }
 
     // ── Guardar ───────────────────────────────────────────────────────────
@@ -138,19 +199,20 @@ public partial class TradingAccountViewModel : BaseViewModel
                     _accountId, Broker, AccountNumber,
                     SelectedAccountType!.Value, capital,
                     BaseCurrency, Leverage, StartDate);
-                GeneralSuccess = "Cuenta de trading actualizada correctamente.";
+                GeneralSuccess = "Cuenta actualizada correctamente.";
             }
             else
             {
-                var account = await _accountService.CreateAsync(
+                await _accountService.CreateAsync(
                     user.Id, Broker, AccountNumber,
                     SelectedAccountType!.Value, capital,
                     BaseCurrency, Leverage, StartDate);
-                _accountId = account.Id;
-                IsEditMode = true;
-                GeneralSuccess = "Cuenta de trading registrada correctamente.";
+                GeneralSuccess = "Cuenta registrada correctamente.";
             }
 
+            await LoadAccountsAsync(user.Id);
+            IsFormVisible = false;
+            ClearForm();
             _logger.LogInformation("Trading account saved for user {UserId}", user.Id);
         }
         catch (Exception ex)
@@ -185,5 +247,18 @@ public partial class TradingAccountViewModel : BaseViewModel
         ValidateProperty(InitialCapitalText, nameof(InitialCapitalText));
         ValidateProperty(BaseCurrency,       nameof(BaseCurrency));
         ValidateProperty(Leverage,           nameof(Leverage));
+    }
+
+    private void ClearForm()
+    {
+        _accountId          = 0;
+        Broker              = string.Empty;
+        AccountNumber       = string.Empty;
+        SelectedAccountType = null;
+        InitialCapitalText  = string.Empty;
+        BaseCurrency        = string.Empty;
+        Leverage            = string.Empty;
+        StartDate           = DateTime.Today;
+        ClearErrors();
     }
 }

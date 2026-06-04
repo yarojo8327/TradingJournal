@@ -5,8 +5,9 @@ namespace Application.WPF.Services.Interfaces;
 
 public interface ITradingAccountService
 {
-    Task<bool>            ExistsForUserAsync(int userId);
-    Task<TradingAccount?> GetByUserIdAsync(int userId);
+    Task<bool>                          ExistsForUserAsync(int userId);
+    Task<TradingAccount?>               GetByUserIdAsync(int userId);
+    Task<IReadOnlyList<TradingAccount>> GetAllByUserIdAsync(int userId);
     Task<TradingAccount>  CreateAsync(int userId, string broker, string accountNumber,
                                       AccountType accountType, decimal initialCapital,
                                       string baseCurrency, string leverage, DateTime startDate);

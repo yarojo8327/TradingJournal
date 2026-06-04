@@ -24,6 +24,12 @@ public class TradingAccountService : ITradingAccountService
     public async Task<TradingAccount?> GetByUserIdAsync(int userId) =>
         await _db.TradingAccounts.FirstOrDefaultAsync(a => a.UserId == userId);
 
+    public async Task<IReadOnlyList<TradingAccount>> GetAllByUserIdAsync(int userId) =>
+        await _db.TradingAccounts
+                 .Where(a => a.UserId == userId)
+                 .OrderByDescending(a => a.CreatedAt)
+                 .ToListAsync();
+
     public async Task<TradingAccount> CreateAsync(
         int userId, string broker, string accountNumber,
         AccountType accountType, decimal initialCapital,

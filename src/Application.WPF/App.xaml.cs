@@ -94,9 +94,11 @@ public partial class App : System.Windows.Application
                     FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE
             );");
 
-        await db.Database.ExecuteSqlRawAsync(@"
-            CREATE UNIQUE INDEX IF NOT EXISTS ""IX_TradingAccounts_UserId""
-            ON ""TradingAccounts"" (""UserId"");");
+        // Ensure index is non-unique (multiple accounts per user allowed)
+        await db.Database.ExecuteSqlRawAsync(
+            @"DROP INDEX IF EXISTS ""IX_TradingAccounts_UserId"";");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_TradingAccounts_UserId"" ON ""TradingAccounts"" (""UserId"");");
     }
 
     private static IHost BuildHost()
