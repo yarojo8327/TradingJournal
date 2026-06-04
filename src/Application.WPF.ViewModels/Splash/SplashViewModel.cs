@@ -1,6 +1,7 @@
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Services.Interfaces;
-using Application.WPF.ViewModels;
+using Application.WPF.ViewModels.Login;
+using Application.WPF.ViewModels.Register;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 
@@ -18,13 +19,17 @@ public partial class SplashViewModel : BaseViewModel
     [ObservableProperty]
     private double _loadingProgress;
 
+    private readonly IUserService _userService;
+
     public SplashViewModel(
         INavigationService navigationService,
         ILocalizationService localization,
+        IUserService userService,
         ILogger<SplashViewModel> logger)
     {
         _navigationService = navigationService;
         _localization      = localization;
+        _userService       = userService;
         _logger            = logger;
         Title              = "Loading";
         _loadingStatus     = localization["Splash_Loading"];
@@ -39,8 +44,12 @@ public partial class SplashViewModel : BaseViewModel
         await UpdateProgress(_localization["Splash_InitWorkspace"],80);
         await UpdateProgress(_localization["Splash_Ready"],        100);
 
-        _logger.LogInformation("Startup complete, navigating to Dashboard");
-        _navigationService.NavigateTo<DashboardViewModel>();
+        _logger.LogInformation("Startup complete, checking user registration");
+
+        if (await _userService.AnyUserExistsAsync())
+            _navigationService.NavigateTo<LoginViewModel>();
+        else
+            _navigationService.NavigateTo<RegisterViewModel>();
     }
 
     private async Task UpdateProgress(string status, double progress)

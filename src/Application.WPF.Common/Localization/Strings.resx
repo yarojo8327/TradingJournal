@@ -94,4 +94,20 @@
   <!-- Languages -->
   <data name="Lang_EnUS" xml:space="preserve"><value>English (US)</value></data>
   <data name="Lang_EsCO" xml:space="preserve"><value>Español (Colombia)</value></data>
+
+  <!-- Register -->
+  <data name="Register_Title" xml:space="preserve"><value>User Registration</value></data>
+  <data name="Register_Subtitle" xml:space="preserve"><value>Create your account to get started</value></data>
+  <data name="Register_FullName" xml:space="preserve"><value>Full name</value></data>
+  <data name="Register_Email" xml:space="preserve"><value>Email address</value></data>
+  <data name="Register_Username" xml:space="preserve"><value>Username</value></data>
+  <data name="Register_Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Register_ConfirmPassword" xml:space="preserve"><value>Confirm password</value></data>
+  <data name="Register_Submit" xml:space="preserve"><value>Create account</value></data>
+  <data name="Register_Success_Title" xml:space="preserve"><value>Registration successful</value></data>
+  <data name="Register_Success_Message" xml:space="preserve"><value>Your account has been created successfully. Welcome to TradingJournal.</value></data>
+  <data name="Register_Error_EmailTaken" xml:space="preserve"><value>Email address is already registered.</value></data>
+  <data name="Register_Error_UsernameTaken" xml:space="preserve"><value>Username is already taken.</value></data>
+  <data name="Register_Error_Unexpected" xml:space="preserve"><value>An unexpected error occurred. Please try again.</value></data>
+  <data name="Register_Loading" xml:space="preserve"><value>Registering user…</value></data>
 </root>

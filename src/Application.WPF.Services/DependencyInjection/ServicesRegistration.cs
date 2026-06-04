@@ -3,6 +3,8 @@ using Application.WPF.Services.Dialog;
 using Application.WPF.Services.Interfaces;
 using Application.WPF.Services.Localization;
 using Application.WPF.Services.Navigation;
+using Application.WPF.Services.Session;
+using Application.WPF.Services.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.WPF.Services.DependencyInjection;
@@ -17,7 +19,9 @@ public static class ServicesRegistration
         services.AddSingleton<ILocalizationService>(sp =>
             new LocalizationService(
                 sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<LocalizationService>>(),
-                "en-US"));
+                "es-CO"));
+        services.AddTransient<IUserService, UserService>();
+        services.AddSingleton<ISessionService, SessionService>();
         return services;
     }
 }

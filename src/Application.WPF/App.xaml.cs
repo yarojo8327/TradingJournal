@@ -1,3 +1,4 @@
+using Application.WPF.Infrastructure.Data;
 using Application.WPF.Infrastructure.DependencyInjection;
 using Application.WPF.Infrastructure.Logging;
 using Application.WPF.Models.Configuration;
@@ -32,19 +33,25 @@ public partial class App : System.Windows.Application
         _host = BuildHost();
         await _host.StartAsync();
 
+        // Initialize database schema
+        using (var db = _host.Services.GetRequiredService<TradingJournalDbContext>())
+            await db.Database.EnsureCreatedAsync();
+
         // Expose LocalizationService as "Loc" in Application.Resources for {loc:Tr} bindings
         var locService = _host.Services.GetRequiredService<ILocalizationService>();
         Resources["Loc"] = locService;
+
+        // Resolve MainWindow/MainViewModel BEFORE the splash runs so that MainViewModel
+        // subscribes to INavigationService.Navigated before InitializeAsync fires it.
+        var mainWindow  = _host.Services.GetRequiredService<MainWindow>();
+        var mainViewModel = _host.Services.GetRequiredService<ViewModels.Main.MainViewModel>();
+        await mainViewModel.InitializeAsync();
 
         var splashViewModel = _host.Services.GetRequiredService<SplashViewModel>();
         var splash = new SplashView(splashViewModel);
         splash.Show();
 
         await splashViewModel.InitializeAsync();
-
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        var mainViewModel = _host.Services.GetRequiredService<ViewModels.Main.MainViewModel>();
-        await mainViewModel.InitializeAsync();
 
         mainWindow.Show();
         splash.Close();
