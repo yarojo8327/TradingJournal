@@ -102,6 +102,14 @@
                     <Button Content="{loc:Tr Nav_Journal}"   Style="{DynamicResource GhostButton}" />
                     <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}" />
 
+                    <Button Content="Cuenta"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToTradingAccountCommand}" />
+
+                    <Button Content="Estrategias"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToStrategiesCommand}" />
+
                     <Button Content="{loc:Tr Nav_Settings}" Style="{DynamicResource GhostButton}" />
 
                 </StackPanel>

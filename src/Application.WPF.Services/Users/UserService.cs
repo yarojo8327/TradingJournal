@@ -20,6 +20,9 @@ public class UserService : IUserService
     public async Task<bool> AnyUserExistsAsync() =>
         await _db.Users.AnyAsync();
 
+    public async Task<User?> GetByIdAsync(int userId) =>
+        await _db.Users.FindAsync(userId);
+
     public async Task<bool> EmailExistsAsync(string email) =>
         await _db.Users.AnyAsync(u => u.Email == email.Trim().ToLower());
 

@@ -110,4 +110,21 @@
   <data name="Register_Error_UsernameTaken" xml:space="preserve"><value>El nombre de usuario ya está en uso.</value></data>
   <data name="Register_Error_Unexpected" xml:space="preserve"><value>Ocurrió un error inesperado. Intenta de nuevo.</value></data>
   <data name="Register_Loading" xml:space="preserve"><value>Registrando usuario…</value></data>
+
+  <!-- Cuenta de Trading -->
+  <data name="Account_Title"           xml:space="preserve"><value>Cuenta de Trading</value></data>
+  <data name="Account_Subtitle"        xml:space="preserve"><value>Información de tu cuenta en el broker</value></data>
+  <data name="Account_Broker"          xml:space="preserve"><value>Broker</value></data>
+  <data name="Account_AccountNumber"   xml:space="preserve"><value>Número de cuenta</value></data>
+  <data name="Account_AccountType"     xml:space="preserve"><value>Tipo de cuenta</value></data>
+  <data name="Account_InitialCapital"  xml:space="preserve"><value>Capital inicial</value></data>
+  <data name="Account_BaseCurrency"    xml:space="preserve"><value>Divisa base</value></data>
+  <data name="Account_Leverage"        xml:space="preserve"><value>Apalancamiento</value></data>
+  <data name="Account_StartDate"       xml:space="preserve"><value>Fecha de inicio</value></data>
+  <data name="Account_Save"            xml:space="preserve"><value>Guardar cuenta</value></data>
+  <data name="Account_SaveSuccess"     xml:space="preserve"><value>Cuenta de trading guardada correctamente.</value></data>
+  <data name="Account_SaveError"       xml:space="preserve"><value>Ocurrió un error al guardar la cuenta.</value></data>
+  <data name="Account_TypeDemo"        xml:space="preserve"><value>Demo</value></data>
+  <data name="Account_TypeReal"        xml:space="preserve"><value>Real / Live</value></data>
+  <data name="Account_TypeProp"        xml:space="preserve"><value>Prop Trading</value></data>
 </root>

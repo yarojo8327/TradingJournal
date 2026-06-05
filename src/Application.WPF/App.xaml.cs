@@ -1,4 +1,5 @@
 using Application.WPF.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Application.WPF.Infrastructure.DependencyInjection;
 using Application.WPF.Infrastructure.Logging;
 using Application.WPF.Models.Configuration;
@@ -22,6 +23,9 @@ public partial class App : System.Windows.Application
 {
     private IHost? _host;
 
+    public static T GetService<T>() where T : notnull =>
+        ((App)Current)._host!.Services.GetRequiredService<T>();
+
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
@@ -35,7 +39,10 @@ public partial class App : System.Windows.Application
 
         // Initialize database schema
         using (var db = _host.Services.GetRequiredService<TradingJournalDbContext>())
+        {
             await db.Database.EnsureCreatedAsync();
+            await EnsureSchemaUpToDateAsync(db);
+        }
 
         // Expose LocalizationService as "Loc" in Application.Resources for {loc:Tr} bindings
         var locService = _host.Services.GetRequiredService<ILocalizationService>();
@@ -66,6 +73,78 @@ public partial class App : System.Windows.Application
         }
         Log.CloseAndFlush();
         base.OnExit(e);
+    }
+
+    private static async Task EnsureSchemaUpToDateAsync(TradingJournalDbContext db)
+    {
+        // EnsureCreated only creates the schema if the DB is new.
+        // This method creates any tables that were added after the initial DB creation,
+        // preserving existing data. Each statement is idempotent.
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""TradingAccounts"" (
+                ""Id""             INTEGER NOT NULL CONSTRAINT ""PK_TradingAccounts"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""         INTEGER NOT NULL,
+                ""Broker""         TEXT    NOT NULL,
+                ""AccountNumber""  TEXT    NOT NULL,
+                ""AccountType""    TEXT    NOT NULL,
+                ""InitialCapital"" TEXT    NOT NULL,
+                ""BaseCurrency""   TEXT    NOT NULL,
+                ""Leverage""       TEXT    NOT NULL,
+                ""StartDate""      TEXT    NOT NULL,
+                ""CreatedAt""      TEXT    NOT NULL,
+                ""UpdatedAt""      TEXT,
+                CONSTRAINT ""FK_TradingAccounts_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE
+            );");
+
+        // Ensure index is non-unique (multiple accounts per user allowed)
+        await db.Database.ExecuteSqlRawAsync(
+            @"DROP INDEX IF EXISTS ""IX_TradingAccounts_UserId"";");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_TradingAccounts_UserId"" ON ""TradingAccounts"" (""UserId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""TradingStrategies"" (
+                ""Id""            INTEGER NOT NULL CONSTRAINT ""PK_TradingStrategies"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""        INTEGER NOT NULL,
+                ""Title""         TEXT    NOT NULL,
+                ""Description""   TEXT,
+                ""ImageData""     BLOB,
+                ""ImageMimeType"" TEXT,
+                ""CreatedAt""     TEXT    NOT NULL,
+                ""UpdatedAt""     TEXT,
+                CONSTRAINT ""FK_TradingStrategies_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_TradingStrategies_UserId"" ON ""TradingStrategies"" (""UserId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""StrategyRules"" (
+                ""Id""          INTEGER NOT NULL CONSTRAINT ""PK_StrategyRules"" PRIMARY KEY AUTOINCREMENT,
+                ""StrategyId""  INTEGER NOT NULL,
+                ""Description"" TEXT    NOT NULL,
+                ""OrderIndex""  INTEGER NOT NULL,
+                ""CreatedAt""   TEXT    NOT NULL,
+                CONSTRAINT ""FK_StrategyRules_TradingStrategies_StrategyId""
+                    FOREIGN KEY (""StrategyId"") REFERENCES ""TradingStrategies"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_StrategyRules_StrategyId"" ON ""StrategyRules"" (""StrategyId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""StrategyConfluences"" (
+                ""Id""         INTEGER NOT NULL CONSTRAINT ""PK_StrategyConfluences"" PRIMARY KEY AUTOINCREMENT,
+                ""StrategyId"" INTEGER NOT NULL,
+                ""Name""       TEXT    NOT NULL,
+                ""OrderIndex"" INTEGER NOT NULL,
+                ""Rating""     INTEGER,
+                ""CreatedAt""  TEXT    NOT NULL,
+                CONSTRAINT ""FK_StrategyConfluences_TradingStrategies_StrategyId""
+                    FOREIGN KEY (""StrategyId"") REFERENCES ""TradingStrategies"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_StrategyConfluences_StrategyId"" ON ""StrategyConfluences"" (""StrategyId"");");
     }
 
     private static IHost BuildHost()
@@ -122,10 +201,22 @@ public partial class App : System.Windows.Application
         e.SetObserved();
     }
 
-    private static void ShowErrorAndContinue(Exception ex) =>
-        MessageBox.Show(
-            $"An unexpected error occurred:\n\n{ex.Message}\n\nThe application will continue running.",
-            "Unexpected Error",
-            MessageBoxButton.OK,
-            MessageBoxImage.Error);
+    private static bool _showingError;
+    private static void ShowErrorAndContinue(Exception ex)
+    {
+        if (_showingError) return;
+        _showingError = true;
+        try
+        {
+            MessageBox.Show(
+                $"An unexpected error occurred:\n\n{ex.Message}\n\nThe application will continue running.",
+                "Unexpected Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+        finally
+        {
+            _showingError = false;
+        }
+    }
 }

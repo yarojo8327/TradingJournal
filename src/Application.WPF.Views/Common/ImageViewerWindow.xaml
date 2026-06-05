@@ -1,0 +1,177 @@
+<Window x:Class="Application.WPF.Views.Common.ImageViewerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="#CC000000"
+        WindowState="Maximized"
+        Topmost="True"
+        KeyDown="OnKeyDown"
+        Title="Imagen de estrategia">
+
+    <Grid>
+        <!-- Fondo oscuro — clic para cerrar -->
+        <Border Background="Transparent"
+                MouseLeftButtonDown="OnBackgroundClick" />
+
+        <!-- Contenedor de imagen -->
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center"
+              MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Window}}"
+              MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Window}}">
+
+            <Border x:Name="ImageCard"
+                    CornerRadius="10"
+                    Background="#1A1A2E"
+                    BorderBrush="#00D4FF"
+                    BorderThickness="1"
+                    Margin="40">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="40"
+                                      ShadowDepth="0" Opacity="0.8" />
+                </Border.Effect>
+
+                <Grid>
+                    <!-- ScrollViewer con la imagen -->
+                    <ScrollViewer x:Name="Viewer"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto"
+                                  PanningMode="Both"
+                                  MinWidth="300" MinHeight="300"
+                                  MaxWidth="1400" MaxHeight="880"
+                                  Padding="0"
+                                  PreviewMouseWheel="OnMouseWheel">
+                        <Image x:Name="ViewerImage"
+                               Stretch="Uniform"
+                               RenderOptions.BitmapScalingMode="HighQuality"
+                               MinWidth="200" MinHeight="200"
+                               Cursor="Cross"
+                               MouseLeftButtonDown="OnImageDoubleClick">
+                            <Image.LayoutTransform>
+                                <ScaleTransform x:Name="ImageScale"
+                                                ScaleX="1" ScaleY="1" />
+                            </Image.LayoutTransform>
+                        </Image>
+                    </ScrollViewer>
+
+                    <!-- Barra superior -->
+                    <Border CornerRadius="10,10,0,0"
+                            Background="#CC0A0E1A"
+                            VerticalAlignment="Top"
+                            Panel.ZIndex="10">
+                        <Grid Margin="16,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       x:Name="TitleText"
+                                       VerticalAlignment="Center"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="#00D4FF" />
+
+                            <!-- Zoom out -->
+                            <Button Grid.Column="1"
+                                    Click="OnZoomOut"
+                                    ToolTip="Reducir (rueda del ratón)"
+                                    Width="32" Height="32" Margin="4,0"
+                                    Background="Transparent" BorderThickness="0"
+                                    Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bg" CornerRadius="4"
+                                                Background="Transparent" Padding="4">
+                                            <TextBlock Text="－" FontSize="16"
+                                                       Foreground="#AAAAAA"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bg" Property="Background" Value="#1AFFFFFF" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <!-- Nivel de zoom -->
+                            <TextBlock Grid.Column="2"
+                                       x:Name="ZoomLabel"
+                                       Text="100%"
+                                       FontSize="12"
+                                       Foreground="#AAAAAA"
+                                       VerticalAlignment="Center"
+                                       MinWidth="48"
+                                       TextAlignment="Center" />
+
+                            <!-- Zoom in -->
+                            <Button Grid.Column="3"
+                                    Click="OnZoomIn"
+                                    ToolTip="Ampliar (rueda del ratón)"
+                                    Width="32" Height="32" Margin="4,0,12,0"
+                                    Background="Transparent" BorderThickness="0"
+                                    Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bg" CornerRadius="4"
+                                                Background="Transparent" Padding="4">
+                                            <TextBlock Text="＋" FontSize="16"
+                                                       Foreground="#AAAAAA"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bg" Property="Background" Value="#1AFFFFFF" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <!-- Cerrar -->
+                            <Button Grid.Column="3"
+                                    Click="OnClose"
+                                    Width="32" Height="32"
+                                    Margin="20,0,0,0"
+                                    Background="Transparent" BorderThickness="0"
+                                    Cursor="Hand" ToolTip="Cerrar (Esc)">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bg" CornerRadius="4"
+                                                Background="Transparent" Padding="4">
+                                            <TextBlock Text="✕" FontSize="14"
+                                                       Foreground="#FF5555"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bg" Property="Background" Value="#1AFF0000" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Hint de controles -->
+                    <Border CornerRadius="0,0,10,10"
+                            Background="#CC0A0E1A"
+                            VerticalAlignment="Bottom"
+                            Panel.ZIndex="10">
+                        <TextBlock Text="Rueda del ratón: zoom  ·  Doble clic: restablecer  ·  Esc: cerrar"
+                                   FontSize="11"
+                                   Foreground="#555555"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,6" />
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

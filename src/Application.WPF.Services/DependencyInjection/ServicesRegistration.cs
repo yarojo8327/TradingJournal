@@ -4,6 +4,8 @@ using Application.WPF.Services.Interfaces;
 using Application.WPF.Services.Localization;
 using Application.WPF.Services.Navigation;
 using Application.WPF.Services.Session;
+using Application.WPF.Services.Strategies;
+using Application.WPF.Services.TradingAccounts;
 using Application.WPF.Services.Users;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +23,9 @@ public static class ServicesRegistration
                 sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<LocalizationService>>(),
                 "es-CO"));
         services.AddTransient<IUserService, UserService>();
+        services.AddTransient<ITradingAccountService, TradingAccountService>();
+        services.AddTransient<ITradingStrategyService, TradingStrategyService>();
+        services.AddSingleton<ISessionPersistenceService, SessionPersistenceService>();
         services.AddSingleton<ISessionService, SessionService>();
         return services;
     }

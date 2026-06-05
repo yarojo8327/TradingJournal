@@ -4,6 +4,8 @@ using Application.WPF.Services.Interfaces;
 using Application.WPF.ViewModels.Login;
 using Application.WPF.ViewModels.Profile;
 using Application.WPF.ViewModels.Register;
+using Application.WPF.ViewModels.Strategies;
+using Application.WPF.ViewModels.TradingAccount;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -89,6 +91,14 @@ public partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private void GoToSettings() =>
         _navigationService.NavigateTo<ProfileViewModel>();
+
+    [RelayCommand]
+    private void GoToTradingAccount() =>
+        _navigationService.NavigateTo<TradingAccountViewModel>();
+
+    [RelayCommand]
+    private void GoToStrategies() =>
+        _navigationService.NavigateTo<TradingStrategyViewModel>();
 
     [RelayCommand]
     private void Logout()
