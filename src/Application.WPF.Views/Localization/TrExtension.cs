@@ -9,8 +9,9 @@ namespace Application.WPF.Views.Localization;
 /// Markup extension for localized strings.
 /// Usage: Text="{loc:Tr Key=Nav_Dashboard}"
 /// Automatically updates when the language changes.
+/// Works in normal controls, DataTemplates and Style Setters.
 /// </summary>
-[MarkupExtensionReturnType(typeof(string))]
+[MarkupExtensionReturnType(typeof(BindingBase))]
 public class TrExtension : MarkupExtension
 {
     [ConstructorArgument("key")]
@@ -21,19 +22,23 @@ public class TrExtension : MarkupExtension
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        if (serviceProvider.GetService(typeof(IProvideValueTarget)) is not IProvideValueTarget target)
+        if (serviceProvider.GetService(typeof(IProvideValueTarget)) is not IProvideValueTarget pvt)
             return $"[{Key}]";
 
-        // Dentro de DataTemplate o Style Setter, TargetObject no es DependencyObject.
-        // Retornar 'this' hace que WPF difiera la evaluación hasta que la plantilla
-        // se instancie con el elemento real como destino.
-        if (target.TargetObject is not DependencyObject depObj)
-            return this;
+        var locService = System.Windows.Application.Current?.Resources["Loc"] as ILocalizationService;
 
-        var locService = TryResolveService(depObj);
         if (locService is null)
+        {
+            // Diseño o servicio aún no inicializado: diferir si es DataTemplate/Setter
+            if (pvt.TargetObject is not DependencyObject)
+                return this;
             return $"[{Key}]";
+        }
 
+        // Crear el binding. Binding.ProvideValue devuelve:
+        //   - BindingExpression activo cuando el target es DependencyObject+DependencyProperty
+        //   - el propio Binding (BindingBase) en contexto de DataTemplate o Style Setter
+        // Ambos son válidos para WPF.
         var binding = new Binding($"[{Key}]")
         {
             Source = locService,
@@ -41,10 +46,5 @@ public class TrExtension : MarkupExtension
         };
 
         return binding.ProvideValue(serviceProvider);
-    }
-
-    private static ILocalizationService? TryResolveService(DependencyObject target)
-    {
-        return System.Windows.Application.Current?.Resources["Loc"] as ILocalizationService;
     }
 }
