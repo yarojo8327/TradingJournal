@@ -669,9 +669,9 @@
                 </StackPanel>
             </Border>
 
-            <!-- ═══ FORMULARIO ═══ -->
-            <Border Style="{DynamicResource Card}"
-                    Visibility="{Binding IsFormVisible, Converter={StaticResource BoolToVisibility}}">
+            <!-- El formulario se abre en TradeFormWindow (ventana flotante modal).
+                 Ver TradeJournalView.xaml.cs → OnVmPropertyChanged -->
+            <Border Visibility="Collapsed">
                 <StackPanel>
 
                     <!-- Título del formulario -->
