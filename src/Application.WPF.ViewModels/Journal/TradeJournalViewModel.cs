@@ -2,9 +2,11 @@ using Application.WPF.Common.ViewModels;
 using Application.WPF.Models.Entities;
 using Application.WPF.Models.Enums;
 using Application.WPF.Services.Interfaces;
+using ClosedXML.Excel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using TradingAccountEntity = Application.WPF.Models.Entities.TradingAccount;
@@ -413,6 +415,130 @@ public partial class TradeJournalViewModel : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Could not open URL {Url}", url);
+        }
+    }
+
+    [RelayCommand]
+    private void ExportToExcel()
+    {
+        if (!Trades.Any())
+        {
+            GeneralError   = "No hay trades para exportar.";
+            GeneralSuccess = string.Empty;
+            return;
+        }
+
+        var dlg = new SaveFileDialog
+        {
+            Title    = "Exportar Bitácora de Trading",
+            Filter   = "Excel (*.xlsx)|*.xlsx",
+            FileName = $"bitacora_{DateTime.Today:yyyyMMdd}.xlsx"
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        try
+        {
+            using var wb = new XLWorkbook();
+            var ws = wb.Worksheets.Add("Trades");
+
+            // Cabeceras
+            string[] headers = {
+                "Fecha", "Símbolo", "Dirección", "Cuenta", "Estrategia",
+                "Entrada", "Salida", "SL", "TP", "Lotes",
+                "P&L", "R:R", "Resultado", "Sesión", "Calificación",
+                "Estado emocional", "Error", "Notas", "URL gráfico"
+            };
+            for (int c = 0; c < headers.Length; c++)
+                ws.Cell(1, c + 1).Value = headers[c];
+
+            // Estilo cabecera
+            var hdr = ws.Range(1, 1, 1, headers.Length);
+            hdr.Style.Font.Bold            = true;
+            hdr.Style.Font.FontColor       = XLColor.White;
+            hdr.Style.Fill.BackgroundColor = XLColor.FromHtml("#1E3A5F");
+            hdr.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Filas de datos
+            int row = 2;
+            foreach (var t in Trades)
+            {
+                ws.Cell(row, 1).Value  = t.EntryDate.ToString("dd/MM/yyyy HH:mm");
+                ws.Cell(row, 2).Value  = t.Symbol;
+                ws.Cell(row, 3).Value  = t.Direction == TradeDirection.Long ? "Long ▲" : "Short ▼";
+                ws.Cell(row, 4).Value  = t.Account?.Broker ?? string.Empty;
+                ws.Cell(row, 5).Value  = t.Strategy?.Title ?? string.Empty;
+                ws.Cell(row, 6).Value  = (double)t.EntryPrice;
+                if (t.ExitPrice.HasValue)        ws.Cell(row, 7).Value  = (double)t.ExitPrice.Value;
+                if (t.StopLoss.HasValue)         ws.Cell(row, 8).Value  = (double)t.StopLoss.Value;
+                if (t.TakeProfit.HasValue)       ws.Cell(row, 9).Value  = (double)t.TakeProfit.Value;
+                if (t.PositionSizeLots.HasValue) ws.Cell(row, 10).Value = (double)t.PositionSizeLots.Value;
+                if (t.ProfitLoss.HasValue)       ws.Cell(row, 11).Value = (double)t.ProfitLoss.Value;
+                if (t.RiskRewardRatio.HasValue)  ws.Cell(row, 12).Value = (double)t.RiskRewardRatio.Value;
+                ws.Cell(row, 13).Value = t.Result switch
+                {
+                    TradeResult.Profit    => "Ganancia",
+                    TradeResult.Loss      => "Pérdida",
+                    TradeResult.BreakEven => "BreakEven",
+                    _                     => "Abierto"
+                };
+                ws.Cell(row, 14).Value = t.Session switch
+                {
+                    TradingSession.Asian         => "Asiática",
+                    TradingSession.London        => "Londres",
+                    TradingSession.NewYork       => "Nueva York",
+                    TradingSession.Sydney        => "Sydney",
+                    TradingSession.LondonNewYork => "Londres / NY",
+                    _                            => string.Empty
+                };
+                if (t.Rating.HasValue)           ws.Cell(row, 15).Value = t.Rating.Value;
+                ws.Cell(row, 16).Value = t.EmotionalState switch
+                {
+                    EmotionalState.Calm        => "Calmado",
+                    EmotionalState.Disciplined => "Disciplinado",
+                    EmotionalState.Confident   => "Confiado",
+                    EmotionalState.Excited     => "Emocionado",
+                    EmotionalState.Anxious     => "Ansioso",
+                    EmotionalState.Fearful     => "Temeroso",
+                    EmotionalState.FOMO        => "FOMO",
+                    EmotionalState.Revenge     => "Venganza",
+                    _                          => string.Empty
+                };
+                ws.Cell(row, 17).Value = t.MistakeType ?? string.Empty;
+                ws.Cell(row, 18).Value = t.Notes ?? string.Empty;
+                ws.Cell(row, 19).Value = t.ScreenshotUrl ?? string.Empty;
+
+                // Color condicional P&L
+                if (t.ProfitLoss.HasValue)
+                {
+                    var plCell = ws.Cell(row, 11);
+                    if (t.Result == TradeResult.Profit)
+                        plCell.Style.Font.FontColor = XLColor.FromHtml("#00C853");
+                    else if (t.Result == TradeResult.Loss)
+                        plCell.Style.Font.FontColor = XLColor.FromHtml("#FF5252");
+                }
+
+                // Alternar fondo de filas
+                if (row % 2 == 0)
+                    ws.Row(row).Style.Fill.BackgroundColor = XLColor.FromHtml("#F0F4F8");
+
+                row++;
+            }
+
+            // Borde tabla y auto-ancho
+            ws.Range(1, 1, row - 1, headers.Length).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            ws.Range(1, 1, row - 1, headers.Length).Style.Border.InsideBorder  = XLBorderStyleValues.Hair;
+            ws.Columns().AdjustToContents(8, 60);
+
+            wb.SaveAs(dlg.FileName);
+
+            GeneralSuccess = $"Exportado: {System.IO.Path.GetFileName(dlg.FileName)}  ({Trades.Count} trades)";
+            GeneralError   = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting to Excel");
+            GeneralError   = "Error al exportar el archivo Excel.";
+            GeneralSuccess = string.Empty;
         }
     }
 

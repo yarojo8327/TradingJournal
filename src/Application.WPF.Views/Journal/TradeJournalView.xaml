@@ -126,16 +126,28 @@
                                FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                                Margin="13,0,0,0" />
                 </StackPanel>
-                <Button Grid.Column="1" VerticalAlignment="Center"
-                        Style="{DynamicResource PrimaryButton}"
-                        Command="{Binding NewTradeCommand}"
-                        Height="36" Padding="16,0" FontSize="13">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="+" FontSize="16" FontWeight="Bold"
-                                   Margin="0,0,6,0" VerticalAlignment="Center" />
-                        <TextBlock Text="{loc:Tr Journal_NewTrade}" VerticalAlignment="Center" />
-                    </StackPanel>
-                </Button>
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <!-- Exportar Excel -->
+                    <Button Style="{DynamicResource GhostButton}"
+                            Command="{Binding ExportToExcelCommand}"
+                            Height="36" Padding="12,0" FontSize="12" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="Exportar Excel" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <!-- Nuevo Trade -->
+                    <Button Style="{DynamicResource PrimaryButton}"
+                            Command="{Binding NewTradeCommand}"
+                            Height="36" Padding="16,0" FontSize="13">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{loc:Tr Journal_NewTrade}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </Grid>
 
             <!-- Mensajes -->
@@ -152,18 +164,19 @@
                            Foreground="{DynamicResource AccentRedBrush}" TextWrapping="Wrap" />
             </Border>
 
-            <!-- ═══ FILTROS — Fila 1: Cuenta, Símbolo, Resultado, Estrategia ═══ -->
+            <!-- ═══ FILTROS ═══ -->
             <Border Style="{DynamicResource Card}" Margin="0,0,0,6" Padding="16,14,16,12">
                 <StackPanel>
+
+                    <!-- Fila 1: Cuenta | Símbolo | Resultado | Estrategia -->
                     <Grid Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" MaxWidth="230" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="14" />
-                            <ColumnDefinition Width="*" MaxWidth="160" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="14" />
-                            <ColumnDefinition Width="*" MaxWidth="150" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="14" />
-                            <ColumnDefinition Width="*" MaxWidth="230" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
@@ -256,12 +269,12 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- Fila 2: Rating mínimo, máximo, botones -->
+                    <!-- Fila 2: Cal. mínima | Cal. máxima | (flex) | Filtrar | Limpiar -->
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" MaxWidth="140" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" MaxWidth="140" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="8" />
@@ -320,10 +333,13 @@
                             </ComboBox>
                         </StackPanel>
 
+                        <!-- spacer -->
+                        <Border Grid.Column="3" />
+
                         <Button Grid.Column="4" Content="{loc:Tr Journal_Filter_Apply}"
                                 Style="{DynamicResource PrimaryButton}"
                                 Command="{Binding ApplyFilterCommand}"
-                                Height="34" Padding="14,0" VerticalAlignment="Bottom" />
+                                Height="34" Padding="20,0" VerticalAlignment="Bottom" />
                         <Button Grid.Column="6" Content="{loc:Tr Journal_Filter_Clear}"
                                 Style="{DynamicResource GhostButton}"
                                 Command="{Binding ClearFilterCommand}"
@@ -375,7 +391,7 @@
                             <TextBlock Grid.Column="12" Text="{loc:Tr Journal_Col_Result}"   Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="13" Text="{loc:Tr Journal_Col_Session}"  Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="14" Text="{loc:Tr Journal_Col_Rating}"   Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
-                            <TextBlock Grid.Column="15" Text="📊"                             Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="15" Text="↗"                              Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
                             <TextBlock Grid.Column="17" Text="{loc:Tr Journal_Col_Actions}"  Style="{StaticResource ColHeader}" />
                         </Grid>
                     </Border>
@@ -555,11 +571,11 @@
                                         <!-- Rating badge -->
                                         <Border Grid.Column="14"
                                                 VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                CornerRadius="4" Width="32" Height="22"
-                                                Visibility="{Binding Rating, Converter={StaticResource StringToVisibility}, FallbackValue=Collapsed}">
+                                                CornerRadius="4" Width="32" Height="22">
                                             <Border.Style>
                                                 <Style TargetType="Border">
-                                                    <Setter Property="Background" Value="#1500D4FF" />
+                                                    <Setter Property="Background"  Value="#1500D4FF" />
+                                                    <Setter Property="Visibility"  Value="Visible" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Rating}" Value="{x:Null}">
                                                             <Setter Property="Visibility" Value="Collapsed" />
@@ -605,12 +621,11 @@
 
                                         <!-- Ícono de gráfico (solo visible si hay URL) -->
                                         <Button Grid.Column="15"
-                                                Content="📊"
-                                                FontSize="14"
                                                 BorderThickness="0"
                                                 VerticalAlignment="Center"
                                                 HorizontalAlignment="Center"
-                                                ToolTip="Abrir gráfico en TradingView"
+                                                ToolTip="Abrir gráfico"
+                                                Padding="4"
                                                 Command="{Binding DataContext.OpenScreenshotCommand,
                                                           RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding ScreenshotUrl}">
@@ -626,6 +641,8 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Button.Style>
+                                            <TextBlock Text="↗" FontSize="13" FontWeight="Bold"
+                                                       Foreground="White" VerticalAlignment="Center" />
                                         </Button>
 
                                         <!-- Acciones Editar / Eliminar -->
