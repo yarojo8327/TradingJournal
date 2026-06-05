@@ -127,4 +127,145 @@
   <data name="Account_TypeDemo"        xml:space="preserve"><value>Demo</value></data>
   <data name="Account_TypeReal"        xml:space="preserve"><value>Real / Live</value></data>
   <data name="Account_TypeProp"        xml:space="preserve"><value>Prop Trading</value></data>
+
+  <!-- Navigation (additions) -->
+  <data name="Nav_Account"          xml:space="preserve"><value>Account</value></data>
+  <data name="Nav_Strategies"       xml:space="preserve"><value>Strategies</value></data>
+  <data name="Nav_MyAccount"        xml:space="preserve"><value>My account</value></data>
+  <data name="Nav_Profile"          xml:space="preserve"><value>User profile</value></data>
+  <data name="Nav_ProfileDesc"      xml:space="preserve"><value>View and edit your account</value></data>
+  <data name="Nav_Logout"           xml:space="preserve"><value>Log out</value></data>
+
+  <!-- Login -->
+  <data name="Login_Tagline"                xml:space="preserve"><value>Your professional trading journal</value></data>
+  <data name="Login_Feature_Secure"         xml:space="preserve"><value>Secure access</value></data>
+  <data name="Login_Feature_SecureDesc"     xml:space="preserve"><value>Password encrypted with BCrypt</value></data>
+  <data name="Login_Feature_Portfolio"      xml:space="preserve"><value>Your portfolio awaits</value></data>
+  <data name="Login_Feature_PortfolioDesc"  xml:space="preserve"><value>History and updated metrics</value></data>
+  <data name="Login_Feature_Instant"        xml:space="preserve"><value>Instant access</value></data>
+  <data name="Login_Feature_InstantDesc"    xml:space="preserve"><value>Continue where you left off</value></data>
+  <data name="Login_Title"                  xml:space="preserve"><value>Sign in</value></data>
+  <data name="Login_Subtitle"               xml:space="preserve"><value>Log in with your username or email</value></data>
+  <data name="Login_UsernameOrEmail"        xml:space="preserve"><value>Username or email</value></data>
+  <data name="Login_UsernameOrEmailHint"    xml:space="preserve"><value>trader_pro  or  user@example.com</value></data>
+  <data name="Login_Password"               xml:space="preserve"><value>Password</value></data>
+  <data name="Login_Submit"                 xml:space="preserve"><value>Sign in</value></data>
+  <data name="Login_NoAccount"              xml:space="preserve"><value>Don't have an account?</value></data>
+  <data name="Login_CreateAccount"          xml:space="preserve"><value>Create new account</value></data>
+  <data name="Login_Verifying"              xml:space="preserve"><value>Verifying credentials…</value></data>
+  <data name="Login_PleaseWait"             xml:space="preserve"><value>Please wait</value></data>
+
+  <!-- Register (additions) -->
+  <data name="Register_Tagline"             xml:space="preserve"><value>Your professional trading journal</value></data>
+  <data name="Register_Feature_Tracking"    xml:space="preserve"><value>Trade tracking</value></data>
+  <data name="Register_Feature_TrackingDesc" xml:space="preserve"><value>Keep track of every trade</value></data>
+  <data name="Register_Feature_Performance" xml:space="preserve"><value>Performance analysis</value></data>
+  <data name="Register_Feature_PerfDesc"    xml:space="preserve"><value>Win rate, P&amp;L, R:R in real time</value></data>
+  <data name="Register_Feature_Playbooks"   xml:space="preserve"><value>Playbooks &amp; strategies</value></data>
+  <data name="Register_Feature_PlaybooksDesc" xml:space="preserve"><value>Document and improve your system</value></data>
+  <data name="Register_Heading"             xml:space="preserve"><value>Create account</value></data>
+  <data name="Register_SubHeading"          xml:space="preserve"><value>Fill in the fields to get started</value></data>
+  <data name="Register_FullNameHint"        xml:space="preserve"><value>e.g. John Smith</value></data>
+  <data name="Register_EmailHint"           xml:space="preserve"><value>user@example.com</value></data>
+  <data name="Register_UsernameHint"        xml:space="preserve"><value>trader_pro</value></data>
+  <data name="Register_PasswordHint"        xml:space="preserve"><value>Min. 6 characters</value></data>
+  <data name="Register_ConfirmPasswordHint" xml:space="preserve"><value>Repeat your password</value></data>
+  <data name="Register_Requirements"        xml:space="preserve"><value>PASSWORD REQUIREMENTS</value></data>
+  <data name="Register_Req_MinLength"       xml:space="preserve"><value>At least 6 characters</value></data>
+  <data name="Register_Req_Uppercase"       xml:space="preserve"><value>At least one uppercase letter</value></data>
+  <data name="Register_Req_Lowercase"       xml:space="preserve"><value>At least one lowercase letter</value></data>
+  <data name="Register_Req_Number"          xml:space="preserve"><value>At least one number</value></data>
+  <data name="Register_Req_NoSpaces"        xml:space="preserve"><value>No spaces allowed</value></data>
+  <data name="Register_Req_ConfirmMatch"    xml:space="preserve"><value>Passwords must match</value></data>
+  <data name="Register_AlreadyHaveAccount"  xml:space="preserve"><value>Already have an account?</value></data>
+  <data name="Register_SignIn"              xml:space="preserve"><value>Sign in</value></data>
+  <data name="Register_PleaseWait"          xml:space="preserve"><value>Please wait</value></data>
+
+  <!-- Profile -->
+  <data name="Profile_Title"                xml:space="preserve"><value>Profile</value></data>
+  <data name="Profile_Subtitle"             xml:space="preserve"><value>Update your personal information</value></data>
+  <data name="Profile_MemberSince"          xml:space="preserve"><value>Member since</value></data>
+  <data name="Profile_PersonalInfo"         xml:space="preserve"><value>PERSONAL INFORMATION</value></data>
+  <data name="Profile_FullName"             xml:space="preserve"><value>Full name</value></data>
+  <data name="Profile_Email"                xml:space="preserve"><value>Email address</value></data>
+  <data name="Profile_Username"             xml:space="preserve"><value>Username</value></data>
+  <data name="Profile_SaveChanges"          xml:space="preserve"><value>Save changes</value></data>
+  <data name="Profile_Security_Title"       xml:space="preserve"><value>Change password</value></data>
+  <data name="Profile_Security_Subtitle"    xml:space="preserve"><value>Keep your account secure</value></data>
+  <data name="Profile_AccountSecurity"      xml:space="preserve"><value>ACCOUNT SECURITY</value></data>
+  <data name="Profile_CurrentPassword"      xml:space="preserve"><value>Current password</value></data>
+  <data name="Profile_NewPassword"          xml:space="preserve"><value>New password</value></data>
+  <data name="Profile_ConfirmNewPassword"   xml:space="preserve"><value>Confirm new password</value></data>
+  <data name="Profile_ChangePassword"       xml:space="preserve"><value>Change password</value></data>
+  <data name="Profile_Requirements"         xml:space="preserve"><value>REQUIREMENTS</value></data>
+  <data name="Profile_Req_MinLength"        xml:space="preserve"><value>At least 6 characters</value></data>
+  <data name="Profile_Req_Uppercase"        xml:space="preserve"><value>At least one uppercase letter</value></data>
+  <data name="Profile_Req_Number"           xml:space="preserve"><value>At least one number</value></data>
+  <data name="Profile_Req_ConfirmMatch"     xml:space="preserve"><value>Passwords must match</value></data>
+
+  <!-- Trading Account (additions) -->
+  <data name="Account_Header"               xml:space="preserve"><value>Trading Accounts</value></data>
+  <data name="Account_ManageSubtitle"       xml:space="preserve"><value>Manage your broker accounts</value></data>
+  <data name="Account_New"                  xml:space="preserve"><value>New account</value></data>
+  <data name="Account_Table_Broker"         xml:space="preserve"><value>BROKER</value></data>
+  <data name="Account_Table_Number"         xml:space="preserve"><value>ACCOUNT NO.</value></data>
+  <data name="Account_Table_Type"           xml:space="preserve"><value>TYPE</value></data>
+  <data name="Account_Table_Currency"       xml:space="preserve"><value>CURRENCY</value></data>
+  <data name="Account_Table_Capital"        xml:space="preserve"><value>INITIAL CAPITAL</value></data>
+  <data name="Account_Table_Leverage"       xml:space="preserve"><value>LEVERAGE</value></data>
+  <data name="Account_Table_StartDate"      xml:space="preserve"><value>START DATE</value></data>
+  <data name="Account_Table_Actions"        xml:space="preserve"><value>ACTIONS</value></data>
+  <data name="Account_Label_Demo"           xml:space="preserve"><value>Demo</value></data>
+  <data name="Account_Label_Real"           xml:space="preserve"><value>Real</value></data>
+  <data name="Account_Label_Prop"           xml:space="preserve"><value>Prop</value></data>
+  <data name="Account_Edit"                 xml:space="preserve"><value>Edit</value></data>
+  <data name="Account_Empty"                xml:space="preserve"><value>No trading accounts registered</value></data>
+  <data name="Account_EmptyHint"            xml:space="preserve"><value>Click «New account» to register the first one</value></data>
+  <data name="Account_Cancel"               xml:space="preserve"><value>Cancel</value></data>
+  <data name="Account_BrokerLabel"          xml:space="preserve"><value>Broker *</value></data>
+  <data name="Account_BrokerHint"           xml:space="preserve"><value>e.g. Interactive Brokers, Pepperstone…</value></data>
+  <data name="Account_NumberLabel"          xml:space="preserve"><value>Account number *</value></data>
+  <data name="Account_NumberHint"           xml:space="preserve"><value>e.g. 12345678</value></data>
+  <data name="Account_TypeLabel"            xml:space="preserve"><value>Account type *</value></data>
+  <data name="Account_StartDateLabel"       xml:space="preserve"><value>Start date *</value></data>
+  <data name="Account_CapitalLabel"         xml:space="preserve"><value>Initial capital *</value></data>
+  <data name="Account_CapitalHint"          xml:space="preserve"><value>e.g. 10000.00</value></data>
+  <data name="Account_CurrencyLabel"        xml:space="preserve"><value>Base currency *</value></data>
+  <data name="Account_LeverageLabel"        xml:space="preserve"><value>Leverage *</value></data>
+  <data name="Account_Saving"               xml:space="preserve"><value>Saving…</value></data>
+  <data name="Account_FormNew"              xml:space="preserve"><value>New account</value></data>
+  <data name="Account_FormEdit"             xml:space="preserve"><value>Edit account</value></data>
+  <data name="Account_DeleteConfirm"        xml:space="preserve"><value>Delete this account? This action cannot be undone.</value></data>
+  <data name="Account_Deleted"              xml:space="preserve"><value>Account deleted successfully.</value></data>
+  <data name="Account_DeleteError"          xml:space="preserve"><value>Error deleting the account.</value></data>
+
+  <!-- Strategies -->
+  <data name="Strategy_Title"               xml:space="preserve"><value>Strategies</value></data>
+  <data name="Strategy_Subtitle"            xml:space="preserve"><value>Methodologies and trading systems</value></data>
+  <data name="Strategy_New"                 xml:space="preserve"><value>New</value></data>
+  <data name="Strategy_Empty"               xml:space="preserve"><value>No strategies registered</value></data>
+  <data name="Strategy_EmptyHint"           xml:space="preserve"><value>Create your first trading strategy</value></data>
+  <data name="Strategy_Rules"               xml:space="preserve"><value>rule(s)</value></data>
+  <data name="Strategy_Edit"                xml:space="preserve"><value>✏ Edit</value></data>
+  <data name="Strategy_Rate"                xml:space="preserve"><value>★ Rate</value></data>
+  <data name="Strategy_Delete"              xml:space="preserve"><value>🗑 Delete</value></data>
+  <data name="Strategy_GeneralData"         xml:space="preserve"><value>General data</value></data>
+  <data name="Strategy_TitleLabel"          xml:space="preserve"><value>Title *</value></data>
+  <data name="Strategy_TitleHint"           xml:space="preserve"><value>e.g. Range breakout, H4 Trend…</value></data>
+  <data name="Strategy_DescriptionLabel"    xml:space="preserve"><value>Description</value></data>
+  <data name="Strategy_DescriptionHint"     xml:space="preserve"><value>Briefly describe the strategy…</value></data>
+  <data name="Strategy_ImageSection"        xml:space="preserve"><value>Reference image (optional)</value></data>
+  <data name="Strategy_NoImage"             xml:space="preserve"><value>No image selected</value></data>
+  <data name="Strategy_SelectImage"         xml:space="preserve"><value>Select image</value></data>
+  <data name="Strategy_RemoveImage"         xml:space="preserve"><value>Remove image</value></data>
+  <data name="Strategy_RulesSection"        xml:space="preserve"><value>Strategy rules</value></data>
+  <data name="Strategy_RuleHint"            xml:space="preserve"><value>Write a rule and press Add…</value></data>
+  <data name="Strategy_Add"                 xml:space="preserve"><value>+ Add</value></data>
+  <data name="Strategy_ConfluencesSection"  xml:space="preserve"><value>Confluences to qualify the setup</value></data>
+  <data name="Strategy_ConfluencesSubtitle" xml:space="preserve"><value>Technical factors that determine trade quality (S/R, Fibonacci, MAs, etc.)</value></data>
+  <data name="Strategy_ConfluenceHint"      xml:space="preserve"><value>e.g. Support/Resistance, Fibonacci, MA 200…</value></data>
+  <data name="Strategy_Save"                xml:space="preserve"><value>Save strategy</value></data>
+  <data name="Strategy_Saving"              xml:space="preserve"><value>Saving…</value></data>
+  <data name="Strategy_Cancel"              xml:space="preserve"><value>✕ Cancel</value></data>
+  <data name="Strategy_TooltipExpand"       xml:space="preserve"><value>Click to expand</value></data>
 </root>
