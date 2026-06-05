@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Application.WPF.ViewModels.Register;assembly=Application.WPF.ViewModels"
              xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+             xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:RegisterViewModel}"
              Background="{DynamicResource BackgroundBrush}"
@@ -18,24 +19,13 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <!-- Panel izquierdo: marca y beneficios -->
             <ColumnDefinition Width="2*" MinWidth="280" />
-            <!-- Panel derecho: formulario -->
             <ColumnDefinition Width="3*" MinWidth="360" />
         </Grid.ColumnDefinitions>
 
-        <!-- ══════════════════════════════════
-             PANEL IZQUIERDO — Marca
-             ══════════════════════════════════ -->
-        <Border Grid.Column="0"
-                Background="{DynamicResource SurfaceBrush}">
-            <Border.BorderBrush>
-                <SolidColorBrush Color="#1E3A5F" />
-            </Border.BorderBrush>
-            <Border BorderThickness="0,0,1,0"
-                    BorderBrush="#1E3A5F">
-
-                <!-- Línea cyan superior del panel -->
+        <!-- PANEL IZQUIERDO — Marca -->
+        <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}">
+            <Border BorderThickness="0,0,1,0" BorderBrush="#1E3A5F">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3" />
@@ -44,11 +34,8 @@
 
                     <Border Grid.Row="0" Background="{DynamicResource CyanGlowBrush}" />
 
-                    <StackPanel Grid.Row="1"
-                                VerticalAlignment="Center"
-                                Margin="48,0,48,0">
+                    <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="48,0,48,0">
 
-                        <!-- Logo -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                             <Border Width="5" Height="32" CornerRadius="2.5"
                                     Background="{DynamicResource CyanGlowBrush}"
@@ -59,91 +46,69 @@
                             </TextBlock>
                         </StackPanel>
 
-                        <TextBlock Text="Tu bitácora profesional de trading"
-                                   FontSize="14"
-                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                   Margin="0,0,0,48"
-                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{loc:Tr Register_Tagline}"
+                                   FontSize="14" Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Margin="0,0,0,48" TextWrapping="Wrap" />
 
-                        <!-- Separador -->
-                        <Rectangle Height="1"
-                                   Fill="{DynamicResource BorderBrush}"
-                                   Margin="0,0,0,36" />
+                        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,36" />
 
-                        <!-- Características -->
                         <StackPanel Margin="0,0,0,20">
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                                 <Border Width="36" Height="36" CornerRadius="8"
-                                        Background="#1500D4FF"
-                                        BorderBrush="#2200D4FF" BorderThickness="1"
+                                        Background="#1500D4FF" BorderBrush="#2200D4FF" BorderThickness="1"
                                         Margin="0,0,14,0">
                                     <TextBlock Text="📊" FontSize="16"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Registro de operaciones"
+                                    <TextBlock Text="{loc:Tr Register_Feature_Tracking}"
                                                FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}" />
-                                    <TextBlock Text="Lleva el control de cada trade"
-                                               FontSize="11"
-                                               Foreground="{DynamicResource TextMutedBrush}" />
+                                    <TextBlock Text="{loc:Tr Register_Feature_TrackingDesc}"
+                                               FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
                                 </StackPanel>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                                 <Border Width="36" Height="36" CornerRadius="8"
-                                        Background="#1500E676"
-                                        BorderBrush="#2200E676" BorderThickness="1"
+                                        Background="#1500E676" BorderBrush="#2200E676" BorderThickness="1"
                                         Margin="0,0,14,0">
                                     <TextBlock Text="📈" FontSize="16"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Análisis de rendimiento"
+                                    <TextBlock Text="{loc:Tr Register_Feature_Performance}"
                                                FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}" />
-                                    <TextBlock Text="Win rate, P&amp;L, R:R en tiempo real"
-                                               FontSize="11"
-                                               Foreground="{DynamicResource TextMutedBrush}" />
+                                    <TextBlock Text="{loc:Tr Register_Feature_PerfDesc}"
+                                               FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
                                 </StackPanel>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="36" Height="36" CornerRadius="8"
-                                        Background="#15FFD600"
-                                        BorderBrush="#22FFD600" BorderThickness="1"
+                                        Background="#15FFD600" BorderBrush="#22FFD600" BorderThickness="1"
                                         Margin="0,0,14,0">
                                     <TextBlock Text="📋" FontSize="16"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Playbooks &amp; estrategias"
+                                    <TextBlock Text="{loc:Tr Register_Feature_Playbooks}"
                                                FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}" />
-                                    <TextBlock Text="Documenta y mejora tu sistema"
-                                               FontSize="11"
-                                               Foreground="{DynamicResource TextMutedBrush}" />
+                                    <TextBlock Text="{loc:Tr Register_Feature_PlaybooksDesc}"
+                                               FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
 
-                        <!-- Separador -->
-                        <Rectangle Height="1"
-                                   Fill="{DynamicResource BorderBrush}"
-                                   Margin="0,36,0,24" />
+                        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,36,0,24" />
 
-                        <!-- Badge versión -->
                         <StackPanel Orientation="Horizontal">
-                            <Border CornerRadius="4"
-                                    Background="#1500D4FF"
-                                    BorderBrush="#3300D4FF" BorderThickness="1"
-                                    Padding="10,4">
-                                <TextBlock Text="v1.0.0 — Enterprise Edition"
-                                           FontSize="11" FontWeight="SemiBold"
-                                           Foreground="#00D4FF" />
+                            <Border CornerRadius="4" Background="#1500D4FF"
+                                    BorderBrush="#3300D4FF" BorderThickness="1" Padding="10,4">
+                                <TextBlock Text="{loc:Tr App_Version}"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="#00D4FF" />
                             </Border>
                         </StackPanel>
 
@@ -152,29 +117,17 @@
             </Border>
         </Border>
 
-        <!-- ══════════════════════════════════
-             PANEL DERECHO — Formulario
-             ══════════════════════════════════ -->
+        <!-- PANEL DERECHO — Formulario -->
         <ScrollViewer Grid.Column="1"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       Background="Transparent">
             <Grid VerticalAlignment="Center" MinHeight="500">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+                <StackPanel VerticalAlignment="Center" Margin="48,40,48,40" MaxWidth="460">
 
-                <!-- Contenido centrado verticalmente -->
-                <StackPanel Grid.Row="1"
-                            VerticalAlignment="Center"
-                            Margin="48,40,48,40"
-                            MaxWidth="460">
-
-                    <!-- Encabezado del formulario -->
+                    <!-- Encabezado -->
                     <StackPanel Margin="0,0,0,32">
-                        <TextBlock Text="Crear cuenta"
+                        <TextBlock Text="{loc:Tr Register_Heading}"
                                    FontSize="24" FontWeight="Bold"
                                    Foreground="{DynamicResource TextPrimaryBrush}"
                                    Margin="0,0,0,6" />
@@ -182,96 +135,80 @@
                             <Border Width="24" Height="2" CornerRadius="1"
                                     Background="{DynamicResource CyanGlowBrush}"
                                     Margin="0,0,8,0" VerticalAlignment="Center" />
-                            <TextBlock Text="Completa los campos para comenzar"
-                                       FontSize="13"
-                                       Foreground="{DynamicResource TextMutedBrush}"
+                            <TextBlock Text="{loc:Tr Register_SubHeading}"
+                                       FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </StackPanel>
 
-                    <!-- ── Nombre completo ── -->
+                    <!-- Nombre completo -->
                     <Grid Margin="0,0,0,18">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0"
-                                   Text="Nombre completo"
+                        <TextBlock Grid.Row="0" Text="{loc:Tr Register_FullName}"
                                    FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                   Margin="0,0,0,6" />
-                        <TextBox  Grid.Row="1"
-                                  x:Name="FullNameBox"
-                                  Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"
-                                  Style="{DynamicResource FormTextBox}"
-                                  Tag="Ej. Juan García" />
+                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                        <TextBox Grid.Row="1" x:Name="FullNameBox"
+                                 Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{DynamicResource FormTextBox}"
+                                 Tag="{loc:Tr Register_FullNameHint}" />
                         <TextBlock Grid.Row="2"
                                    Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=FullNameBox}"
-                                   FontSize="11" Foreground="{DynamicResource AccentRedBrush}"
-                                   Margin="2,4,0,0" />
+                                   FontSize="11" Foreground="{DynamicResource AccentRedBrush}" Margin="2,4,0,0" />
                     </Grid>
 
-                    <!-- ── Correo electrónico ── -->
+                    <!-- Correo electrónico -->
                     <Grid Margin="0,0,0,18">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0"
-                                   Text="Correo electrónico"
+                        <TextBlock Grid.Row="0" Text="{loc:Tr Register_Email}"
                                    FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                   Margin="0,0,0,6" />
-                        <TextBox  Grid.Row="1"
-                                  x:Name="EmailBox"
-                                  Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                                  Style="{DynamicResource FormTextBox}"
-                                  Tag="usuario@ejemplo.com" />
+                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                        <TextBox Grid.Row="1" x:Name="EmailBox"
+                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{DynamicResource FormTextBox}"
+                                 Tag="{loc:Tr Register_EmailHint}" />
                         <TextBlock Grid.Row="2"
                                    Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=EmailBox}"
-                                   FontSize="11" Foreground="{DynamicResource AccentRedBrush}"
-                                   Margin="2,4,0,0" />
+                                   FontSize="11" Foreground="{DynamicResource AccentRedBrush}" Margin="2,4,0,0" />
                     </Grid>
 
-                    <!-- ── Nombre de usuario ── -->
+                    <!-- Nombre de usuario -->
                     <Grid Margin="0,0,0,18">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0"
-                                   Text="Nombre de usuario"
+                        <TextBlock Grid.Row="0" Text="{loc:Tr Register_Username}"
                                    FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                   Margin="0,0,0,6" />
-                        <TextBox  Grid.Row="1"
-                                  x:Name="UsernameBox"
-                                  Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                                  Style="{DynamicResource FormTextBox}"
-                                  Tag="trader_pro" />
+                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                        <TextBox Grid.Row="1" x:Name="UsernameBox"
+                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{DynamicResource FormTextBox}"
+                                 Tag="{loc:Tr Register_UsernameHint}" />
                         <TextBlock Grid.Row="2"
                                    Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=UsernameBox}"
-                                   FontSize="11" Foreground="{DynamicResource AccentRedBrush}"
-                                   Margin="2,4,0,0" />
+                                   FontSize="11" Foreground="{DynamicResource AccentRedBrush}" Margin="2,4,0,0" />
                     </Grid>
 
-                    <!-- ── Contraseña + Confirmar (dos columnas) ── -->
+                    <!-- Contraseña + Confirmar -->
                     <Grid Margin="0,0,0,18">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="16" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
-                        <!-- Contraseña -->
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Contraseña"
+                            <TextBlock Text="{loc:Tr Register_Password}"
                                        FontSize="12" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
-                                       Margin="0,0,0,6" />
+                                       Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
                             <PasswordBox x:Name="PasswordBox"
                                          Style="{DynamicResource FormPasswordBox}"
                                          PasswordChanged="PasswordBox_PasswordChanged" />
@@ -285,13 +222,10 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
-
-                        <!-- Confirmar contraseña -->
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Confirmar contraseña"
+                            <TextBlock Text="{loc:Tr Register_ConfirmPassword}"
                                        FontSize="12" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
-                                       Margin="0,0,0,6" />
+                                       Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
                             <PasswordBox x:Name="ConfirmPasswordBox"
                                          Style="{DynamicResource FormPasswordBox}"
                                          PasswordChanged="ConfirmPasswordBox_PasswordChanged" />
@@ -307,64 +241,68 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- ── Requisitos de contraseña ── -->
-                    <Border Margin="0,0,0,24"
-                            Padding="14,10"
+                    <!-- Requisitos de contraseña -->
+                    <Border Margin="0,0,0,24" Padding="14,10"
                             Background="{DynamicResource SurfaceElevatedBrush}"
                             BorderBrush="{DynamicResource BorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="6">
+                            BorderThickness="1" CornerRadius="6">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="REQUISITOS DE CONTRASEÑA"
+                                <TextBlock Text="{loc:Tr Register_Requirements}"
                                            FontSize="9" FontWeight="Bold"
-                                           Foreground="{DynamicResource TextMutedBrush}"
-                                           Margin="0,0,0,8" />
-                                <TextBlock Text="• Mínimo 8 caracteres"    FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3" />
-                                <TextBlock Text="• Una letra mayúscula"    FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3" />
-                                <TextBlock Text="• Una letra minúscula"    FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,8" />
+                                <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3">
+                                    <Run Text="• " /><Run Text="{loc:Tr Register_Req_MinLength}" />
+                                </TextBlock>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3">
+                                    <Run Text="• " /><Run Text="{loc:Tr Register_Req_Uppercase}" />
+                                </TextBlock>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}">
+                                    <Run Text="• " /><Run Text="{loc:Tr Register_Req_Lowercase}" />
+                                </TextBlock>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                 <TextBlock Text=" " FontSize="9" Margin="0,0,0,8" />
-                                <TextBlock Text="• Un número"                    FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3" />
-                                <TextBlock Text="• Un carácter especial (!@#$…)" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap" />
+                                <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3">
+                                    <Run Text="• " /><Run Text="{loc:Tr Register_Req_Number}" />
+                                </TextBlock>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3">
+                                    <Run Text="• " /><Run Text="{loc:Tr Register_Req_NoSpaces}" />
+                                </TextBlock>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap">
+                                    <Run Text="• " /><Run Text="{loc:Tr Register_Req_ConfirmMatch}" />
+                                </TextBlock>
                             </StackPanel>
                         </Grid>
                     </Border>
 
-                    <!-- ── Error general ── -->
-                    <Border Margin="0,0,0,20"
-                            Padding="14,10"
-                            Background="#22FF3333"
-                            BorderBrush="{DynamicResource AccentRedBrush}"
-                            BorderThickness="1"
-                            CornerRadius="6"
+                    <!-- Error general -->
+                    <Border Margin="0,0,0,20" Padding="14,10"
+                            Background="#22FF3333" BorderBrush="{DynamicResource AccentRedBrush}"
+                            BorderThickness="1" CornerRadius="6"
                             Visibility="{Binding GeneralError, Converter={StaticResource StringToVisibility}}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="⚠" FontSize="13"
                                        Foreground="{DynamicResource AccentRedBrush}"
                                        Margin="0,0,8,0" VerticalAlignment="Top" />
-                            <TextBlock Text="{Binding GeneralError}"
-                                       FontSize="12"
-                                       Foreground="{DynamicResource AccentRedBrush}"
-                                       TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding GeneralError}" FontSize="12"
+                                       Foreground="{DynamicResource AccentRedBrush}" TextWrapping="Wrap" />
                         </StackPanel>
                     </Border>
 
-                    <!-- ── Botón registrar ── -->
-                    <Button Content="Crear cuenta"
+                    <!-- Botón registrar -->
+                    <Button Content="{loc:Tr Register_Submit}"
                             Style="{DynamicResource PrimaryButton}"
-                            HorizontalAlignment="Stretch"
-                            Height="42" FontSize="14"
+                            HorizontalAlignment="Stretch" Height="42" FontSize="14"
                             Command="{Binding RegisterCommand}"
                             IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
                             Margin="0,0,0,20" />
 
-                    <!-- ── Separador ── -->
+                    <!-- Separador -->
                     <Grid Margin="0,0,0,20">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -372,51 +310,40 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Rectangle Grid.Column="0" Height="1"
-                                   Fill="{DynamicResource BorderBrush}"
-                                   VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="1"
-                                   Text="¿Ya tienes cuenta?"
-                                   FontSize="11"
-                                   Foreground="{DynamicResource TextMutedBrush}"
-                                   Margin="12,0" />
+                                   Fill="{DynamicResource BorderBrush}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="{loc:Tr Register_AlreadyHaveAccount}"
+                                   FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="12,0" />
                         <Rectangle Grid.Column="2" Height="1"
-                                   Fill="{DynamicResource BorderBrush}"
-                                   VerticalAlignment="Center" />
+                                   Fill="{DynamicResource BorderBrush}" VerticalAlignment="Center" />
                     </Grid>
 
-                    <!-- ── Botón ir a login ── -->
-                    <Button Content="Iniciar sesión"
+                    <!-- Botón ir a login -->
+                    <Button Content="{loc:Tr Register_SignIn}"
                             Style="{DynamicResource SecondaryButton}"
-                            HorizontalAlignment="Stretch"
-                            Height="38" FontSize="13"
+                            HorizontalAlignment="Stretch" Height="38" FontSize="13"
                             Command="{Binding GoToLoginCommand}" />
 
                 </StackPanel>
             </Grid>
         </ScrollViewer>
 
-        <!-- ══ Overlay de carga ══ -->
-        <Border Grid.Column="1"
-                Background="#CC0A0E1A"
+        <!-- Overlay de carga -->
+        <Border Grid.Column="1" Background="#CC0A0E1A"
                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Border Width="48" Height="48" CornerRadius="24"
-                        Background="#1500D4FF"
-                        BorderBrush="#3300D4FF" BorderThickness="1"
+                        Background="#1500D4FF" BorderBrush="#3300D4FF" BorderThickness="1"
                         Margin="0,0,0,14">
                     <TextBlock Text="⏳" FontSize="22"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
-                <TextBlock Text="Registrando usuario…"
+                <TextBlock Text="{loc:Tr Register_Loading}"
                            FontSize="14" FontWeight="SemiBold"
                            Foreground="{DynamicResource TextPrimaryBrush}"
                            HorizontalAlignment="Center" />
-                <TextBlock Text="Por favor espera"
-                           FontSize="12"
-                           Foreground="{DynamicResource TextMutedBrush}"
-                           HorizontalAlignment="Center"
-                           Margin="0,4,0,0" />
+                <TextBlock Text="{loc:Tr Register_PleaseWait}"
+                           FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                           HorizontalAlignment="Center" Margin="0,4,0,0" />
             </StackPanel>
         </Border>
 

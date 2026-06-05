@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Application.WPF.ViewModels.Strategies;assembly=Application.WPF.ViewModels"
              xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+             xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:TradingStrategyViewModel}"
              Background="{DynamicResource BackgroundBrush}"
@@ -72,12 +73,12 @@
                             <Border Width="3" Height="22" CornerRadius="1.5"
                                     Background="{DynamicResource CyanGlowBrush}"
                                     Margin="0,0,10,0" VerticalAlignment="Center" />
-                            <TextBlock Text="Estrategias"
+                            <TextBlock Text="{loc:Tr Strategy_Title}"
                                        FontSize="20" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
-                        <TextBlock Text="Metodologías y sistemas de trading"
+                        <TextBlock Text="{loc:Tr Strategy_Subtitle}"
                                    FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
                                    Margin="13,0,0,0" />
                     </StackPanel>
@@ -88,7 +89,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="+" FontSize="15" FontWeight="Bold"
                                        Margin="0,0,5,0" VerticalAlignment="Center" />
-                            <TextBlock Text="Nueva" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Strategy_New}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                 </Grid>
@@ -112,11 +113,11 @@
                         Visibility="{Binding HasNoStrategies, Converter={StaticResource BoolToVisibility}}">
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="📈" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,12" />
-                        <TextBlock Text="Sin estrategias registradas"
+                        <TextBlock Text="{loc:Tr Strategy_Empty}"
                                    FontSize="14" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                    HorizontalAlignment="Center" />
-                        <TextBlock Text="Crea tu primera estrategia de trading"
+                        <TextBlock Text="{loc:Tr Strategy_EmptyHint}"
                                    FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
                                    HorizontalAlignment="Center" Margin="0,4,0,0" />
                     </StackPanel>
@@ -212,21 +213,21 @@
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
                                                     Margin="0,0,4,0">
-                                                <TextBlock Text="✏ Editar" FontSize="11" />
+                                                <TextBlock Text="{loc:Tr Strategy_Edit}" FontSize="11" />
                                             </Button>
                                             <Button Style="{StaticResource CardActionButton}"
                                                     Foreground="#FFD700"
                                                     Tag="{Binding}"
                                                     Click="OnRateStrategy"
                                                     Margin="0,0,4,0">
-                                                <TextBlock Text="★ Calificar" FontSize="11" />
+                                                <TextBlock Text="{loc:Tr Strategy_Rate}" FontSize="11" />
                                             </Button>
                                             <Button Style="{StaticResource CardActionButton}"
                                                     Foreground="{DynamicResource AccentRedBrush}"
                                                     Command="{Binding DataContext.DeleteStrategyCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}">
-                                                <TextBlock Text="🗑 Eliminar" FontSize="11" />
+                                                <TextBlock Text="{loc:Tr Strategy_Delete}" FontSize="11" />
                                             </Button>
                                         </StackPanel>
                                     </Grid>
@@ -297,7 +298,7 @@
                                    Foreground="{DynamicResource TextPrimaryBrush}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
-                    <Button Grid.Column="1" Content="✕ Cancelar"
+                    <Button Grid.Column="1" Content="{loc:Tr Strategy_Cancel}"
                             Style="{DynamicResource GhostButton}"
                             Command="{Binding CancelCommand}"
                             FontSize="11" Padding="10,5" />
@@ -306,21 +307,21 @@
                 <!-- ── Datos generales ── -->
                 <Border Style="{DynamicResource Card}" Margin="0,0,0,16">
                     <StackPanel>
-                        <TextBlock Text="Datos generales"
+                        <TextBlock Text="{loc:Tr Strategy_GeneralData}"
                                    FontSize="13" FontWeight="SemiBold"
                                    Foreground="{DynamicResource CyanGlowBrush}"
                                    Margin="0,0,0,16" />
 
                         <!-- Título -->
                         <StackPanel Margin="0,0,0,14">
-                            <TextBlock Text="Título *"
+                            <TextBlock Text="{loc:Tr Strategy_TitleLabel}"
                                        FontSize="12" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        Margin="0,0,0,6" />
                             <TextBox x:Name="TitleTextBox"
                                      Text="{Binding StrategyTitle, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}"
-                                     Tag="Ej: Ruptura de rangos, Tendencia en H4…" />
+                                     Tag="{loc:Tr Strategy_TitleHint}" />
                             <ItemsControl ItemsSource="{Binding (Validation.Errors), ElementName=TitleTextBox}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -334,13 +335,13 @@
 
                         <!-- Descripción -->
                         <StackPanel>
-                            <TextBlock Text="Descripción"
+                            <TextBlock Text="{loc:Tr Strategy_DescriptionLabel}"
                                        FontSize="12" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        Margin="0,0,0,6" />
                             <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}"
-                                     Tag="Describe brevemente la estrategia…"
+                                     Tag="{loc:Tr Strategy_DescriptionHint}"
                                      TextWrapping="Wrap"
                                      AcceptsReturn="True"
                                      MinHeight="72"
@@ -352,7 +353,7 @@
                 <!-- ── Imagen ── -->
                 <Border Style="{DynamicResource Card}" Margin="0,0,0,16">
                     <StackPanel>
-                        <TextBlock Text="Imagen de referencia (opcional)"
+                        <TextBlock Text="{loc:Tr Strategy_ImageSection}"
                                    FontSize="13" FontWeight="SemiBold"
                                    Foreground="{DynamicResource CyanGlowBrush}"
                                    Margin="0,0,0,16" />
@@ -361,7 +362,7 @@
                         <Border CornerRadius="8" ClipToBounds="True"
                                 MaxHeight="180" Margin="0,0,0,12"
                                 Cursor="Hand"
-                                ToolTip="Clic para ampliar"
+                                ToolTip="{loc:Tr Strategy_TooltipExpand}"
                                 Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}"
                                 MouseLeftButtonDown="OnFormImageClick">
                             <Image Source="{Binding ImagePreview}"
@@ -387,7 +388,7 @@
                             </Border.Style>
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <TextBlock Text="🖼" FontSize="24" HorizontalAlignment="Center" />
-                                <TextBlock Text="Sin imagen seleccionada"
+                                <TextBlock Text="{loc:Tr Strategy_NoImage}"
                                            FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center" Margin="0,4,0,0" />
                             </StackPanel>
@@ -401,7 +402,7 @@
                                     Padding="12,7" FontSize="12">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="📂" Margin="0,0,6,0" />
-                                    <TextBlock Text="Seleccionar imagen" />
+                                    <TextBlock Text="{loc:Tr Strategy_SelectImage}" />
                                 </StackPanel>
                             </Button>
                             <Button Style="{DynamicResource GhostButton}"
@@ -412,7 +413,7 @@
                                     Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="✕" Margin="0,0,6,0" />
-                                    <TextBlock Text="Quitar imagen" />
+                                    <TextBlock Text="{loc:Tr Strategy_RemoveImage}" />
                                 </StackPanel>
                             </Button>
                         </StackPanel>
@@ -422,7 +423,7 @@
                 <!-- ── Reglas de la estrategia ── -->
                 <Border Style="{DynamicResource Card}" Margin="0,0,0,16">
                     <StackPanel>
-                        <TextBlock Text="Reglas de la estrategia"
+                        <TextBlock Text="{loc:Tr Strategy_RulesSection}"
                                    FontSize="13" FontWeight="SemiBold"
                                    Foreground="{DynamicResource CyanGlowBrush}"
                                    Margin="0,0,0,16" />
@@ -486,7 +487,7 @@
                             <TextBox Grid.Column="0"
                                      Text="{Binding NewRuleText, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}"
-                                     Tag="Escribe una regla y presiona Agregar…"
+                                     Tag="{loc:Tr Strategy_RuleHint}"
                                      FontSize="12">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Return"
@@ -498,7 +499,7 @@
                                     Style="{DynamicResource PrimaryButton}"
                                     Margin="8,0,0,0"
                                     Height="40" Padding="14,0" FontSize="12">
-                                <TextBlock Text="+ Agregar" />
+                                <TextBlock Text="{loc:Tr Strategy_Add}" />
                             </Button>
                         </Grid>
                     </StackPanel>
@@ -508,11 +509,11 @@
                 <Border Style="{DynamicResource Card}" Margin="0,0,0,16">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                            <TextBlock Text="Confluencias para calificar el setup"
+                            <TextBlock Text="{loc:Tr Strategy_ConfluencesSection}"
                                        FontSize="13" FontWeight="SemiBold"
                                        Foreground="{DynamicResource CyanGlowBrush}" />
                         </StackPanel>
-                        <TextBlock Text="Factores técnicos que determinarán la calidad del trade (S/R, Fibonacci, Medias, etc.)"
+                        <TextBlock Text="{loc:Tr Strategy_ConfluencesSubtitle}"
                                    FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                                    Margin="0,0,0,14" TextWrapping="Wrap" />
 
@@ -567,7 +568,7 @@
                             <TextBox Grid.Column="0"
                                      Text="{Binding NewConfluenceText, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}"
-                                     Tag="Ej: Soporte/Resistencia, Fibonacci, Media 200…"
+                                     Tag="{loc:Tr Strategy_ConfluenceHint}"
                                      FontSize="12">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Return" Command="{Binding AddConfluenceCommand}" />
@@ -577,7 +578,7 @@
                                     Command="{Binding AddConfluenceCommand}"
                                     Style="{DynamicResource PrimaryButton}"
                                     Margin="8,0,0,0" Height="40" Padding="14,0" FontSize="12">
-                                <TextBlock Text="+ Agregar" />
+                                <TextBlock Text="{loc:Tr Strategy_Add}" />
                             </Button>
                         </Grid>
                     </StackPanel>
@@ -589,10 +590,10 @@
                         Height="44" FontSize="14" FontWeight="SemiBold">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
-                            <Setter Property="Content" Value="Guardar estrategia" />
+                            <Setter Property="Content" Value="{loc:Tr Strategy_Save}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsBusy}" Value="True">
-                                    <Setter Property="Content" Value="Guardando…" />
+                                    <Setter Property="Content" Value="{loc:Tr Strategy_Saving}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

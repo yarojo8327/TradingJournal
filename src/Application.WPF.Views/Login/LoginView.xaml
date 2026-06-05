@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Application.WPF.ViewModels.Login;assembly=Application.WPF.ViewModels"
              xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+             xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:LoginViewModel}"
              Background="{DynamicResource BackgroundBrush}"
@@ -48,14 +49,13 @@
                             </TextBlock>
                         </StackPanel>
 
-                        <TextBlock Text="Tu bitácora profesional de trading"
+                        <TextBlock Text="{loc:Tr Login_Tagline}"
                                    FontSize="14"
                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                    Margin="0,0,0,48" TextWrapping="Wrap" />
 
                         <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,36" />
 
-                        <!-- Estadísticas de sesión -->
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                                 <Border Width="36" Height="36" CornerRadius="8"
@@ -65,10 +65,10 @@
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Acceso seguro"
+                                    <TextBlock Text="{loc:Tr Login_Feature_Secure}"
                                                FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}" />
-                                    <TextBlock Text="Contraseña cifrada con BCrypt"
+                                    <TextBlock Text="{loc:Tr Login_Feature_SecureDesc}"
                                                FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
                                 </StackPanel>
                             </StackPanel>
@@ -81,10 +81,10 @@
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Tu portafolio te espera"
+                                    <TextBlock Text="{loc:Tr Login_Feature_Portfolio}"
                                                FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}" />
-                                    <TextBlock Text="Historial y métricas actualizadas"
+                                    <TextBlock Text="{loc:Tr Login_Feature_PortfolioDesc}"
                                                FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
                                 </StackPanel>
                             </StackPanel>
@@ -97,10 +97,10 @@
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Acceso instantáneo"
+                                    <TextBlock Text="{loc:Tr Login_Feature_Instant}"
                                                FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}" />
-                                    <TextBlock Text="Continúa donde lo dejaste"
+                                    <TextBlock Text="{loc:Tr Login_Feature_InstantDesc}"
                                                FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
                                 </StackPanel>
                             </StackPanel>
@@ -111,7 +111,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Border CornerRadius="4" Background="#1500D4FF"
                                     BorderBrush="#3300D4FF" BorderThickness="1" Padding="10,4">
-                                <TextBlock Text="v1.0.0 — Enterprise Edition"
+                                <TextBlock Text="{loc:Tr App_Version}"
                                            FontSize="11" FontWeight="SemiBold" Foreground="#00D4FF" />
                             </Border>
                         </StackPanel>
@@ -135,7 +135,7 @@
 
                     <!-- Encabezado -->
                     <StackPanel Margin="0,0,0,36">
-                        <TextBlock Text="Iniciar sesión"
+                        <TextBlock Text="{loc:Tr Login_Title}"
                                    FontSize="24" FontWeight="Bold"
                                    Foreground="{DynamicResource TextPrimaryBrush}"
                                    Margin="0,0,0,6" />
@@ -143,7 +143,7 @@
                             <Border Width="24" Height="2" CornerRadius="1"
                                     Background="{DynamicResource CyanGlowBrush}"
                                     Margin="0,0,8,0" VerticalAlignment="Center" />
-                            <TextBlock Text="Ingresa con tu usuario o correo"
+                            <TextBlock Text="{loc:Tr Login_Subtitle}"
                                        FontSize="13"
                                        Foreground="{DynamicResource TextMutedBrush}"
                                        VerticalAlignment="Center" />
@@ -158,7 +158,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0"
-                                   Text="Usuario o correo electrónico"
+                                   Text="{loc:Tr Login_UsernameOrEmail}"
                                    FontSize="12" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                    Margin="0,0,0,6" />
@@ -166,7 +166,7 @@
                                   x:Name="UsernameBox"
                                   Text="{Binding UsernameOrEmail, UpdateSourceTrigger=PropertyChanged}"
                                   Style="{DynamicResource FormTextBox}"
-                                  Tag="trader_pro  ó  usuario@ejemplo.com" />
+                                  Tag="{loc:Tr Login_UsernameOrEmailHint}" />
                         <TextBlock Grid.Row="2"
                                    Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=UsernameBox}"
                                    FontSize="11" Foreground="{DynamicResource AccentRedBrush}"
@@ -181,7 +181,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0"
-                                   Text="Contraseña"
+                                   Text="{loc:Tr Login_Password}"
                                    FontSize="12" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                    Margin="0,0,0,6" />
@@ -216,7 +216,7 @@
                     </Border>
 
                     <!-- ── Botón ingresar ── -->
-                    <Button Content="Ingresar"
+                    <Button Content="{loc:Tr Login_Submit}"
                             Style="{DynamicResource PrimaryButton}"
                             HorizontalAlignment="Stretch"
                             Height="42" FontSize="14"
@@ -235,7 +235,7 @@
                                    Fill="{DynamicResource BorderBrush}"
                                    VerticalAlignment="Center" />
                         <TextBlock Grid.Column="1"
-                                   Text="¿No tienes cuenta?"
+                                   Text="{loc:Tr Login_NoAccount}"
                                    FontSize="11"
                                    Foreground="{DynamicResource TextMutedBrush}"
                                    Margin="12,0" />
@@ -245,7 +245,7 @@
                     </Grid>
 
                     <!-- ── Botón ir a registro ── -->
-                    <Button Content="Crear cuenta nueva"
+                    <Button Content="{loc:Tr Login_CreateAccount}"
                             Style="{DynamicResource SecondaryButton}"
                             HorizontalAlignment="Stretch"
                             Height="38" FontSize="13"
@@ -265,11 +265,11 @@
                     <TextBlock Text="🔐" FontSize="22"
                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
-                <TextBlock Text="Verificando credenciales…"
+                <TextBlock Text="{loc:Tr Login_Verifying}"
                            FontSize="14" FontWeight="SemiBold"
                            Foreground="{DynamicResource TextPrimaryBrush}"
                            HorizontalAlignment="Center" />
-                <TextBlock Text="Por favor espera"
+                <TextBlock Text="{loc:Tr Login_PleaseWait}"
                            FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
                            HorizontalAlignment="Center" Margin="0,4,0,0" />
             </StackPanel>
