@@ -42,8 +42,15 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     // ── Catálogos ─────────────────────────────────────────────────────────
 
-    [ObservableProperty] private ObservableCollection<TradingAccountEntity> _accounts = new();
-    [ObservableProperty] private ObservableCollection<TradingStrategy>      _strategies = new();
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FilterAccounts))]
+    private ObservableCollection<TradingAccountEntity> _accounts = new();
+
+    [ObservableProperty] private ObservableCollection<TradingStrategy> _strategies = new();
+
+    // Incluye null como primer ítem para el filtro "Todas las cuentas"
+    public IReadOnlyList<TradingAccountEntity?> FilterAccounts =>
+        new[] { (TradingAccountEntity?)null }.Concat(Accounts).ToList();
 
     public IReadOnlyList<string> Symbols { get; } = new List<string>
     {
@@ -373,6 +380,21 @@ public partial class TradeJournalViewModel : BaseViewModel
     {
         var user = _sessionService.CurrentUser;
         if (user is not null) await LoadTradesAsync(user.Id);
+    }
+
+    [RelayCommand]
+    private void OpenScreenshot(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return;
+        try
+        {
+            System.Diagnostics.Process.Start(
+                new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not open URL {Url}", url);
+        }
     }
 
     [RelayCommand]

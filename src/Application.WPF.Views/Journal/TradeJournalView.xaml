@@ -12,18 +12,21 @@
              FontFamily="Segoe UI">
 
     <UserControl.Resources>
-        <converters:StringToVisibilityConverter x:Key="StringToVisibility" />
-        <converters:BoolToVisibilityConverter   x:Key="BoolToVisibility" />
-        <converters:InverseBoolConverter        x:Key="InverseBool" />
+        <converters:StringToVisibilityConverter          x:Key="StringToVisibility" />
+        <converters:BoolToVisibilityConverter            x:Key="BoolToVisibility" />
+        <converters:InverseBoolConverter                 x:Key="InverseBool" />
+        <converters:TradingSessionDisplayConverter       x:Key="SessionDisplay" />
 
-        <!-- Columna de tabla -->
+        <!-- Cabecera de tabla -->
         <Style x:Key="ColHeader" TargetType="TextBlock">
             <Setter Property="Foreground"        Value="{DynamicResource TextMutedBrush}" />
-            <Setter Property="FontSize"          Value="10" />
+            <Setter Property="FontSize"          Value="9" />
             <Setter Property="FontWeight"        Value="SemiBold" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin"            Value="6,0" />
         </Style>
+
+        <!-- Celda de tabla -->
         <Style x:Key="CellText" TargetType="TextBlock">
             <Setter Property="Foreground"        Value="{DynamicResource TextPrimaryBrush}" />
             <Setter Property="FontSize"          Value="12" />
@@ -32,13 +35,15 @@
             <Setter Property="TextTrimming"      Value="CharacterEllipsis" />
         </Style>
 
-        <!-- Formulario -->
+        <!-- Etiqueta de sección del formulario -->
         <Style x:Key="SectionLabel" TargetType="TextBlock">
-            <Setter Property="FontSize"    Value="10" />
+            <Setter Property="FontSize"    Value="9" />
             <Setter Property="FontWeight"  Value="Bold" />
             <Setter Property="Foreground"  Value="{DynamicResource CyanGlowBrush}" />
             <Setter Property="Margin"      Value="0,0,0,10" />
         </Style>
+
+        <!-- Etiqueta de campo -->
         <Style x:Key="FieldLabel" TargetType="TextBlock">
             <Setter Property="FontSize"   Value="11" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -46,11 +51,11 @@
             <Setter Property="Margin"     Value="0,0,0,5" />
         </Style>
 
-        <!-- Botón de acción pequeño en tabla -->
+        <!-- Botón pequeño de acción en tabla -->
         <Style x:Key="SmallActionBtn" TargetType="Button">
             <Setter Property="Background"      Value="Transparent" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding"         Value="8,3" />
+            <Setter Property="Padding"         Value="7,3" />
             <Setter Property="FontSize"        Value="11" />
             <Setter Property="Cursor"          Value="Hand" />
             <Setter Property="Template">
@@ -65,6 +70,31 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="#15FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón link (texto subrayado) -->
+        <Style x:Key="LinkButton" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding"         Value="0" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock x:Name="Txt"
+                                   Text="{TemplateBinding Content}"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource CyanGlowBrush}"
+                                   TextDecorations="Underline"
+                                   VerticalAlignment="Center" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Txt" Property="Opacity" Value="0.75" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -137,23 +167,65 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
+                    <!-- Filtro: Cuenta (incluye null="Todas") -->
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="{loc:Tr Journal_Filter_Account}" Style="{StaticResource FieldLabel}" />
-                        <ComboBox ItemsSource="{Binding Accounts}"
+                        <ComboBox ItemsSource="{Binding FilterAccounts}"
                                   SelectedItem="{Binding FilterAccount}"
-                                  Style="{DynamicResource FormComboBox}" />
+                                  Style="{DynamicResource FormComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{Binding Broker}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                        <Setter Property="Text"       Value="— Todas las cuentas —" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
+
+                    <!-- Filtro: Símbolo -->
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="{loc:Tr Journal_Filter_Symbol}" Style="{StaticResource FieldLabel}" />
                         <TextBox Text="{Binding FilterSymbol, UpdateSourceTrigger=PropertyChanged}"
                                  Style="{DynamicResource FormTextBox}" Tag="EURUSD, BTC…" />
                     </StackPanel>
+
+                    <!-- Filtro: Resultado (incluye null="Todos") -->
                     <StackPanel Grid.Column="4">
                         <TextBlock Text="{loc:Tr Journal_Filter_Result}" Style="{StaticResource FieldLabel}" />
                         <ComboBox ItemsSource="{Binding FilterResults}"
                                   SelectedItem="{Binding FilterResult}"
-                                  Style="{DynamicResource FormComboBox}" />
+                                  Style="{DynamicResource FormComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{Binding Display}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                        <Setter Property="Text"       Value="— Todos los resultados —" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
+
                     <Button Grid.Column="6" Content="{loc:Tr Journal_Filter_Apply}"
                             Style="{DynamicResource PrimaryButton}"
                             Command="{Binding ApplyFilterCommand}"
@@ -168,27 +240,29 @@
             <!-- ═══ TABLA DE TRADES ═══ -->
             <Border Style="{DynamicResource Card}" Margin="0,0,0,20" Padding="0">
                 <StackPanel>
-                    <!-- Cabecera fija -->
+
+                    <!-- Cabecera -->
                     <Border Background="{DynamicResource SurfaceElevatedBrush}"
                             CornerRadius="6,6,0,0" Padding="0,10">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="108" />  <!-- Fecha -->
-                                <ColumnDefinition Width="75" />   <!-- Símbolo -->
-                                <ColumnDefinition Width="52" />   <!-- Dir -->
-                                <ColumnDefinition Width="150" />  <!-- Cuenta -->
-                                <ColumnDefinition Width="120" />  <!-- Estrategia -->
-                                <ColumnDefinition Width="78" />   <!-- Entrada -->
-                                <ColumnDefinition Width="78" />   <!-- Salida -->
+                                <ColumnDefinition Width="105" />  <!-- Fecha -->
+                                <ColumnDefinition Width="72" />   <!-- Símbolo -->
+                                <ColumnDefinition Width="48" />   <!-- Dir -->
+                                <ColumnDefinition Width="130" />  <!-- Cuenta -->
+                                <ColumnDefinition Width="110" />  <!-- Estrategia -->
+                                <ColumnDefinition Width="76" />   <!-- Entrada -->
+                                <ColumnDefinition Width="76" />   <!-- Salida -->
                                 <ColumnDefinition Width="66" />   <!-- SL -->
                                 <ColumnDefinition Width="66" />   <!-- TP -->
-                                <ColumnDefinition Width="54" />   <!-- Lotes -->
-                                <ColumnDefinition Width="70" />   <!-- P&L -->
-                                <ColumnDefinition Width="50" />   <!-- R:R -->
-                                <ColumnDefinition Width="80" />   <!-- Resultado -->
-                                <ColumnDefinition Width="78" />   <!-- Sesión -->
-                                <ColumnDefinition Width="*" />    <!-- espaciador -->
-                                <ColumnDefinition Width="120" />  <!-- Acciones -->
+                                <ColumnDefinition Width="52" />   <!-- Lotes -->
+                                <ColumnDefinition Width="72" />   <!-- P&L -->
+                                <ColumnDefinition Width="46" />   <!-- R:R -->
+                                <ColumnDefinition Width="78" />   <!-- Resultado -->
+                                <ColumnDefinition Width="80" />   <!-- Sesión -->
+                                <ColumnDefinition Width="36" />   <!-- 📊 -->
+                                <ColumnDefinition Width="*" />    <!-- flex -->
+                                <ColumnDefinition Width="130" />  <!-- Acciones -->
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"  Text="{loc:Tr Journal_Col_Date}"     Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="1"  Text="{loc:Tr Journal_Col_Symbol}"   Style="{StaticResource ColHeader}" />
@@ -204,7 +278,9 @@
                             <TextBlock Grid.Column="11" Text="{loc:Tr Journal_Col_RR}"       Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="12" Text="{loc:Tr Journal_Col_Result}"   Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="13" Text="{loc:Tr Journal_Col_Session}"  Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="15" Text="{loc:Tr Journal_Col_Actions}"  Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="14" Text="📊"                             Style="{StaticResource ColHeader}"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="16" Text="{loc:Tr Journal_Col_Actions}"  Style="{StaticResource ColHeader}" />
                         </Grid>
                     </Border>
 
@@ -225,22 +301,23 @@
                                     </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="108" />
-                                            <ColumnDefinition Width="75" />
+                                            <ColumnDefinition Width="105" />
+                                            <ColumnDefinition Width="72" />
+                                            <ColumnDefinition Width="48" />
+                                            <ColumnDefinition Width="130" />
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="76" />
+                                            <ColumnDefinition Width="76" />
+                                            <ColumnDefinition Width="66" />
+                                            <ColumnDefinition Width="66" />
                                             <ColumnDefinition Width="52" />
-                                            <ColumnDefinition Width="150" />
-                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="72" />
+                                            <ColumnDefinition Width="46" />
                                             <ColumnDefinition Width="78" />
-                                            <ColumnDefinition Width="78" />
-                                            <ColumnDefinition Width="66" />
-                                            <ColumnDefinition Width="66" />
-                                            <ColumnDefinition Width="54" />
-                                            <ColumnDefinition Width="70" />
-                                            <ColumnDefinition Width="50" />
                                             <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="78" />
+                                            <ColumnDefinition Width="36" />
                                             <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="130" />
                                         </Grid.ColumnDefinitions>
 
                                         <!-- Fecha -->
@@ -282,8 +359,7 @@
                                         </Border>
 
                                         <!-- Cuenta -->
-                                        <TextBlock Grid.Column="3"
-                                                   Text="{Binding Account.Broker}"
+                                        <TextBlock Grid.Column="3" Text="{Binding Account.Broker}"
                                                    Style="{StaticResource CellText}" FontSize="11" />
 
                                         <!-- Estrategia -->
@@ -308,7 +384,7 @@
                                                    Text="{Binding PositionSizeLots, StringFormat={}{0:G}, FallbackValue='—'}"
                                                    Style="{StaticResource CellText}" FontSize="11" />
 
-                                        <!-- P&L con color -->
+                                        <!-- P&L con color dinámico -->
                                         <TextBlock Grid.Column="10"
                                                    Text="{Binding ProfitLoss, StringFormat={}{0:+#,##0.00;-#,##0.00;0}, FallbackValue='—'}"
                                                    FontSize="11" FontWeight="SemiBold" Margin="6,0" VerticalAlignment="Center">
@@ -374,13 +450,38 @@
                                             </TextBlock>
                                         </Border>
 
-                                        <!-- Sesión -->
+                                        <!-- Sesión (localizada) -->
                                         <TextBlock Grid.Column="13"
-                                                   Text="{Binding Session, FallbackValue='—'}"
+                                                   Text="{Binding Session, Converter={StaticResource SessionDisplay}}"
                                                    Style="{StaticResource CellText}" FontSize="11" />
 
-                                        <!-- Acciones -->
-                                        <StackPanel Grid.Column="15" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <!-- Ícono de gráfico (solo visible si hay URL) -->
+                                        <Button Grid.Column="14"
+                                                Content="📊"
+                                                FontSize="14"
+                                                BorderThickness="0"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                ToolTip="Abrir gráfico en TradingView"
+                                                Command="{Binding DataContext.OpenScreenshotCommand,
+                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding ScreenshotUrl}">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource SmallActionBtn}">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ScreenshotUrl,
+                                                                     Converter={StaticResource StringToVisibility}}"
+                                                                     Value="Visible">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <!-- Acciones Editar / Eliminar -->
+                                        <StackPanel Grid.Column="16" Orientation="Horizontal" VerticalAlignment="Center">
                                             <Button Content="{loc:Tr Journal_Edit}"
                                                     Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource CyanGlowBrush}"
@@ -449,7 +550,7 @@
                     <!-- ── SECCIÓN 1: DATOS DEL TRADE ── -->
                     <TextBlock Text="DATOS DEL TRADE" Style="{StaticResource SectionLabel}" />
 
-                    <Grid Margin="0,0,0,6">
+                    <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="20" />
@@ -461,7 +562,7 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Cuenta -->
-                        <StackPanel Grid.Column="0" Margin="0,0,0,14">
+                        <StackPanel Grid.Column="0">
                             <TextBlock Text="{loc:Tr Journal_Account}" Style="{StaticResource FieldLabel}" />
                             <ComboBox ItemsSource="{Binding Accounts}"
                                       SelectedItem="{Binding SelectedAccount}"
@@ -469,7 +570,7 @@
                         </StackPanel>
 
                         <!-- Estrategia -->
-                        <StackPanel Grid.Column="2" Margin="0,0,0,14">
+                        <StackPanel Grid.Column="2">
                             <TextBlock Text="{loc:Tr Journal_Strategy}" Style="{StaticResource FieldLabel}" />
                             <ComboBox ItemsSource="{Binding Strategies}"
                                       SelectedItem="{Binding SelectedStrategy}"
@@ -477,7 +578,7 @@
                         </StackPanel>
 
                         <!-- Símbolo con autocomplete -->
-                        <StackPanel Grid.Column="4" Margin="0,0,0,14">
+                        <StackPanel Grid.Column="4">
                             <TextBlock Text="{loc:Tr Journal_Symbol}" Style="{StaticResource FieldLabel}" />
                             <ComboBox ItemsSource="{Binding Symbols}"
                                       Text="{Binding Symbol, UpdateSourceTrigger=PropertyChanged}"
@@ -488,7 +589,7 @@
                         </StackPanel>
 
                         <!-- Dirección -->
-                        <StackPanel Grid.Column="6" Margin="0,0,0,14">
+                        <StackPanel Grid.Column="6">
                             <TextBlock Text="{loc:Tr Journal_Direction}" Style="{StaticResource FieldLabel}" />
                             <ComboBox ItemsSource="{Binding Directions}"
                                       SelectedItem="{Binding SelectedDirection}"
@@ -496,16 +597,16 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- Fechas -->
+                    <!-- Fechas y horas -->
                     <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200" />
                             <ColumnDefinition Width="14" />
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="36" />
                             <ColumnDefinition Width="200" />
                             <ColumnDefinition Width="14" />
-                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="110" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
@@ -592,12 +693,17 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <!-- Resultado (auto-calculado, editable) -->
+                        <!-- Resultado auto-calculado -->
                         <StackPanel Grid.Column="0">
-                            <TextBlock Style="{StaticResource FieldLabel}">
-                                <Run Text="{loc:Tr Journal_Result}" />
-                                <Run Text=" (auto)" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" />
-                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="{loc:Tr Journal_Result}"
+                                           Style="{StaticResource FieldLabel}" Margin="0" />
+                                <Border Background="#0F00D4FF" CornerRadius="3"
+                                        Padding="5,1" Margin="6,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="auto" FontSize="9" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource CyanGlowBrush}" />
+                                </Border>
+                            </StackPanel>
                             <ComboBox ItemsSource="{Binding Results}"
                                       SelectedItem="{Binding SelectedResult}"
                                       Style="{DynamicResource FormComboBox}" />
@@ -629,7 +735,7 @@
 
                     <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" MaxWidth="320" />
                             <ColumnDefinition Width="16" />
                             <ColumnDefinition Width="*" MaxWidth="160" />
                             <ColumnDefinition Width="*" />
@@ -653,8 +759,8 @@
 
                     <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,2,0,18" />
 
-                    <!-- ── SECCIÓN 5: PSICOLOGÍA Y NOTAS ── -->
-                    <TextBlock Text="PSICOLOGÍA Y NOTAS" Style="{StaticResource SectionLabel}" />
+                    <!-- ── SECCIÓN 5: PSICOLOGÍA, GRÁFICO Y NOTAS ── -->
+                    <TextBlock Text="PSICOLOGÍA, GRÁFICO Y NOTAS" Style="{StaticResource SectionLabel}" />
 
                     <Grid Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
@@ -665,6 +771,7 @@
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
 
+                        <!-- Psicología -->
                         <StackPanel Grid.Column="0">
                             <StackPanel Margin="0,0,0,14">
                                 <TextBlock Text="{loc:Tr Journal_EmotionalState}" Style="{StaticResource FieldLabel}" />
@@ -680,20 +787,60 @@
                             </StackPanel>
                         </StackPanel>
 
+                        <!-- URL del gráfico + botón abrir -->
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="{loc:Tr Journal_ScreenshotUrl}" Style="{StaticResource FieldLabel}" />
                             <TextBox Text="{Binding ScreenshotUrl, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}"
                                      Tag="https://www.tradingview.com/chart/..." />
+
+                            <!-- Botón y vista previa de la URL -->
+                            <Border Margin="0,8,0,0"
+                                    Visibility="{Binding ScreenshotUrl, Converter={StaticResource StringToVisibility}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Grid.Column="0"
+                                            Style="{DynamicResource PrimaryButton}"
+                                            Height="34" Padding="14,0" FontSize="12"
+                                            Command="{Binding OpenScreenshotCommand}"
+                                            CommandParameter="{Binding ScreenshotUrl}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="📊" FontSize="13" Margin="0,0,6,0"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Text="Abrir gráfico" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Border Grid.Column="2"
+                                            Background="{DynamicResource SurfaceElevatedBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Padding="10,8">
+                                        <TextBlock Text="{Binding ScreenshotUrl}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource CyanGlowBrush}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   VerticalAlignment="Center"
+                                                   ToolTip="{Binding ScreenshotUrl}" />
+                                    </Border>
+                                </Grid>
+                            </Border>
                         </StackPanel>
 
+                        <!-- Notas -->
                         <StackPanel Grid.Column="4">
                             <TextBlock Text="{loc:Tr Journal_Notes}" Style="{StaticResource FieldLabel}" />
                             <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}"
                                      TextWrapping="Wrap"
                                      AcceptsReturn="True"
-                                     Height="88"
+                                     Height="100"
                                      VerticalScrollBarVisibility="Auto"
                                      VerticalContentAlignment="Top"
                                      Tag="Observaciones, aprendizajes, contexto del mercado…" />
@@ -703,7 +850,7 @@
                     <!-- Botón guardar -->
                     <Button Command="{Binding SaveCommand}"
                             IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
-                            Height="44" Margin="0,12,0,0"
+                            Height="44" Margin="0,14,0,0"
                             HorizontalAlignment="Right" MinWidth="180">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
