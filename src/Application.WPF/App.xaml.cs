@@ -145,6 +145,46 @@ public partial class App : System.Windows.Application
             );");
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE INDEX IF NOT EXISTS ""IX_StrategyConfluences_StrategyId"" ON ""StrategyConfluences"" (""StrategyId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""TradeEntries"" (
+                ""Id""               INTEGER NOT NULL CONSTRAINT ""PK_TradeEntries"" PRIMARY KEY AUTOINCREMENT,
+                ""AccountId""        INTEGER NOT NULL,
+                ""StrategyId""       INTEGER,
+                ""Symbol""           TEXT    NOT NULL,
+                ""Direction""        TEXT    NOT NULL,
+                ""EntryDate""        TEXT    NOT NULL,
+                ""ExitDate""         TEXT,
+                ""EntryPrice""       TEXT    NOT NULL,
+                ""ExitPrice""        TEXT,
+                ""StopLoss""         TEXT,
+                ""TakeProfit""       TEXT,
+                ""PositionSizeLots"" TEXT,
+                ""RiskAmount""       TEXT,
+                ""ProfitLoss""       TEXT,
+                ""PipsResult""       TEXT,
+                ""RiskRewardRatio""  TEXT,
+                ""Result""           TEXT    NOT NULL DEFAULT 'Open',
+                ""Session""          TEXT,
+                ""Timeframe""        TEXT,
+                ""SetupQuality""     INTEGER,
+                ""ConfluencesCount"" INTEGER,
+                ""IsFalseBreakout""  INTEGER NOT NULL DEFAULT 0,
+                ""EmotionalState""   TEXT,
+                ""MistakeType""      TEXT,
+                ""Notes""            TEXT,
+                ""ScreenshotUrl""    TEXT,
+                ""CreatedAt""        TEXT    NOT NULL,
+                ""UpdatedAt""        TEXT,
+                CONSTRAINT ""FK_TradeEntries_TradingAccounts_AccountId""
+                    FOREIGN KEY (""AccountId"") REFERENCES ""TradingAccounts"" (""Id"") ON DELETE CASCADE,
+                CONSTRAINT ""FK_TradeEntries_TradingStrategies_StrategyId""
+                    FOREIGN KEY (""StrategyId"") REFERENCES ""TradingStrategies"" (""Id"") ON DELETE SET NULL
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_TradeEntries_AccountId"" ON ""TradeEntries"" (""AccountId"");");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_TradeEntries_StrategyId"" ON ""TradeEntries"" (""StrategyId"");");
     }
 
     private static IHost BuildHost()

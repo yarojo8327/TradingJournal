@@ -239,6 +239,84 @@
   <data name="Account_Deleted"              xml:space="preserve"><value>Account deleted successfully.</value></data>
   <data name="Account_DeleteError"          xml:space="preserve"><value>Error deleting the account.</value></data>
 
+  <!-- Trade Journal -->
+  <data name="Journal_Header"               xml:space="preserve"><value>Trade Journal</value></data>
+  <data name="Journal_Subtitle"             xml:space="preserve"><value>Record and analyze every trade</value></data>
+  <data name="Journal_NewTrade"             xml:space="preserve"><value>+ New Trade</value></data>
+  <data name="Journal_Empty"                xml:space="preserve"><value>No trades recorded</value></data>
+  <data name="Journal_EmptyHint"            xml:space="preserve"><value>Click «New Trade» to log your first trade</value></data>
+  <data name="Journal_FormNew"              xml:space="preserve"><value>Log new trade</value></data>
+  <data name="Journal_FormEdit"             xml:space="preserve"><value>Edit trade</value></data>
+  <data name="Journal_Cancel"               xml:space="preserve"><value>Cancel</value></data>
+  <data name="Journal_Save"                 xml:space="preserve"><value>Save trade</value></data>
+  <data name="Journal_Saving"               xml:space="preserve"><value>Saving…</value></data>
+  <data name="Journal_Delete"               xml:space="preserve"><value>Delete</value></data>
+  <data name="Journal_Edit"                 xml:space="preserve"><value>Edit</value></data>
+
+  <!-- Journal — Sections -->
+  <data name="Journal_Section_Trade"        xml:space="preserve"><value>Trade details</value></data>
+  <data name="Journal_Section_Execution"    xml:space="preserve"><value>Execution</value></data>
+  <data name="Journal_Section_Result"       xml:space="preserve"><value>Result</value></data>
+  <data name="Journal_Section_Analysis"     xml:space="preserve"><value>Analysis</value></data>
+  <data name="Journal_Section_Psychology"   xml:space="preserve"><value>Psychology &amp; Notes</value></data>
+
+  <!-- Journal — Fields -->
+  <data name="Journal_Account"              xml:space="preserve"><value>Account *</value></data>
+  <data name="Journal_Strategy"             xml:space="preserve"><value>Strategy (optional)</value></data>
+  <data name="Journal_Symbol"               xml:space="preserve"><value>Symbol / Instrument *</value></data>
+  <data name="Journal_Direction"            xml:space="preserve"><value>Direction *</value></data>
+  <data name="Journal_EntryDate"            xml:space="preserve"><value>Entry date *</value></data>
+  <data name="Journal_EntryTime"            xml:space="preserve"><value>Entry time (HH:mm) *</value></data>
+  <data name="Journal_ExitDate"             xml:space="preserve"><value>Exit date</value></data>
+  <data name="Journal_ExitTime"             xml:space="preserve"><value>Exit time (HH:mm)</value></data>
+  <data name="Journal_EntryPrice"           xml:space="preserve"><value>Entry price *</value></data>
+  <data name="Journal_ExitPrice"            xml:space="preserve"><value>Exit price</value></data>
+  <data name="Journal_StopLoss"             xml:space="preserve"><value>Stop loss</value></data>
+  <data name="Journal_TakeProfit"           xml:space="preserve"><value>Take profit</value></data>
+  <data name="Journal_PositionSize"         xml:space="preserve"><value>Position size (lots)</value></data>
+  <data name="Journal_RiskAmount"           xml:space="preserve"><value>Risk amount ($)</value></data>
+  <data name="Journal_ProfitLoss"           xml:space="preserve"><value>P&amp;L ($)</value></data>
+  <data name="Journal_Pips"                 xml:space="preserve"><value>Pips result</value></data>
+  <data name="Journal_RR"                   xml:space="preserve"><value>R:R achieved</value></data>
+  <data name="Journal_Result"               xml:space="preserve"><value>Result *</value></data>
+  <data name="Journal_Session"              xml:space="preserve"><value>Session</value></data>
+  <data name="Journal_Timeframe"            xml:space="preserve"><value>Timeframe</value></data>
+  <data name="Journal_SetupQuality"         xml:space="preserve"><value>Setup quality (1–10)</value></data>
+  <data name="Journal_Confluences"          xml:space="preserve"><value>Confluences met</value></data>
+  <data name="Journal_FalseBreakout"        xml:space="preserve"><value>False breakout</value></data>
+  <data name="Journal_EmotionalState"       xml:space="preserve"><value>Emotional state</value></data>
+  <data name="Journal_MistakeType"          xml:space="preserve"><value>Mistake (if any)</value></data>
+  <data name="Journal_Notes"                xml:space="preserve"><value>Notes / Observations</value></data>
+  <data name="Journal_ScreenshotUrl"        xml:space="preserve"><value>Chart URL (TradingView)</value></data>
+
+  <!-- Journal — Table headers -->
+  <data name="Journal_Col_Date"             xml:space="preserve"><value>DATE</value></data>
+  <data name="Journal_Col_Symbol"           xml:space="preserve"><value>SYMBOL</value></data>
+  <data name="Journal_Col_Direction"        xml:space="preserve"><value>DIR</value></data>
+  <data name="Journal_Col_Account"          xml:space="preserve"><value>ACCOUNT</value></data>
+  <data name="Journal_Col_Strategy"         xml:space="preserve"><value>STRATEGY</value></data>
+  <data name="Journal_Col_Entry"            xml:space="preserve"><value>ENTRY</value></data>
+  <data name="Journal_Col_Exit"             xml:space="preserve"><value>EXIT</value></data>
+  <data name="Journal_Col_SL"               xml:space="preserve"><value>SL</value></data>
+  <data name="Journal_Col_TP"               xml:space="preserve"><value>TP</value></data>
+  <data name="Journal_Col_Lots"             xml:space="preserve"><value>LOTS</value></data>
+  <data name="Journal_Col_PL"               xml:space="preserve"><value>P&amp;L</value></data>
+  <data name="Journal_Col_Pips"             xml:space="preserve"><value>PIPS</value></data>
+  <data name="Journal_Col_RR"               xml:space="preserve"><value>R:R</value></data>
+  <data name="Journal_Col_Result"           xml:space="preserve"><value>RESULT</value></data>
+  <data name="Journal_Col_Session"          xml:space="preserve"><value>SESSION</value></data>
+  <data name="Journal_Col_Quality"          xml:space="preserve"><value>QUALITY</value></data>
+  <data name="Journal_Col_Actions"          xml:space="preserve"><value>ACTIONS</value></data>
+
+  <!-- Journal — Filters -->
+  <data name="Journal_Filter_Account"       xml:space="preserve"><value>Account</value></data>
+  <data name="Journal_Filter_Symbol"        xml:space="preserve"><value>Symbol</value></data>
+  <data name="Journal_Filter_Result"        xml:space="preserve"><value>Result</value></data>
+  <data name="Journal_Filter_Apply"         xml:space="preserve"><value>Filter</value></data>
+  <data name="Journal_Filter_Clear"         xml:space="preserve"><value>Clear</value></data>
+  <data name="Journal_Filter_AllAccounts"   xml:space="preserve"><value>— All accounts —</value></data>
+  <data name="Journal_Filter_AllResults"    xml:space="preserve"><value>— All results —</value></data>
+
   <!-- Strategies -->
   <data name="Strategy_Title"               xml:space="preserve"><value>Strategies</value></data>
   <data name="Strategy_Subtitle"            xml:space="preserve"><value>Methodologies and trading systems</value></data>
