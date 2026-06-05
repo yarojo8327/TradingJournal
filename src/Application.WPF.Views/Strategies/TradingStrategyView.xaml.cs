@@ -6,6 +6,8 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TradingStrategyEntity = Application.WPF.Models.Entities.TradingStrategy;
+using Application.WPF.Views.Strategies;
 
 namespace Application.WPF.Views.Strategies;
 
@@ -64,7 +66,7 @@ public partial class TradingStrategyView : UserControl
         if (DataContext is not TradingStrategyViewModel vm) return;
         if (vm.ImageData is not { Length: > 0 } data) return;
 
-        OpenViewer(data, vm.Title);
+        OpenViewer(data, vm.StrategyTitle);
     }
 
     // ── Imagen: visor ampliado desde la tarjeta en la lista ─────────────
@@ -85,5 +87,22 @@ public partial class TradingStrategyView : UserControl
             Owner = System.Windows.Application.Current.MainWindow
         };
         viewer.ShowDialog();
+    }
+
+    // ── Calificador ─────────────────────────────────────────────────────
+
+    private void OnRateStrategy(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: TradingStrategyEntity strategy }) return;
+        if (DataContext is not TradingStrategyViewModel listVm) return;
+
+        var raterVm = listVm.CreateRater(strategy);
+        var window  = new StrategyRaterWindow(raterVm)
+        {
+            Owner = System.Windows.Application.Current.MainWindow
+        };
+        window.ShowDialog();
+
+        _ = listVm.RefreshAsync();
     }
 }

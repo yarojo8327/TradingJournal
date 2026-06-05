@@ -1,4 +1,5 @@
 using Application.WPF.Models.Entities;
+using Application.WPF.Services.Interfaces;
 using Application.WPF.Services.Session;
 using Xunit;
 
@@ -6,7 +7,15 @@ namespace Application.WPF.Tests.Session;
 
 public class SessionServiceTests
 {
-    private readonly SessionService _sut = new();
+    // Stub que no persiste nada (tests unitarios, sin disco)
+    private sealed class NoPersistence : ISessionPersistenceService
+    {
+        public Task SaveAsync(int userId)          => Task.CompletedTask;
+        public Task ClearAsync()                   => Task.CompletedTask;
+        public Task<int?> TryGetSavedUserIdAsync() => Task.FromResult<int?>(null);
+    }
+
+    private readonly SessionService _sut = new(new NoPersistence());
 
     [Fact]
     public void IsAuthenticated_WhenNoUser_ReturnsFalse()

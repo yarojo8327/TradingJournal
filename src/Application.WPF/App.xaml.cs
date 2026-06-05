@@ -23,6 +23,9 @@ public partial class App : System.Windows.Application
 {
     private IHost? _host;
 
+    public static T GetService<T>() where T : notnull =>
+        ((App)Current)._host!.Services.GetRequiredService<T>();
+
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
@@ -128,6 +131,20 @@ public partial class App : System.Windows.Application
             );");
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE INDEX IF NOT EXISTS ""IX_StrategyRules_StrategyId"" ON ""StrategyRules"" (""StrategyId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""StrategyConfluences"" (
+                ""Id""         INTEGER NOT NULL CONSTRAINT ""PK_StrategyConfluences"" PRIMARY KEY AUTOINCREMENT,
+                ""StrategyId"" INTEGER NOT NULL,
+                ""Name""       TEXT    NOT NULL,
+                ""OrderIndex"" INTEGER NOT NULL,
+                ""Rating""     INTEGER,
+                ""CreatedAt""  TEXT    NOT NULL,
+                CONSTRAINT ""FK_StrategyConfluences_TradingStrategies_StrategyId""
+                    FOREIGN KEY (""StrategyId"") REFERENCES ""TradingStrategies"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_StrategyConfluences_StrategyId"" ON ""StrategyConfluences"" (""StrategyId"");");
     }
 
     private static IHost BuildHost()
@@ -184,10 +201,22 @@ public partial class App : System.Windows.Application
         e.SetObserved();
     }
 
-    private static void ShowErrorAndContinue(Exception ex) =>
-        MessageBox.Show(
-            $"An unexpected error occurred:\n\n{ex.Message}\n\nThe application will continue running.",
-            "Unexpected Error",
-            MessageBoxButton.OK,
-            MessageBoxImage.Error);
+    private static bool _showingError;
+    private static void ShowErrorAndContinue(Exception ex)
+    {
+        if (_showingError) return;
+        _showingError = true;
+        try
+        {
+            MessageBox.Show(
+                $"An unexpected error occurred:\n\n{ex.Message}\n\nThe application will continue running.",
+                "Unexpected Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+        finally
+        {
+            _showingError = false;
+        }
+    }
 }

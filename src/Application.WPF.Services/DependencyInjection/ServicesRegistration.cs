@@ -25,6 +25,7 @@ public static class ServicesRegistration
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<ITradingAccountService, TradingAccountService>();
         services.AddTransient<ITradingStrategyService, TradingStrategyService>();
+        services.AddSingleton<ISessionPersistenceService, SessionPersistenceService>();
         services.AddSingleton<ISessionService, SessionService>();
         return services;
     }

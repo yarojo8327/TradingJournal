@@ -10,8 +10,9 @@ public class TradingJournalDbContext : DbContext
 
     public DbSet<User>             Users             => Set<User>();
     public DbSet<TradingAccount>   TradingAccounts   => Set<TradingAccount>();
-    public DbSet<TradingStrategy>  TradingStrategies => Set<TradingStrategy>();
-    public DbSet<StrategyRule>     StrategyRules     => Set<StrategyRule>();
+    public DbSet<TradingStrategy>   TradingStrategies  => Set<TradingStrategy>();
+    public DbSet<StrategyRule>      StrategyRules      => Set<StrategyRule>();
+    public DbSet<StrategyConfluence> StrategyConfluences => Set<StrategyConfluence>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,6 +41,19 @@ public class TradingJournalDbContext : DbContext
             e.HasMany(s => s.Rules).WithOne(r => r.Strategy)
                 .HasForeignKey(r => r.StrategyId)
                 .OnDelete(DeleteBehavior.Cascade);
+            e.HasMany(s => s.Confluences).WithOne(c => c.Strategy)
+                .HasForeignKey(c => c.StrategyId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.Ignore(s => s.AverageRating);
+            e.Ignore(s => s.HasAverageRating);
+            e.Ignore(s => s.IsQualifiedSetup);
+        });
+
+        modelBuilder.Entity<StrategyConfluence>(e =>
+        {
+            e.HasKey(c => c.Id);
+            e.HasIndex(c => c.StrategyId);
+            e.Property(c => c.Name).IsRequired().HasMaxLength(200);
         });
 
         modelBuilder.Entity<StrategyRule>(e =>

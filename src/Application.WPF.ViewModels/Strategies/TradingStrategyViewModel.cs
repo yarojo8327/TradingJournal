@@ -12,10 +12,11 @@ namespace Application.WPF.ViewModels.Strategies;
 
 public partial class TradingStrategyViewModel : BaseViewModel
 {
-    private readonly ITradingStrategyService          _strategyService;
-    private readonly ISessionService                  _sessionService;
-    private readonly IDialogService                   _dialogService;
+    private readonly ITradingStrategyService           _strategyService;
+    private readonly ISessionService                   _sessionService;
+    private readonly IDialogService                    _dialogService;
     private readonly ILogger<TradingStrategyViewModel> _logger;
+    private readonly Func<StrategyRaterViewModel>      _raterFactory;
 
     private int _strategyId;
 
@@ -31,7 +32,7 @@ public partial class TradingStrategyViewModel : BaseViewModel
 
     [ObservableProperty] private bool   _isFormVisible;
     [ObservableProperty] private bool   _isEditMode;
-    [ObservableProperty] private string _formTitle    = "Nueva estrategia";
+    [ObservableProperty] private string _formTitle     = "Nueva estrategia";
     [ObservableProperty] private string _generalError  = string.Empty;
     [ObservableProperty] private string _generalSuccess = string.Empty;
 
@@ -41,7 +42,7 @@ public partial class TradingStrategyViewModel : BaseViewModel
     [NotifyDataErrorInfo]
     [Required(ErrorMessage = "El título de la estrategia es requerido.")]
     [MaxLength(200, ErrorMessage = "No puede superar 200 caracteres.")]
-    private string _title = string.Empty;
+    private string _strategyTitle = string.Empty;
 
     [ObservableProperty] private string _description = string.Empty;
 
@@ -50,14 +51,19 @@ public partial class TradingStrategyViewModel : BaseViewModel
     [ObservableProperty] private ObservableCollection<StrategyRuleItem> _rules = new();
     [ObservableProperty] private string _newRuleText = string.Empty;
 
+    // ── Confluencias ──────────────────────────────────────────────────────
+
+    [ObservableProperty] private ObservableCollection<StrategyConfluenceItem> _confluences = new();
+    [ObservableProperty] private string _newConfluenceText = string.Empty;
+
     // ── Imagen ────────────────────────────────────────────────────────────
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasImage))]
     private byte[]? _imageData;
 
-    [ObservableProperty] private string?       _imageMimeType;
-    [ObservableProperty] private BitmapImage?  _imagePreview;
+    [ObservableProperty] private string?      _imageMimeType;
+    [ObservableProperty] private BitmapImage? _imagePreview;
 
     public bool HasImage => ImageData != null && ImageData.Length > 0;
 
@@ -65,13 +71,21 @@ public partial class TradingStrategyViewModel : BaseViewModel
         ITradingStrategyService           strategyService,
         ISessionService                   sessionService,
         IDialogService                    dialogService,
-        ILogger<TradingStrategyViewModel> logger)
+        ILogger<TradingStrategyViewModel> logger,
+        Func<StrategyRaterViewModel>      raterFactory)
     {
         _strategyService = strategyService;
         _sessionService  = sessionService;
         _dialogService   = dialogService;
         _logger          = logger;
-        Title            = "Estrategias de Trading";
+        _raterFactory    = raterFactory;
+    }
+
+    public StrategyRaterViewModel CreateRater(StrategyEntity strategy)
+    {
+        var vm = _raterFactory();
+        vm.LoadStrategy(strategy);
+        return vm;
     }
 
     public override async Task InitializeAsync()
@@ -85,6 +99,12 @@ public partial class TradingStrategyViewModel : BaseViewModel
     {
         var list = await _strategyService.GetAllByUserIdAsync(userId);
         Strategies = new ObservableCollection<StrategyEntity>(list);
+    }
+
+    public async Task RefreshAsync()
+    {
+        var user = _sessionService.CurrentUser;
+        if (user is not null) await LoadStrategiesAsync(user.Id);
     }
 
     // ── Comandos de lista ─────────────────────────────────────────────────
@@ -103,7 +123,7 @@ public partial class TradingStrategyViewModel : BaseViewModel
     private void EditStrategy(StrategyEntity strategy)
     {
         _strategyId   = strategy.Id;
-        Title         = strategy.Title;
+        StrategyTitle = strategy.Title;
         Description   = strategy.Description ?? string.Empty;
         IsEditMode    = true;
         IsFormVisible = true;
@@ -116,6 +136,14 @@ public partial class TradingStrategyViewModel : BaseViewModel
                 ExistingId  = r.Id,
                 Description = r.Description,
                 OrderIndex  = i
+            }));
+
+        Confluences = new ObservableCollection<StrategyConfluenceItem>(
+            strategy.Confluences.OrderBy(c => c.OrderIndex).Select((c, i) => new StrategyConfluenceItem
+            {
+                ExistingId = c.Id,
+                Name       = c.Name,
+                OrderIndex = i
             }));
 
         SetImage(strategy.ImageData, strategy.ImageMimeType);
@@ -151,8 +179,8 @@ public partial class TradingStrategyViewModel : BaseViewModel
     private void Cancel()
     {
         ClearForm();
-        IsFormVisible  = false;
-        GeneralError   = GeneralSuccess = string.Empty;
+        IsFormVisible = false;
+        GeneralError  = GeneralSuccess = string.Empty;
     }
 
     // ── Comandos de reglas ────────────────────────────────────────────────
@@ -175,6 +203,28 @@ public partial class TradingStrategyViewModel : BaseViewModel
         Rules.Remove(rule);
         for (int i = 0; i < Rules.Count; i++)
             Rules[i].OrderIndex = i;
+    }
+
+    // ── Comandos de confluencias ──────────────────────────────────────────
+
+    [RelayCommand]
+    private void AddConfluence()
+    {
+        if (string.IsNullOrWhiteSpace(NewConfluenceText)) return;
+        Confluences.Add(new StrategyConfluenceItem
+        {
+            Name       = NewConfluenceText.Trim(),
+            OrderIndex = Confluences.Count
+        });
+        NewConfluenceText = string.Empty;
+    }
+
+    [RelayCommand]
+    private void RemoveConfluence(StrategyConfluenceItem confluence)
+    {
+        Confluences.Remove(confluence);
+        for (int i = 0; i < Confluences.Count; i++)
+            Confluences[i].OrderIndex = i;
     }
 
     // ── Imagen ────────────────────────────────────────────────────────────
@@ -216,15 +266,14 @@ public partial class TradingStrategyViewModel : BaseViewModel
     private async Task SaveAsync()
     {
         GeneralError = GeneralSuccess = string.Empty;
-        ValidateProperty(Title, nameof(Title));
+        ValidateProperty(StrategyTitle, nameof(StrategyTitle));
         if (HasErrors) return;
 
         var user = _sessionService.CurrentUser;
         if (user is null) return;
 
-        // Materializar antes de entrar al bloque async para evitar iterar
-        // la colección después de que ClearForm() la haya vaciado.
-        var ruleDescriptions = Rules.Select(r => r.Description).ToList();
+        var ruleDescriptions     = Rules.Select(r => r.Description).ToList();
+        var confluenceNames      = Confluences.Select(c => c.Name).ToList();
 
         IsBusy = true;
         try
@@ -232,15 +281,15 @@ public partial class TradingStrategyViewModel : BaseViewModel
             if (IsEditMode)
             {
                 await _strategyService.UpdateAsync(
-                    _strategyId, Title, Description,
-                    ImageData, ImageMimeType, ruleDescriptions);
+                    _strategyId, StrategyTitle, Description,
+                    ImageData, ImageMimeType, ruleDescriptions, confluenceNames);
                 GeneralSuccess = "Estrategia actualizada correctamente.";
             }
             else
             {
                 await _strategyService.CreateAsync(
-                    user.Id, Title, Description,
-                    ImageData, ImageMimeType, ruleDescriptions);
+                    user.Id, StrategyTitle, Description,
+                    ImageData, ImageMimeType, ruleDescriptions, confluenceNames);
                 GeneralSuccess = "Estrategia registrada correctamente.";
             }
 
@@ -260,11 +309,13 @@ public partial class TradingStrategyViewModel : BaseViewModel
 
     private void ClearForm()
     {
-        _strategyId  = 0;
-        Title        = string.Empty;
-        Description  = string.Empty;
-        NewRuleText  = string.Empty;
-        Rules        = new ObservableCollection<StrategyRuleItem>();
+        _strategyId       = 0;
+        StrategyTitle     = string.Empty;
+        Description       = string.Empty;
+        NewRuleText       = string.Empty;
+        NewConfluenceText = string.Empty;
+        Rules             = new ObservableCollection<StrategyRuleItem>();
+        Confluences       = new ObservableCollection<StrategyConfluenceItem>();
         SetImage(null, null);
         ClearErrors();
     }

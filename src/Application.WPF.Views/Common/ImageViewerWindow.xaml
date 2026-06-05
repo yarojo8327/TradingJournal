@@ -44,7 +44,7 @@
                                Stretch="Uniform"
                                RenderOptions.BitmapScalingMode="HighQuality"
                                MinWidth="200" MinHeight="200"
-                               Cursor="CrossHair"
+                               Cursor="Cross"
                                MouseLeftButtonDown="OnImageDoubleClick">
                             <Image.LayoutTransform>
                                 <ScaleTransform x:Name="ImageScale"

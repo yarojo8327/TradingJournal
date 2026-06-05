@@ -1,4 +1,4 @@
-using Application.WPF.Infrastructure.Data;
+﻿using Application.WPF.Infrastructure.Data;
 using Application.WPF.Services.Strategies;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using Xunit;
 namespace Application.WPF.Tests.Strategies;
 
 /// <summary>
-/// Usa SQLite in-memory con conexión compartida porque UpdateAsync ejecuta SQL raw
+/// Usa SQLite in-memory con conexiÃ³n compartida porque UpdateAsync ejecuta SQL raw
 /// que no es compatible con el proveedor EF Core InMemory.
 /// </summary>
 public class TradingStrategyServiceTests : IDisposable
@@ -45,19 +45,19 @@ public class TradingStrategyServiceTests : IDisposable
         _connection.Dispose();
     }
 
-    // ── CreateAsync ──────────────────────────────────────────────────────
+    // â”€â”€ CreateAsync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     [Fact]
     public async Task Create_PersistsStrategy()
     {
-        await _sut.CreateAsync(1, "Ruptura de rangos", "Desc", null, null, Array.Empty<string>());
+        await _sut.CreateAsync(1, "Ruptura de rangos", "Desc", null, null, Array.Empty<string>(), Array.Empty<string>());
         Assert.True(await _db.TradingStrategies.AnyAsync());
     }
 
     [Fact]
     public async Task Create_TrimsTitle()
     {
-        var s = await _sut.CreateAsync(1, "  Scalping  ", null, null, null, Array.Empty<string>());
+        var s = await _sut.CreateAsync(1, "  Scalping  ", null, null, null, Array.Empty<string>(), Array.Empty<string>());
         Assert.Equal("Scalping", s.Title);
     }
 
@@ -65,7 +65,7 @@ public class TradingStrategyServiceTests : IDisposable
     public async Task Create_SetsCreatedAt()
     {
         var before = DateTime.UtcNow;
-        var s = await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>());
+        var s = await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>(), Array.Empty<string>());
         Assert.True(s.CreatedAt >= before);
     }
 
@@ -73,7 +73,7 @@ public class TradingStrategyServiceTests : IDisposable
     public async Task Create_WithRules_PersistsRules()
     {
         var s = await _sut.CreateAsync(1, "S1", null, null, null,
-                                       new[] { "Regla 1", "Regla 2", "Regla 3" });
+                                       new[] { "Regla 1", "Regla 2", "Regla 3" }, Array.Empty<string>());
         Assert.Equal(3, s.Rules.Count);
     }
 
@@ -81,7 +81,7 @@ public class TradingStrategyServiceTests : IDisposable
     public async Task Create_IgnoresBlankRules()
     {
         var s = await _sut.CreateAsync(1, "S1", null, null, null,
-                                       new[] { "Regla 1", "  ", "" });
+                                       new[] { "Regla 1", "  ", "" }, Array.Empty<string>());
         Assert.Single(s.Rules);
     }
 
@@ -89,7 +89,7 @@ public class TradingStrategyServiceTests : IDisposable
     public async Task Create_SetsRuleOrderIndex()
     {
         var s = await _sut.CreateAsync(1, "S1", null, null, null,
-                                       new[] { "R1", "R2", "R3" });
+                                       new[] { "R1", "R2", "R3" }, Array.Empty<string>());
         var ordered = s.Rules.OrderBy(r => r.OrderIndex).ToList();
         Assert.Equal(0, ordered[0].OrderIndex);
         Assert.Equal(1, ordered[1].OrderIndex);
@@ -100,7 +100,7 @@ public class TradingStrategyServiceTests : IDisposable
     public async Task Create_WithImage_StoresImageData()
     {
         var img = new byte[] { 1, 2, 3 };
-        var s   = await _sut.CreateAsync(1, "S1", null, img, "image/png", Array.Empty<string>());
+        var s   = await _sut.CreateAsync(1, "S1", null, img, "image/png", Array.Empty<string>(), Array.Empty<string>());
         Assert.Equal(img, s.ImageData);
         Assert.Equal("image/png", s.ImageMimeType);
     }
@@ -108,11 +108,11 @@ public class TradingStrategyServiceTests : IDisposable
     [Fact]
     public async Task Create_EmptyDescription_StoresNull()
     {
-        var s = await _sut.CreateAsync(1, "S1", "", null, null, Array.Empty<string>());
+        var s = await _sut.CreateAsync(1, "S1", "", null, null, Array.Empty<string>(), Array.Empty<string>());
         Assert.Null(s.Description);
     }
 
-    // ── GetAllByUserIdAsync ──────────────────────────────────────────────
+    // â”€â”€ GetAllByUserIdAsync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     [Fact]
     public async Task GetAll_WhenNone_ReturnsEmpty()
@@ -123,9 +123,9 @@ public class TradingStrategyServiceTests : IDisposable
     [Fact]
     public async Task GetAll_ReturnsOnlyStrategiesOfUser()
     {
-        await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>());
-        await _sut.CreateAsync(1, "S2", null, null, null, Array.Empty<string>());
-        await _sut.CreateAsync(2, "S3", null, null, null, Array.Empty<string>());
+        await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>(), Array.Empty<string>());
+        await _sut.CreateAsync(1, "S2", null, null, null, Array.Empty<string>(), Array.Empty<string>());
+        await _sut.CreateAsync(2, "S3", null, null, null, Array.Empty<string>(), Array.Empty<string>());
 
         var result = await _sut.GetAllByUserIdAsync(1);
         Assert.Equal(2, result.Count);
@@ -135,12 +135,12 @@ public class TradingStrategyServiceTests : IDisposable
     [Fact]
     public async Task GetAll_IncludesRules()
     {
-        await _sut.CreateAsync(1, "S1", null, null, null, new[] { "R1", "R2" });
+        await _sut.CreateAsync(1, "S1", null, null, null, new[] { "R1", "R2" }, Array.Empty<string>());
         var result = await _sut.GetAllByUserIdAsync(1);
         Assert.Equal(2, result[0].Rules.Count);
     }
 
-    // ── GetByIdAsync ─────────────────────────────────────────────────────
+    // â”€â”€ GetByIdAsync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     [Fact]
     public async Task GetById_WhenNotFound_ReturnsNull()
@@ -151,27 +151,27 @@ public class TradingStrategyServiceTests : IDisposable
     [Fact]
     public async Task GetById_ReturnsWithRules()
     {
-        var created = await _sut.CreateAsync(1, "S1", null, null, null, new[] { "R1" });
+        var created = await _sut.CreateAsync(1, "S1", null, null, null, new[] { "R1" }, Array.Empty<string>());
         var found   = await _sut.GetByIdAsync(created.Id);
         Assert.NotNull(found);
         Assert.Single(found!.Rules);
     }
 
-    // ── UpdateAsync ──────────────────────────────────────────────────────
+    // â”€â”€ UpdateAsync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     [Fact]
     public async Task Update_ChangesTitle()
     {
-        var s = await _sut.CreateAsync(1, "Old", null, null, null, Array.Empty<string>());
-        var u = await _sut.UpdateAsync(s.Id, "New", null, null, null, Array.Empty<string>());
+        var s = await _sut.CreateAsync(1, "Old", null, null, null, Array.Empty<string>(), Array.Empty<string>());
+        var u = await _sut.UpdateAsync(s.Id, "New", null, null, null, Array.Empty<string>(), Array.Empty<string>());
         Assert.Equal("New", u.Title);
     }
 
     [Fact]
     public async Task Update_ReplacesRules()
     {
-        var s = await _sut.CreateAsync(1, "S1", null, null, null, new[] { "R1", "R2" });
-        var u = await _sut.UpdateAsync(s.Id, "S1", null, null, null, new[] { "R3" });
+        var s = await _sut.CreateAsync(1, "S1", null, null, null, new[] { "R1", "R2" }, Array.Empty<string>());
+        var u = await _sut.UpdateAsync(s.Id, "S1", null, null, null, new[] { "R3" }, Array.Empty<string>());
         Assert.Single(u.Rules);
         Assert.Equal("R3", u.Rules.First().Description);
     }
@@ -179,9 +179,9 @@ public class TradingStrategyServiceTests : IDisposable
     [Fact]
     public async Task Update_SetsUpdatedAt()
     {
-        var s      = await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>());
+        var s      = await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>(), Array.Empty<string>());
         var before = DateTime.UtcNow;
-        var u      = await _sut.UpdateAsync(s.Id, "S1", null, null, null, Array.Empty<string>());
+        var u      = await _sut.UpdateAsync(s.Id, "S1", null, null, null, Array.Empty<string>(), Array.Empty<string>());
         Assert.NotNull(u.UpdatedAt);
         Assert.True(u.UpdatedAt >= before);
     }
@@ -189,8 +189,8 @@ public class TradingStrategyServiceTests : IDisposable
     [Fact]
     public async Task Update_EmptyDescription_StoresNull()
     {
-        var s = await _sut.CreateAsync(1, "S1", "Desc original", null, null, Array.Empty<string>());
-        var u = await _sut.UpdateAsync(s.Id, "S1", "", null, null, Array.Empty<string>());
+        var s = await _sut.CreateAsync(1, "S1", "Desc original", null, null, Array.Empty<string>(), Array.Empty<string>());
+        var u = await _sut.UpdateAsync(s.Id, "S1", "", null, null, Array.Empty<string>(), Array.Empty<string>());
         Assert.Null(u.Description);
     }
 
@@ -198,15 +198,15 @@ public class TradingStrategyServiceTests : IDisposable
     public async Task Update_WithInvalidId_Throws()
     {
         await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _sut.UpdateAsync(9999, "T", null, null, null, Array.Empty<string>()));
+            () => _sut.UpdateAsync(9999, "T", null, null, null, Array.Empty<string>(), Array.Empty<string>()));
     }
 
-    // ── DeleteAsync ──────────────────────────────────────────────────────
+    // â”€â”€ DeleteAsync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     [Fact]
     public async Task Delete_RemovesStrategy()
     {
-        var s = await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>());
+        var s = await _sut.CreateAsync(1, "S1", null, null, null, Array.Empty<string>(), Array.Empty<string>());
         await _sut.DeleteAsync(s.Id);
         Assert.False(await _db.TradingStrategies.AnyAsync(x => x.Id == s.Id));
     }
