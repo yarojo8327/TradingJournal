@@ -48,15 +48,23 @@ public partial class TradeJournalViewModel : BaseViewModel
     public IReadOnlyList<string> Symbols { get; } = new List<string>
     {
         // Forex Majors
-        "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD",
-        // Forex Crosses
-        "EURGBP","EURJPY","GBPJPY","EURCHF","AUDJPY","CADJPY",
-        // Metales
-        "XAUUSD","XAGUSD",
+        "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP",
+        // Forex Crosses EUR
+        "EURJPY","EURCAD","EURAUD","EURNZD","EURCHF",
+        // Forex Crosses GBP
+        "GBPJPY","GBPCHF","GBPCAD","GBPAUD","GBPNZD",
+        // Forex Crosses JPY
+        "AUDJPY","CADJPY","NZDJPY","CHFJPY",
+        // Forex Otros
+        "AUDCAD","AUDCHF","AUDNZD","CADCHF","NZDCAD","NZDCHF",
+        // Exóticos
+        "USDMXN","USDZAR","USDSGD","USDNOK","USDSEK","USDTRY",
+        // Metales y commodities
+        "XAUUSD","XAGUSD","USOIL","UKOIL",
         // Cripto
-        "BTCUSD","ETHUSD","BNBUSD","SOLUSD",
+        "BTCUSD","ETHUSD","BNBUSD","SOLUSD","XRPUSD","ADAUSD","AVAXUSD","DOTUSD","LINKUSD","MATICUSD",
         // Índices
-        "US30","US500","NAS100","GER40","UK100","JP225"
+        "US30","US500","NAS100","GER40","UK100","JP225","AUS200","HK50","FRA40","EU50"
     };
 
     public IReadOnlyList<TradeDirectionOption> Directions { get; } = new List<TradeDirectionOption>
@@ -77,7 +85,7 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     public IReadOnlyList<SessionOption> Sessions { get; } = new List<SessionOption>
     {
-        new(null,                          "— Cualquiera —"),
+        new(null,                          "— Ninguna —"),
         new(TradingSession.Asian,          "Asiática"),
         new(TradingSession.London,         "Londres"),
         new(TradingSession.NewYork,        "Nueva York"),
@@ -116,9 +124,6 @@ public partial class TradeJournalViewModel : BaseViewModel
         "Otro"
     };
 
-    public IReadOnlyList<int?> QualityOptions { get; } =
-        new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
     // ── Campos del formulario ─────────────────────────────────────────────
 
     [ObservableProperty]
@@ -138,10 +143,10 @@ public partial class TradeJournalViewModel : BaseViewModel
     [Required(ErrorMessage = "La dirección es requerida.")]
     private TradeDirectionOption? _selectedDirection;
 
-    [ObservableProperty] private DateTime  _entryDate  = DateTime.Today;
-    [ObservableProperty] private string    _entryTime  = DateTime.Now.ToString("HH:mm");
+    [ObservableProperty] private DateTime  _entryDate = DateTime.Today;
+    [ObservableProperty] private string    _entryTime = DateTime.Now.ToString("HH:mm");
     [ObservableProperty] private DateTime? _exitDate;
-    [ObservableProperty] private string    _exitTime   = string.Empty;
+    [ObservableProperty] private string    _exitTime  = string.Empty;
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
@@ -174,10 +179,6 @@ public partial class TradeJournalViewModel : BaseViewModel
     private string _profitLossText = string.Empty;
 
     [ObservableProperty]
-    [CustomValidation(typeof(TradeJournalViewModel), nameof(ValidateOptionalDecimal))]
-    private string _pipsResultText = string.Empty;
-
-    [ObservableProperty]
     [CustomValidation(typeof(TradeJournalViewModel), nameof(ValidateOptionalPositiveDecimal))]
     private string _rrText = string.Empty;
 
@@ -188,13 +189,10 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     [ObservableProperty] private SessionOption?        _selectedSession;
     [ObservableProperty] private string?               _selectedTimeframe;
-    [ObservableProperty] private int?                  _selectedSetupQuality;
-    [ObservableProperty] private int?                  _selectedConfluencesCount;
-    [ObservableProperty] private bool                  _isFalseBreakout;
     [ObservableProperty] private EmotionalStateOption? _selectedEmotionalState;
     [ObservableProperty] private string?               _selectedMistakeType;
-    [ObservableProperty] private string                _notes          = string.Empty;
-    [ObservableProperty] private string                _screenshotUrl  = string.Empty;
+    [ObservableProperty] private string                _notes         = string.Empty;
+    [ObservableProperty] private string                _screenshotUrl = string.Empty;
 
     // ── Constructor ───────────────────────────────────────────────────────
 
@@ -228,6 +226,43 @@ public partial class TradeJournalViewModel : BaseViewModel
         await LoadTradesAsync(user.Id);
     }
 
+    // ── Auto-cálculo del resultado ────────────────────────────────────────
+
+    partial void OnExitPriceTextChanged(string value) => AutoCalculateResult();
+    partial void OnEntryPriceTextChanged(string value) => AutoCalculateResult();
+    partial void OnSelectedDirectionChanged(TradeDirectionOption? value) => AutoCalculateResult();
+
+    private void AutoCalculateResult()
+    {
+        var entry = ParseDecimal(EntryPriceText);
+        var exit  = ParseDecimal(ExitPriceText);
+
+        if (entry is null || exit is null || SelectedDirection is null)
+        {
+            if (exit is null)
+                SelectedResult = Results.FirstOrDefault(r => r.Value == TradeResult.Open);
+            return;
+        }
+
+        var diff = exit.Value - entry.Value;
+        TradeResult result;
+
+        if (diff == 0m)
+        {
+            result = TradeResult.BreakEven;
+        }
+        else if (SelectedDirection.Value == TradeDirection.Long)
+        {
+            result = diff > 0 ? TradeResult.Profit : TradeResult.Loss;
+        }
+        else // Short
+        {
+            result = diff < 0 ? TradeResult.Profit : TradeResult.Loss;
+        }
+
+        SelectedResult = Results.FirstOrDefault(r => r.Value == result);
+    }
+
     // ── Carga de datos ────────────────────────────────────────────────────
 
     private async Task LoadCatalogsAsync(int userId)
@@ -242,8 +277,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     private async Task LoadTradesAsync(int userId)
     {
         var list = await _tradeService.GetAllByUserIdAsync(userId);
-        var filtered = ApplyFilters(list);
-        Trades = new ObservableCollection<TradeEntry>(filtered);
+        Trades = new ObservableCollection<TradeEntry>(ApplyFilters(list));
     }
 
     private IEnumerable<TradeEntry> ApplyFilters(IEnumerable<TradeEntry> list)
@@ -268,7 +302,6 @@ public partial class TradeJournalViewModel : BaseViewModel
         FormSectionTitle = "Registrar nuevo trade";
         GeneralError     = GeneralSuccess = string.Empty;
 
-        // Pre-seleccionar la única cuenta si solo hay una
         if (Accounts.Count == 1)
             SelectedAccount = Accounts[0];
     }
@@ -291,21 +324,17 @@ public partial class TradeJournalViewModel : BaseViewModel
         EntryTime            = trade.EntryDate.ToString("HH:mm");
         ExitDate             = trade.ExitDate?.Date;
         ExitTime             = trade.ExitDate?.ToString("HH:mm") ?? string.Empty;
-        EntryPriceText       = trade.EntryPrice.ToString("G", System.Globalization.CultureInfo.InvariantCulture);
+        EntryPriceText       = trade.EntryPrice.ToString("G", Ic);
         ExitPriceText        = FormatDecimal(trade.ExitPrice);
         StopLossText         = FormatDecimal(trade.StopLoss);
         TakeProfitText       = FormatDecimal(trade.TakeProfit);
         PositionSizeText     = FormatDecimal(trade.PositionSizeLots);
         RiskAmountText       = FormatDecimal(trade.RiskAmount);
         ProfitLossText       = FormatDecimal(trade.ProfitLoss);
-        PipsResultText       = FormatDecimal(trade.PipsResult);
         RrText               = FormatDecimal(trade.RiskRewardRatio);
         SelectedResult       = Results.FirstOrDefault(r => r.Value == trade.Result);
         SelectedSession      = Sessions.FirstOrDefault(s => s.Value == trade.Session);
         SelectedTimeframe    = trade.Timeframe;
-        SelectedSetupQuality  = trade.SetupQuality;
-        SelectedConfluencesCount = trade.ConfluencesCount;
-        IsFalseBreakout      = trade.IsFalseBreakout;
         SelectedEmotionalState = EmotionalStates.FirstOrDefault(e => e.Value == trade.EmotionalState);
         SelectedMistakeType  = trade.MistakeType;
         Notes                = trade.Notes ?? string.Empty;
@@ -394,14 +423,14 @@ public partial class TradeJournalViewModel : BaseViewModel
             PositionSizeLots: ParseDecimal(PositionSizeText),
             RiskAmount:       ParseDecimal(RiskAmountText),
             ProfitLoss:       ParseDecimal(ProfitLossText),
-            PipsResult:       ParseDecimal(PipsResultText),
+            PipsResult:       null,
             RiskRewardRatio:  ParseDecimal(RrText),
             Result:           SelectedResult!.Value,
             Session:          SelectedSession?.Value,
             Timeframe:        SelectedTimeframe,
-            SetupQuality:     SelectedSetupQuality,
-            ConfluencesCount: SelectedConfluencesCount,
-            IsFalseBreakout:  IsFalseBreakout,
+            SetupQuality:     null,
+            ConfluencesCount: null,
+            IsFalseBreakout:  false,
             EmotionalState:   SelectedEmotionalState?.Value,
             MistakeType:      SelectedMistakeType,
             Notes:            Notes,
@@ -442,6 +471,9 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     // ── Helpers ───────────────────────────────────────────────────────────
 
+    private static readonly System.Globalization.CultureInfo Ic =
+        System.Globalization.CultureInfo.InvariantCulture;
+
     private bool TryParseEntryDateTime(out DateTime result)
     {
         result = default;
@@ -462,8 +494,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     private static decimal? ParseDecimal(string? text)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;
-        return decimal.TryParse(text,
-            System.Globalization.NumberStyles.Any,
+        return decimal.TryParse(text, System.Globalization.NumberStyles.Any,
             System.Globalization.CultureInfo.InvariantCulture, out var v) ? v : null;
     }
 
@@ -497,14 +528,10 @@ public partial class TradeJournalViewModel : BaseViewModel
         PositionSizeText       = string.Empty;
         RiskAmountText         = string.Empty;
         ProfitLossText         = string.Empty;
-        PipsResultText         = string.Empty;
         RrText                 = string.Empty;
         SelectedResult         = Results.FirstOrDefault(r => r.Value == TradeResult.Open);
         SelectedSession        = null;
         SelectedTimeframe      = null;
-        SelectedSetupQuality   = null;
-        SelectedConfluencesCount = null;
-        IsFalseBreakout        = false;
         SelectedEmotionalState = null;
         SelectedMistakeType    = null;
         Notes                  = string.Empty;
@@ -544,7 +571,22 @@ public partial class TradeJournalViewModel : BaseViewModel
 
 // ── Tipos auxiliares ──────────────────────────────────────────────────────
 
-public record TradeDirectionOption(TradeDirection Value, string Display);
-public record TradeResultOption(TradeResult Value, string Display);
-public record SessionOption(TradingSession? Value, string Display);
-public record EmotionalStateOption(EmotionalState? Value, string Display);
+public record TradeDirectionOption(TradeDirection Value, string Display)
+{
+    public override string ToString() => Display;
+}
+
+public record TradeResultOption(TradeResult Value, string Display)
+{
+    public override string ToString() => Display;
+}
+
+public record SessionOption(TradingSession? Value, string Display)
+{
+    public override string ToString() => Display;
+}
+
+public record EmotionalStateOption(EmotionalState? Value, string Display)
+{
+    public override string ToString() => Display;
+}
