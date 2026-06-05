@@ -306,6 +306,7 @@
   <data name="Journal_Col_Result"           xml:space="preserve"><value>RESULTADO</value></data>
   <data name="Journal_Col_Session"          xml:space="preserve"><value>SESIÓN</value></data>
   <data name="Journal_Col_Quality"          xml:space="preserve"><value>CALIDAD</value></data>
+  <data name="Journal_Col_Rating"            xml:space="preserve"><value>CAL.</value></data>
   <data name="Journal_Col_Actions"          xml:space="preserve"><value>ACCIONES</value></data>
 
   <!-- Bitácora — Filtros -->
@@ -314,6 +315,10 @@
   <data name="Journal_Filter_Result"        xml:space="preserve"><value>Resultado</value></data>
   <data name="Journal_Filter_Apply"         xml:space="preserve"><value>Filtrar</value></data>
   <data name="Journal_Filter_Clear"         xml:space="preserve"><value>Limpiar</value></data>
+  <data name="Journal_Filter_Strategy"      xml:space="preserve"><value>Estrategia</value></data>
+  <data name="Journal_Filter_RatingMin"     xml:space="preserve"><value>Cal. mínima</value></data>
+  <data name="Journal_Filter_RatingMax"     xml:space="preserve"><value>Cal. máxima</value></data>
+  <data name="Journal_Rating"               xml:space="preserve"><value>Calificación del trade (1–10)</value></data>
   <data name="Journal_Filter_AllAccounts"   xml:space="preserve"><value>— Todas las cuentas —</value></data>
   <data name="Journal_Filter_AllResults"    xml:space="preserve"><value>— Todos los resultados —</value></data>
 

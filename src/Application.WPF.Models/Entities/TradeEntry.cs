@@ -41,6 +41,9 @@ public class TradeEntry
     public int?            ConfluencesCount { get; set; }
     public bool            IsFalseBreakout  { get; set; }
 
+    // Calificación del trade (1-10)
+    public int?            Rating           { get; set; }
+
     // Psicología
     public EmotionalState? EmotionalState   { get; set; }
     public string?         MistakeType      { get; set; }

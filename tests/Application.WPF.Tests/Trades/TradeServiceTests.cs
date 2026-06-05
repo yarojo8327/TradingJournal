@@ -80,6 +80,7 @@ public class TradeServiceTests : IDisposable
         SetupQuality:     7,
         ConfluencesCount: 3,
         IsFalseBreakout:  false,
+        Rating:           8,
         EmotionalState:   EmotionalState.Calm,
         MistakeType:      null,
         Notes:            "Test trade",

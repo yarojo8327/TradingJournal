@@ -152,89 +152,184 @@
                            Foreground="{DynamicResource AccentRedBrush}" TextWrapping="Wrap" />
             </Border>
 
-            <!-- ═══ FILTROS ═══ -->
-            <Border Style="{DynamicResource Card}" Margin="0,0,0,14" Padding="16,14">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MaxWidth="240" />
-                        <ColumnDefinition Width="16" />
-                        <ColumnDefinition Width="*" MaxWidth="180" />
-                        <ColumnDefinition Width="16" />
-                        <ColumnDefinition Width="*" MaxWidth="160" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="8" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+            <!-- ═══ FILTROS — Fila 1: Cuenta, Símbolo, Resultado, Estrategia ═══ -->
+            <Border Style="{DynamicResource Card}" Margin="0,0,0,6" Padding="16,14,16,12">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MaxWidth="230" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="*" MaxWidth="160" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="*" MaxWidth="150" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="*" MaxWidth="230" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Filtro: Cuenta (incluye null="Todas") -->
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="{loc:Tr Journal_Filter_Account}" Style="{StaticResource FieldLabel}" />
-                        <ComboBox ItemsSource="{Binding FilterAccounts}"
-                                  SelectedItem="{Binding FilterAccount}"
-                                  Style="{DynamicResource FormComboBox}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{Binding Broker}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                        <Setter Property="Text"       Value="— Todas las cuentas —" />
-                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
+                        <!-- Cuenta -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{loc:Tr Journal_Filter_Account}" Style="{StaticResource FieldLabel}" />
+                            <ComboBox ItemsSource="{Binding FilterAccounts}"
+                                      SelectedItem="{Binding FilterAccount}"
+                                      Style="{DynamicResource FormComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="13">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text"       Value="{Binding Broker}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                            <Setter Property="Text"       Value="— Todas las cuentas —" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
 
-                    <!-- Filtro: Símbolo -->
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="{loc:Tr Journal_Filter_Symbol}" Style="{StaticResource FieldLabel}" />
-                        <TextBox Text="{Binding FilterSymbol, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{DynamicResource FormTextBox}" Tag="EURUSD, BTC…" />
-                    </StackPanel>
+                        <!-- Símbolo -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="{loc:Tr Journal_Filter_Symbol}" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding FilterSymbol, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{DynamicResource FormTextBox}" Tag="EURUSD…" />
+                        </StackPanel>
 
-                    <!-- Filtro: Resultado (incluye null="Todos") -->
-                    <StackPanel Grid.Column="4">
-                        <TextBlock Text="{loc:Tr Journal_Filter_Result}" Style="{StaticResource FieldLabel}" />
-                        <ComboBox ItemsSource="{Binding FilterResults}"
-                                  SelectedItem="{Binding FilterResult}"
-                                  Style="{DynamicResource FormComboBox}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{Binding Display}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                        <Setter Property="Text"       Value="— Todos los resultados —" />
-                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
+                        <!-- Resultado -->
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="{loc:Tr Journal_Filter_Result}" Style="{StaticResource FieldLabel}" />
+                            <ComboBox ItemsSource="{Binding FilterResults}"
+                                      SelectedItem="{Binding FilterResult}"
+                                      Style="{DynamicResource FormComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="13">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text"       Value="{Binding Display}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                            <Setter Property="Text"       Value="— Todos —" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
 
-                    <Button Grid.Column="6" Content="{loc:Tr Journal_Filter_Apply}"
-                            Style="{DynamicResource PrimaryButton}"
-                            Command="{Binding ApplyFilterCommand}"
-                            Height="34" Padding="14,0" VerticalAlignment="Bottom" />
-                    <Button Grid.Column="8" Content="{loc:Tr Journal_Filter_Clear}"
-                            Style="{DynamicResource GhostButton}"
-                            Command="{Binding ClearFilterCommand}"
-                            Height="34" Padding="14,0" VerticalAlignment="Bottom" />
-                </Grid>
+                        <!-- Estrategia -->
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="{loc:Tr Journal_Filter_Strategy}" Style="{StaticResource FieldLabel}" />
+                            <ComboBox ItemsSource="{Binding FilterStrategies}"
+                                      SelectedItem="{Binding FilterStrategy}"
+                                      Style="{DynamicResource FormComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="13">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text"       Value="{Binding Title}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                            <Setter Property="Text"       Value="— Todas las estrategias —" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Fila 2: Rating mínimo, máximo, botones -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MaxWidth="140" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" MaxWidth="140" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{loc:Tr Journal_Filter_RatingMin}" Style="{StaticResource FieldLabel}" />
+                            <ComboBox ItemsSource="{Binding RatingOptions}"
+                                      SelectedItem="{Binding FilterRatingMin}"
+                                      Style="{DynamicResource FormComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="13">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text"       Value="{Binding}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                            <Setter Property="Text"       Value="— Mín —" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="{loc:Tr Journal_Filter_RatingMax}" Style="{StaticResource FieldLabel}" />
+                            <ComboBox ItemsSource="{Binding RatingOptions}"
+                                      SelectedItem="{Binding FilterRatingMax}"
+                                      Style="{DynamicResource FormComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="13">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text"       Value="{Binding}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                            <Setter Property="Text"       Value="— Máx —" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <Button Grid.Column="4" Content="{loc:Tr Journal_Filter_Apply}"
+                                Style="{DynamicResource PrimaryButton}"
+                                Command="{Binding ApplyFilterCommand}"
+                                Height="34" Padding="14,0" VerticalAlignment="Bottom" />
+                        <Button Grid.Column="6" Content="{loc:Tr Journal_Filter_Clear}"
+                                Style="{DynamicResource GhostButton}"
+                                Command="{Binding ClearFilterCommand}"
+                                Height="34" Padding="14,0" VerticalAlignment="Bottom" />
+                    </Grid>
+                </StackPanel>
             </Border>
 
             <!-- ═══ TABLA DE TRADES ═══ -->
@@ -260,6 +355,7 @@
                                 <ColumnDefinition Width="46" />   <!-- R:R -->
                                 <ColumnDefinition Width="78" />   <!-- Resultado -->
                                 <ColumnDefinition Width="80" />   <!-- Sesión -->
+                                    <ColumnDefinition Width="46" />   <!-- Rating -->
                                 <ColumnDefinition Width="36" />   <!-- 📊 -->
                                 <ColumnDefinition Width="*" />    <!-- flex -->
                                 <ColumnDefinition Width="130" />  <!-- Acciones -->
@@ -278,9 +374,9 @@
                             <TextBlock Grid.Column="11" Text="{loc:Tr Journal_Col_RR}"       Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="12" Text="{loc:Tr Journal_Col_Result}"   Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="13" Text="{loc:Tr Journal_Col_Session}"  Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="14" Text="📊"                             Style="{StaticResource ColHeader}"
-                                       HorizontalAlignment="Center" />
-                            <TextBlock Grid.Column="16" Text="{loc:Tr Journal_Col_Actions}"  Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="14" Text="{loc:Tr Journal_Col_Rating}"   Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="15" Text="📊"                             Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="17" Text="{loc:Tr Journal_Col_Actions}"  Style="{StaticResource ColHeader}" />
                         </Grid>
                     </Border>
 
@@ -315,6 +411,7 @@
                                             <ColumnDefinition Width="46" />
                                             <ColumnDefinition Width="78" />
                                             <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="46" />
                                             <ColumnDefinition Width="36" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="130" />
@@ -455,8 +552,59 @@
                                                    Text="{Binding Session, Converter={StaticResource SessionDisplay}}"
                                                    Style="{StaticResource CellText}" FontSize="11" />
 
+                                        <!-- Rating badge -->
+                                        <Border Grid.Column="14"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                CornerRadius="4" Width="32" Height="22"
+                                                Visibility="{Binding Rating, Converter={StaticResource StringToVisibility}, FallbackValue=Collapsed}">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#1500D4FF" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Rating}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding Rating}"
+                                                       FontSize="11" FontWeight="Bold"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{DynamicResource CyanGlowBrush}" />
+                                                        <Style.Triggers>
+                                                            <!-- Verde para 8-10 -->
+                                                            <DataTrigger Binding="{Binding Rating}" Value="8">
+                                                                <Setter Property="Foreground" Value="#00E676" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Rating}" Value="9">
+                                                                <Setter Property="Foreground" Value="#00E676" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Rating}" Value="10">
+                                                                <Setter Property="Foreground" Value="#00E676" />
+                                                            </DataTrigger>
+                                                            <!-- Rojo para 1-4 -->
+                                                            <DataTrigger Binding="{Binding Rating}" Value="1">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Rating}" Value="2">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Rating}" Value="3">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Rating}" Value="4">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+
                                         <!-- Ícono de gráfico (solo visible si hay URL) -->
-                                        <Button Grid.Column="14"
+                                        <Button Grid.Column="15"
                                                 Content="📊"
                                                 FontSize="14"
                                                 BorderThickness="0"
@@ -481,7 +629,7 @@
                                         </Button>
 
                                         <!-- Acciones Editar / Eliminar -->
-                                        <StackPanel Grid.Column="16" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <StackPanel Grid.Column="17" Orientation="Horizontal" VerticalAlignment="Center">
                                             <Button Content="{loc:Tr Journal_Edit}"
                                                     Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource CyanGlowBrush}"
@@ -691,6 +839,8 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="16" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" MaxWidth="160" />
                         </Grid.ColumnDefinitions>
 
                         <!-- Resultado auto-calculado -->
@@ -725,6 +875,56 @@
                             <TextBlock Text="{loc:Tr Journal_RR}" Style="{StaticResource FieldLabel}" />
                             <TextBox Text="{Binding RrText, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}" Tag="2.5" />
+                        </StackPanel>
+
+                        <!-- Calificación del trade -->
+                        <StackPanel Grid.Column="8">
+                            <TextBlock Text="{loc:Tr Journal_Rating}" Style="{StaticResource FieldLabel}" />
+                            <ComboBox ItemsSource="{Binding RatingOptions}"
+                                      SelectedItem="{Binding SelectedRating}"
+                                      Style="{DynamicResource FormComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontSize="13">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text"       Value="{Binding}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                                <Setter Property="Text"       Value="— Sin calificar —" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding}" Value="8">
+                                                                <Setter Property="Foreground" Value="#00E676" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding}" Value="9">
+                                                                <Setter Property="Foreground" Value="#00E676" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding}" Value="10">
+                                                                <Setter Property="Foreground" Value="#00E676" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding}" Value="1">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding}" Value="2">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding}" Value="3">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding}" Value="4">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
                     </Grid>
 

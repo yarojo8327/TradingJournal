@@ -35,6 +35,7 @@ public record TradeEntryData(
     int?           SetupQuality,
     int?           ConfluencesCount,
     bool           IsFalseBreakout,
+    int?           Rating,
     EmotionalState? EmotionalState,
     string?        MistakeType,
     string?        Notes,

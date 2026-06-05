@@ -306,6 +306,7 @@
   <data name="Journal_Col_Result"           xml:space="preserve"><value>RESULT</value></data>
   <data name="Journal_Col_Session"          xml:space="preserve"><value>SESSION</value></data>
   <data name="Journal_Col_Quality"          xml:space="preserve"><value>QUALITY</value></data>
+  <data name="Journal_Col_Rating"            xml:space="preserve"><value>RATING</value></data>
   <data name="Journal_Col_Actions"          xml:space="preserve"><value>ACTIONS</value></data>
 
   <!-- Journal — Filters -->
@@ -314,6 +315,10 @@
   <data name="Journal_Filter_Result"        xml:space="preserve"><value>Result</value></data>
   <data name="Journal_Filter_Apply"         xml:space="preserve"><value>Filter</value></data>
   <data name="Journal_Filter_Clear"         xml:space="preserve"><value>Clear</value></data>
+  <data name="Journal_Filter_Strategy"      xml:space="preserve"><value>Strategy</value></data>
+  <data name="Journal_Filter_RatingMin"     xml:space="preserve"><value>Min rating</value></data>
+  <data name="Journal_Filter_RatingMax"     xml:space="preserve"><value>Max rating</value></data>
+  <data name="Journal_Rating"               xml:space="preserve"><value>Trade rating (1–10)</value></data>
   <data name="Journal_Filter_AllAccounts"   xml:space="preserve"><value>— All accounts —</value></data>
   <data name="Journal_Filter_AllResults"    xml:space="preserve"><value>— All results —</value></data>
 

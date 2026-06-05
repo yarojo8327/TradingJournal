@@ -170,6 +170,7 @@ public partial class App : System.Windows.Application
                 ""SetupQuality""     INTEGER,
                 ""ConfluencesCount"" INTEGER,
                 ""IsFalseBreakout""  INTEGER NOT NULL DEFAULT 0,
+                ""Rating""           INTEGER,
                 ""EmotionalState""   TEXT,
                 ""MistakeType""      TEXT,
                 ""Notes""            TEXT,

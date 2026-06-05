@@ -35,8 +35,11 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     // Filtros
     [ObservableProperty] private TradingAccountEntity? _filterAccount;
-    [ObservableProperty] private string _filterSymbol = string.Empty;
+    [ObservableProperty] private string                _filterSymbol    = string.Empty;
     [ObservableProperty] private TradeResultOption?    _filterResult;
+    [ObservableProperty] private TradingStrategy?      _filterStrategy;
+    [ObservableProperty] private int?                  _filterRatingMin;
+    [ObservableProperty] private int?                  _filterRatingMax;
 
     public bool HasNoTrades => !Trades.Any();
 
@@ -46,11 +49,19 @@ public partial class TradeJournalViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(FilterAccounts))]
     private ObservableCollection<TradingAccountEntity> _accounts = new();
 
-    [ObservableProperty] private ObservableCollection<TradingStrategy> _strategies = new();
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FilterStrategies))]
+    private ObservableCollection<TradingStrategy> _strategies = new();
 
-    // Incluye null como primer ítem para el filtro "Todas las cuentas"
+    // Incluye null como primer ítem para los filtros
     public IReadOnlyList<TradingAccountEntity?> FilterAccounts =>
         new[] { (TradingAccountEntity?)null }.Concat(Accounts).ToList();
+
+    public IReadOnlyList<TradingStrategy?> FilterStrategies =>
+        new[] { (TradingStrategy?)null }.Concat(Strategies).ToList();
+
+    public IReadOnlyList<int?> RatingOptions { get; } =
+        new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
     public IReadOnlyList<string> Symbols { get; } = new List<string>
     {
@@ -194,6 +205,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     [Required(ErrorMessage = "El resultado es requerido.")]
     private TradeResultOption? _selectedResult;
 
+    [ObservableProperty] private int?                  _selectedRating;
     [ObservableProperty] private SessionOption?        _selectedSession;
     [ObservableProperty] private string?               _selectedTimeframe;
     [ObservableProperty] private EmotionalStateOption? _selectedEmotionalState;
@@ -295,6 +307,12 @@ public partial class TradeJournalViewModel : BaseViewModel
             list = list.Where(t => t.Symbol.Contains(FilterSymbol.Trim(), StringComparison.OrdinalIgnoreCase));
         if (FilterResult is not null)
             list = list.Where(t => t.Result == FilterResult.Value);
+        if (FilterStrategy is not null)
+            list = list.Where(t => t.StrategyId == FilterStrategy.Id);
+        if (FilterRatingMin.HasValue)
+            list = list.Where(t => t.Rating.HasValue && t.Rating.Value >= FilterRatingMin.Value);
+        if (FilterRatingMax.HasValue)
+            list = list.Where(t => t.Rating.HasValue && t.Rating.Value <= FilterRatingMax.Value);
         return list;
     }
 
@@ -340,6 +358,7 @@ public partial class TradeJournalViewModel : BaseViewModel
         ProfitLossText       = FormatDecimal(trade.ProfitLoss);
         RrText               = FormatDecimal(trade.RiskRewardRatio);
         SelectedResult       = Results.FirstOrDefault(r => r.Value == trade.Result);
+        SelectedRating       = trade.Rating;
         SelectedSession      = Sessions.FirstOrDefault(s => s.Value == trade.Session);
         SelectedTimeframe    = trade.Timeframe;
         SelectedEmotionalState = EmotionalStates.FirstOrDefault(e => e.Value == trade.EmotionalState);
@@ -400,9 +419,12 @@ public partial class TradeJournalViewModel : BaseViewModel
     [RelayCommand]
     private async Task ClearFilterAsync()
     {
-        FilterAccount = null;
-        FilterSymbol  = string.Empty;
-        FilterResult  = null;
+        FilterAccount   = null;
+        FilterSymbol    = string.Empty;
+        FilterResult    = null;
+        FilterStrategy  = null;
+        FilterRatingMin = null;
+        FilterRatingMax = null;
         var user = _sessionService.CurrentUser;
         if (user is not null) await LoadTradesAsync(user.Id);
     }
@@ -453,6 +475,7 @@ public partial class TradeJournalViewModel : BaseViewModel
             SetupQuality:     null,
             ConfluencesCount: null,
             IsFalseBreakout:  false,
+            Rating:           SelectedRating,
             EmotionalState:   SelectedEmotionalState?.Value,
             MistakeType:      SelectedMistakeType,
             Notes:            Notes,
@@ -552,6 +575,7 @@ public partial class TradeJournalViewModel : BaseViewModel
         ProfitLossText         = string.Empty;
         RrText                 = string.Empty;
         SelectedResult         = Results.FirstOrDefault(r => r.Value == TradeResult.Open);
+        SelectedRating         = null;
         SelectedSession        = null;
         SelectedTimeframe      = null;
         SelectedEmotionalState = null;

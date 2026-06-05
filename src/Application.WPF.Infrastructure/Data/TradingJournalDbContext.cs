@@ -103,6 +103,7 @@ public class TradingJournalDbContext : DbContext
             e.Property(t => t.ProfitLoss).HasColumnType("decimal(18,2)");
             e.Property(t => t.PipsResult).HasColumnType("decimal(10,1)");
             e.Property(t => t.RiskRewardRatio).HasColumnType("decimal(6,2)");
+            e.Property(t => t.Rating);
             e.Property(t => t.Timeframe).HasMaxLength(10);
             e.Property(t => t.MistakeType).HasMaxLength(100);
             e.Property(t => t.Notes).HasMaxLength(2000);
