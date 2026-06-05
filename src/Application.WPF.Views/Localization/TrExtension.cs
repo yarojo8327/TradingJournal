@@ -24,11 +24,13 @@ public class TrExtension : MarkupExtension
         if (serviceProvider.GetService(typeof(IProvideValueTarget)) is not IProvideValueTarget target)
             return $"[{Key}]";
 
-        // Design-time fallback
-        if (target.TargetObject is not DependencyObject)
-            return $"[{Key}]";
+        // Dentro de DataTemplate o Style Setter, TargetObject no es DependencyObject.
+        // Retornar 'this' hace que WPF difiera la evaluación hasta que la plantilla
+        // se instancie con el elemento real como destino.
+        if (target.TargetObject is not DependencyObject depObj)
+            return this;
 
-        var locService = TryResolveService(target.TargetObject as DependencyObject);
+        var locService = TryResolveService(depObj);
         if (locService is null)
             return $"[{Key}]";
 
@@ -41,11 +43,8 @@ public class TrExtension : MarkupExtension
         return binding.ProvideValue(serviceProvider);
     }
 
-    private static ILocalizationService? TryResolveService(DependencyObject? target)
+    private static ILocalizationService? TryResolveService(DependencyObject target)
     {
-        if (target is null) return null;
-
-        // Walk up the logical tree to find the Application resources
         return System.Windows.Application.Current?.Resources["Loc"] as ILocalizationService;
     }
 }
