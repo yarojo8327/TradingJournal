@@ -186,6 +186,16 @@ public partial class App : System.Windows.Application
             @"CREATE INDEX IF NOT EXISTS ""IX_TradeEntries_AccountId"" ON ""TradeEntries"" (""AccountId"");");
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE INDEX IF NOT EXISTS ""IX_TradeEntries_StrategyId"" ON ""TradeEntries"" (""StrategyId"");");
+
+        // Columnas agregadas después de la creación inicial — idempotentes vía try/catch
+        // (SQLite no soporta ADD COLUMN IF NOT EXISTS)
+        await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""Rating"" INTEGER;");
+    }
+
+    private static async Task TryAddColumnAsync(TradingJournalDbContext db, string alterSql)
+    {
+        try   { await db.Database.ExecuteSqlRawAsync(alterSql); }
+        catch { /* columna ya existe — ignorar */ }
     }
 
     private static IHost BuildHost()
