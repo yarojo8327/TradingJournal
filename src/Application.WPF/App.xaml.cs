@@ -187,9 +187,45 @@ public partial class App : System.Windows.Application
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE INDEX IF NOT EXISTS ""IX_TradeEntries_StrategyId"" ON ""TradeEntries"" (""StrategyId"");");
 
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""PlaybookEntries"" (
+                ""Id""         INTEGER NOT NULL CONSTRAINT ""PK_PlaybookEntries"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""     INTEGER NOT NULL,
+                ""StrategyId"" INTEGER,
+                ""Title""      TEXT    NOT NULL,
+                ""Notes""      TEXT,
+                ""ImageUrl""   TEXT,
+                ""Rating""     REAL,
+                ""CreatedAt""  TEXT    NOT NULL,
+                ""UpdatedAt""  TEXT,
+                CONSTRAINT ""FK_PlaybookEntries_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE,
+                CONSTRAINT ""FK_PlaybookEntries_TradingStrategies_StrategyId""
+                    FOREIGN KEY (""StrategyId"") REFERENCES ""TradingStrategies"" (""Id"") ON DELETE SET NULL
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_PlaybookEntries_UserId"" ON ""PlaybookEntries"" (""UserId"");");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""PlaybookConfluenceRatings"" (
+                ""Id""              INTEGER NOT NULL CONSTRAINT ""PK_PlaybookConfluenceRatings"" PRIMARY KEY AUTOINCREMENT,
+                ""PlaybookEntryId"" INTEGER NOT NULL,
+                ""ConfluenceId""    INTEGER NOT NULL,
+                ""ConfluenceName""  TEXT    NOT NULL,
+                ""OrderIndex""      INTEGER NOT NULL,
+                ""Rating""          INTEGER NOT NULL,
+                CONSTRAINT ""FK_PlaybookConfluenceRatings_PlaybookEntries_PlaybookEntryId""
+                    FOREIGN KEY (""PlaybookEntryId"") REFERENCES ""PlaybookEntries"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_PlaybookConfluenceRatings_PlaybookEntryId"" ON ""PlaybookConfluenceRatings"" (""PlaybookEntryId"");");
+
         // Columnas agregadas después de la creación inicial — idempotentes vía try/catch
         // (SQLite no soporta ADD COLUMN IF NOT EXISTS)
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""Rating"" INTEGER;");
+        await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ManualRating"" INTEGER;");
+        await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageData"" BLOB;");
+        await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageMimeType"" TEXT;");
     }
 
     private static async Task TryAddColumnAsync(TradingJournalDbContext db, string alterSql)
