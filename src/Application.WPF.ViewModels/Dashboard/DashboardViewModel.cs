@@ -1,6 +1,10 @@
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Models.Entities;
 using Application.WPF.Models.Enums;
+using Application.WPF.ViewModels.Journal;
+using Application.WPF.ViewModels.Playbook;
+using Application.WPF.ViewModels.Strategies;
+using Application.WPF.ViewModels.TradingAccount;
 using TradingAccountEntity = Application.WPF.Models.Entities.TradingAccount;
 using Application.WPF.Services.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -64,6 +68,7 @@ public partial class DashboardViewModel : BaseViewModel
     private readonly ITradingStrategyService _strategyService;
     private readonly IPlaybookService        _playbookService;
     private readonly ISessionService         _sessionService;
+    private readonly INavigationService      _navigationService;
     private readonly ILogger<DashboardViewModel> _logger;
 
     // ── KPIs ──────────────────────────────────────────────────────────────
@@ -94,8 +99,10 @@ public partial class DashboardViewModel : BaseViewModel
     [ObservableProperty] private int     _accountCount;
 
     // ── Equity curve data (passed to code-behind for drawing) ─────────────
-    private List<double> _equityValues = new();
-    public  IReadOnlyList<double> EquityValues => _equityValues;
+    private List<double>   _equityValues = new();
+    private List<DateTime> _equityDates  = new();
+    public  IReadOnlyList<double>   EquityValues => _equityValues;
+    public  IReadOnlyList<DateTime> EquityDates  => _equityDates;
     public event EventHandler? EquityUpdated;
 
     // ── Lists ─────────────────────────────────────────────────────────────
@@ -119,16 +126,35 @@ public partial class DashboardViewModel : BaseViewModel
         ITradingStrategyService strategyService,
         IPlaybookService        playbookService,
         ISessionService         sessionService,
+        INavigationService      navigationService,
         ILogger<DashboardViewModel> logger)
     {
-        _tradeService    = tradeService;
-        _accountService  = accountService;
-        _strategyService = strategyService;
-        _playbookService = playbookService;
-        _sessionService  = sessionService;
-        _logger          = logger;
-        Title            = "Panel";
+        _tradeService      = tradeService;
+        _accountService    = accountService;
+        _strategyService   = strategyService;
+        _playbookService   = playbookService;
+        _sessionService    = sessionService;
+        _navigationService = navigationService;
+        _logger            = logger;
+        Title              = "Panel";
     }
+
+    // ── Navigation commands ───────────────────────────────────────────────
+
+    [RelayCommand]
+    private void GoToJournal()    => _navigationService.NavigateTo<TradeJournalViewModel>();
+
+    [RelayCommand]
+    private void GoToAnalytics()  => _navigationService.NavigateTo<TradeAnalyticsViewModel>();
+
+    [RelayCommand]
+    private void GoToStrategies() => _navigationService.NavigateTo<TradingStrategyViewModel>();
+
+    [RelayCommand]
+    private void GoToPlaybook()   => _navigationService.NavigateTo<PlaybookViewModel>();
+
+    [RelayCommand]
+    private void GoToAccount()    => _navigationService.NavigateTo<TradingAccountViewModel>();
 
     public override async Task InitializeAsync()
     {
@@ -391,18 +417,21 @@ public partial class DashboardViewModel : BaseViewModel
 
     private void BuildEquityCurve(IReadOnlyList<TradeEntry> trades, IReadOnlyList<TradingAccountEntity> accounts)
     {
-        var initial     = (double)(accounts.Sum(a => a.InitialCapital));
+        var initial      = (double)(accounts.Sum(a => a.InitialCapital));
+        var startDate    = accounts.Count > 0 ? accounts.Min(a => a.StartDate) : DateTime.Today;
         var closedTrades = trades
             .Where(t => t.ProfitLoss.HasValue && (t.ExitDate ?? t.EntryDate) != default)
             .OrderBy(t => t.ExitDate ?? t.EntryDate)
             .ToList();
 
-        _equityValues = new List<double> { initial };
-        double cum = initial;
+        _equityValues = new List<double>   { initial };
+        _equityDates  = new List<DateTime> { startDate };
+        double cum    = initial;
         foreach (var t in closedTrades)
         {
             cum += (double)t.ProfitLoss!.Value;
             _equityValues.Add(cum);
+            _equityDates.Add(t.ExitDate ?? t.EntryDate);
         }
 
         EquityUpdated?.Invoke(this, EventArgs.Empty);

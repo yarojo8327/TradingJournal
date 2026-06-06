@@ -9,11 +9,12 @@ namespace Application.WPF.Tests.ViewModels;
 
 public class DashboardViewModelTests
 {
-    private readonly Mock<ITradeService>           _tradeMock    = new();
-    private readonly Mock<ITradingAccountService>  _accountMock  = new();
-    private readonly Mock<ITradingStrategyService> _strategyMock = new();
-    private readonly Mock<IPlaybookService>        _playbookMock = new();
-    private readonly Mock<ISessionService>         _sessionMock  = new();
+    private readonly Mock<ITradeService>           _tradeMock      = new();
+    private readonly Mock<ITradingAccountService>  _accountMock    = new();
+    private readonly Mock<ITradingStrategyService> _strategyMock   = new();
+    private readonly Mock<IPlaybookService>        _playbookMock   = new();
+    private readonly Mock<ISessionService>         _sessionMock    = new();
+    private readonly Mock<INavigationService>      _navigationMock = new();
 
     private DashboardViewModel BuildSut()
     {
@@ -32,6 +33,7 @@ public class DashboardViewModelTests
             _strategyMock.Object,
             _playbookMock.Object,
             _sessionMock.Object,
+            _navigationMock.Object,
             NullLogger<DashboardViewModel>.Instance);
     }
 
