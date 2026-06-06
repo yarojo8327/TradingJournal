@@ -8,12 +8,14 @@ public class TradingJournalDbContext : DbContext
 {
     public TradingJournalDbContext(DbContextOptions<TradingJournalDbContext> options) : base(options) { }
 
-    public DbSet<User>              Users               => Set<User>();
-    public DbSet<TradingAccount>    TradingAccounts     => Set<TradingAccount>();
-    public DbSet<TradingStrategy>   TradingStrategies   => Set<TradingStrategy>();
-    public DbSet<StrategyRule>      StrategyRules       => Set<StrategyRule>();
-    public DbSet<StrategyConfluence> StrategyConfluences => Set<StrategyConfluence>();
-    public DbSet<TradeEntry>        TradeEntries        => Set<TradeEntry>();
+    public DbSet<User>                     Users                    => Set<User>();
+    public DbSet<TradingAccount>           TradingAccounts          => Set<TradingAccount>();
+    public DbSet<TradingStrategy>          TradingStrategies        => Set<TradingStrategy>();
+    public DbSet<StrategyRule>             StrategyRules            => Set<StrategyRule>();
+    public DbSet<StrategyConfluence>       StrategyConfluences      => Set<StrategyConfluence>();
+    public DbSet<TradeEntry>               TradeEntries             => Set<TradeEntry>();
+    public DbSet<PlaybookEntry>            PlaybookEntries          => Set<PlaybookEntry>();
+    public DbSet<PlaybookConfluenceRating> PlaybookConfluenceRatings => Set<PlaybookConfluenceRating>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -82,6 +84,33 @@ public class TradingJournalDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PlaybookEntry>(e =>
+        {
+            e.HasKey(p => p.Id);
+            e.HasIndex(p => p.UserId);
+            // Symbol se persiste en la columna "Title" (nombre original) para compatibilidad de schema
+            e.Property(p => p.Symbol).HasColumnName("Title").IsRequired().HasMaxLength(50);
+            e.Property(p => p.Notes).HasMaxLength(4000);
+            e.Property(p => p.ImageData).HasColumnType("BLOB");
+            e.Property(p => p.ImageMimeType).HasMaxLength(50);
+            e.Property(p => p.Rating).HasColumnType("REAL");
+            e.Property(p => p.ManualRating);
+            e.Property(p => p.CreatedAt).IsRequired();
+            e.HasOne(p => p.User).WithMany().HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(p => p.Strategy).WithMany().HasForeignKey(p => p.StrategyId)
+                .OnDelete(DeleteBehavior.SetNull).IsRequired(false);
+            e.HasMany(p => p.ConfluenceRatings).WithOne(r => r.PlaybookEntry)
+                .HasForeignKey(r => r.PlaybookEntryId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PlaybookConfluenceRating>(e =>
+        {
+            e.HasKey(r => r.Id);
+            e.HasIndex(r => r.PlaybookEntryId);
+            e.Property(r => r.ConfluenceName).IsRequired().HasMaxLength(200);
         });
 
         modelBuilder.Entity<TradeEntry>(e =>
