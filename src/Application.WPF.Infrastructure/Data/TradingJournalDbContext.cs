@@ -8,11 +8,12 @@ public class TradingJournalDbContext : DbContext
 {
     public TradingJournalDbContext(DbContextOptions<TradingJournalDbContext> options) : base(options) { }
 
-    public DbSet<User>             Users             => Set<User>();
-    public DbSet<TradingAccount>   TradingAccounts   => Set<TradingAccount>();
-    public DbSet<TradingStrategy>   TradingStrategies  => Set<TradingStrategy>();
-    public DbSet<StrategyRule>      StrategyRules      => Set<StrategyRule>();
+    public DbSet<User>              Users               => Set<User>();
+    public DbSet<TradingAccount>    TradingAccounts     => Set<TradingAccount>();
+    public DbSet<TradingStrategy>   TradingStrategies   => Set<TradingStrategy>();
+    public DbSet<StrategyRule>      StrategyRules       => Set<StrategyRule>();
     public DbSet<StrategyConfluence> StrategyConfluences => Set<StrategyConfluence>();
+    public DbSet<TradeEntry>        TradeEntries        => Set<TradeEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -81,6 +82,42 @@ public class TradingJournalDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<TradeEntry>(e =>
+        {
+            e.HasKey(t => t.Id);
+            e.HasIndex(t => t.AccountId);
+            e.HasIndex(t => t.StrategyId);
+            e.Property(t => t.Symbol).IsRequired().HasMaxLength(20);
+            e.Property(t => t.Direction).IsRequired().HasConversion<string>();
+            e.Property(t => t.Result).IsRequired().HasConversion<string>();
+            e.Property(t => t.Session).HasConversion<string>();
+            e.Property(t => t.EmotionalState).HasConversion<string>();
+            e.Property(t => t.EntryPrice).HasColumnType("decimal(18,8)");
+            e.Property(t => t.ExitPrice).HasColumnType("decimal(18,8)");
+            e.Property(t => t.StopLoss).HasColumnType("decimal(18,8)");
+            e.Property(t => t.TakeProfit).HasColumnType("decimal(18,8)");
+            e.Property(t => t.PositionSizeLots).HasColumnType("decimal(18,4)");
+            e.Property(t => t.RiskAmount).HasColumnType("decimal(18,2)");
+            e.Property(t => t.ProfitLoss).HasColumnType("decimal(18,2)");
+            e.Property(t => t.PipsResult).HasColumnType("decimal(10,1)");
+            e.Property(t => t.RiskRewardRatio).HasColumnType("decimal(6,2)");
+            e.Property(t => t.Rating);
+            e.Property(t => t.Timeframe).HasMaxLength(10);
+            e.Property(t => t.MistakeType).HasMaxLength(100);
+            e.Property(t => t.Notes).HasMaxLength(2000);
+            e.Property(t => t.ScreenshotUrl).HasMaxLength(500);
+            e.Property(t => t.CreatedAt).IsRequired();
+            e.HasOne(t => t.Account)
+                .WithMany()
+                .HasForeignKey(t => t.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(t => t.Strategy)
+                .WithMany()
+                .HasForeignKey(t => t.StrategyId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
         });
     }
 }

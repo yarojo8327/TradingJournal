@@ -20,6 +20,8 @@ public class SupportedLanguage
         NativeName  = "Español"
     };
 
+    public override string ToString() => DisplayName;
+
     public static IReadOnlyList<SupportedLanguage> All =>
         new List<SupportedLanguage> { EnUS, EsCO }.AsReadOnly();
 }

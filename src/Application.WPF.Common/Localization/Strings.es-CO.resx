@@ -239,6 +239,89 @@
   <data name="Account_Deleted"              xml:space="preserve"><value>Cuenta eliminada correctamente.</value></data>
   <data name="Account_DeleteError"          xml:space="preserve"><value>Error al eliminar la cuenta.</value></data>
 
+  <!-- Bitácora de Trading -->
+  <data name="Journal_Header"               xml:space="preserve"><value>Bitácora de Trading</value></data>
+  <data name="Journal_Subtitle"             xml:space="preserve"><value>Registra y analiza cada operación</value></data>
+  <data name="Journal_NewTrade"             xml:space="preserve"><value>+ Nuevo Trade</value></data>
+  <data name="Journal_Empty"                xml:space="preserve"><value>No hay trades registrados</value></data>
+  <data name="Journal_EmptyHint"            xml:space="preserve"><value>Haz clic en «Nuevo Trade» para registrar tu primera operación</value></data>
+  <data name="Journal_FormNew"              xml:space="preserve"><value>Registrar nuevo trade</value></data>
+  <data name="Journal_FormEdit"             xml:space="preserve"><value>Editar trade</value></data>
+  <data name="Journal_Cancel"               xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Journal_Save"                 xml:space="preserve"><value>Guardar trade</value></data>
+  <data name="Journal_Saving"               xml:space="preserve"><value>Guardando…</value></data>
+  <data name="Journal_Delete"               xml:space="preserve"><value>Eliminar</value></data>
+  <data name="Journal_Edit"                 xml:space="preserve"><value>Editar</value></data>
+
+  <!-- Bitácora — Secciones -->
+  <data name="Journal_Section_Trade"        xml:space="preserve"><value>Datos del trade</value></data>
+  <data name="Journal_Section_Execution"    xml:space="preserve"><value>Ejecución</value></data>
+  <data name="Journal_Section_Result"       xml:space="preserve"><value>Resultado</value></data>
+  <data name="Journal_Section_Analysis"     xml:space="preserve"><value>Análisis</value></data>
+  <data name="Journal_Section_Psychology"   xml:space="preserve"><value>Psicología y Notas</value></data>
+
+  <!-- Bitácora — Campos -->
+  <data name="Journal_Account"              xml:space="preserve"><value>Cuenta *</value></data>
+  <data name="Journal_Strategy"             xml:space="preserve"><value>Estrategia (opcional)</value></data>
+  <data name="Journal_Symbol"               xml:space="preserve"><value>Símbolo / Instrumento *</value></data>
+  <data name="Journal_Direction"            xml:space="preserve"><value>Dirección *</value></data>
+  <data name="Journal_EntryDate"            xml:space="preserve"><value>Fecha de entrada *</value></data>
+  <data name="Journal_EntryTime"            xml:space="preserve"><value>Hora de entrada (HH:mm) *</value></data>
+  <data name="Journal_ExitDate"             xml:space="preserve"><value>Fecha de salida</value></data>
+  <data name="Journal_ExitTime"             xml:space="preserve"><value>Hora de salida (HH:mm)</value></data>
+  <data name="Journal_EntryPrice"           xml:space="preserve"><value>Precio de entrada *</value></data>
+  <data name="Journal_ExitPrice"            xml:space="preserve"><value>Precio de salida</value></data>
+  <data name="Journal_StopLoss"             xml:space="preserve"><value>Stop loss</value></data>
+  <data name="Journal_TakeProfit"           xml:space="preserve"><value>Take profit</value></data>
+  <data name="Journal_PositionSize"         xml:space="preserve"><value>Tamaño de posición (lotes)</value></data>
+  <data name="Journal_RiskAmount"           xml:space="preserve"><value>Monto en riesgo ($)</value></data>
+  <data name="Journal_ProfitLoss"           xml:space="preserve"><value>P&amp;L ($)</value></data>
+  <data name="Journal_Pips"                 xml:space="preserve"><value>Resultado en pips</value></data>
+  <data name="Journal_RR"                   xml:space="preserve"><value>R:R obtenido</value></data>
+  <data name="Journal_Result"               xml:space="preserve"><value>Resultado *</value></data>
+  <data name="Journal_Session"              xml:space="preserve"><value>Sesión</value></data>
+  <data name="Journal_Timeframe"            xml:space="preserve"><value>Temporalidad</value></data>
+  <data name="Journal_SetupQuality"         xml:space="preserve"><value>Calidad del setup (1–10)</value></data>
+  <data name="Journal_Confluences"          xml:space="preserve"><value>Confluencias cumplidas</value></data>
+  <data name="Journal_FalseBreakout"        xml:space="preserve"><value>Falso rompimiento</value></data>
+  <data name="Journal_EmotionalState"       xml:space="preserve"><value>Estado emocional</value></data>
+  <data name="Journal_MistakeType"          xml:space="preserve"><value>Error cometido (si aplica)</value></data>
+  <data name="Journal_Notes"                xml:space="preserve"><value>Observaciones / Notas</value></data>
+  <data name="Journal_ScreenshotUrl"        xml:space="preserve"><value>URL del gráfico (TradingView)</value></data>
+
+  <!-- Bitácora — Cabeceras de tabla -->
+  <data name="Journal_Col_Date"             xml:space="preserve"><value>FECHA</value></data>
+  <data name="Journal_Col_Symbol"           xml:space="preserve"><value>SÍMBOLO</value></data>
+  <data name="Journal_Col_Direction"        xml:space="preserve"><value>DIR</value></data>
+  <data name="Journal_Col_Account"          xml:space="preserve"><value>CUENTA</value></data>
+  <data name="Journal_Col_Strategy"         xml:space="preserve"><value>ESTRATEGIA</value></data>
+  <data name="Journal_Col_Entry"            xml:space="preserve"><value>ENTRADA</value></data>
+  <data name="Journal_Col_Exit"             xml:space="preserve"><value>SALIDA</value></data>
+  <data name="Journal_Col_SL"               xml:space="preserve"><value>SL</value></data>
+  <data name="Journal_Col_TP"               xml:space="preserve"><value>TP</value></data>
+  <data name="Journal_Col_Lots"             xml:space="preserve"><value>LOTES</value></data>
+  <data name="Journal_Col_PL"               xml:space="preserve"><value>P&amp;L</value></data>
+  <data name="Journal_Col_Pips"             xml:space="preserve"><value>PIPS</value></data>
+  <data name="Journal_Col_RR"               xml:space="preserve"><value>R:R</value></data>
+  <data name="Journal_Col_Result"           xml:space="preserve"><value>RESULTADO</value></data>
+  <data name="Journal_Col_Session"          xml:space="preserve"><value>SESIÓN</value></data>
+  <data name="Journal_Col_Quality"          xml:space="preserve"><value>CALIDAD</value></data>
+  <data name="Journal_Col_Rating"            xml:space="preserve"><value>CAL.</value></data>
+  <data name="Journal_Col_Actions"          xml:space="preserve"><value>ACCIONES</value></data>
+
+  <!-- Bitácora — Filtros -->
+  <data name="Journal_Filter_Account"       xml:space="preserve"><value>Cuenta</value></data>
+  <data name="Journal_Filter_Symbol"        xml:space="preserve"><value>Símbolo</value></data>
+  <data name="Journal_Filter_Result"        xml:space="preserve"><value>Resultado</value></data>
+  <data name="Journal_Filter_Apply"         xml:space="preserve"><value>Filtrar</value></data>
+  <data name="Journal_Filter_Clear"         xml:space="preserve"><value>Limpiar</value></data>
+  <data name="Journal_Filter_Strategy"      xml:space="preserve"><value>Estrategia</value></data>
+  <data name="Journal_Filter_RatingMin"     xml:space="preserve"><value>Cal. mínima</value></data>
+  <data name="Journal_Filter_RatingMax"     xml:space="preserve"><value>Cal. máxima</value></data>
+  <data name="Journal_Rating"               xml:space="preserve"><value>Calificación del trade (1–10)</value></data>
+  <data name="Journal_Filter_AllAccounts"   xml:space="preserve"><value>— Todas las cuentas —</value></data>
+  <data name="Journal_Filter_AllResults"    xml:space="preserve"><value>— Todos los resultados —</value></data>
+
   <!-- Estrategias -->
   <data name="Strategy_Title"               xml:space="preserve"><value>Estrategias</value></data>
   <data name="Strategy_Subtitle"            xml:space="preserve"><value>Metodologías y sistemas de trading</value></data>

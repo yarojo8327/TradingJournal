@@ -1,3 +1,4 @@
+using Application.WPF.ViewModels.Journal;
 using Application.WPF.ViewModels.Login;
 using Application.WPF.ViewModels.Main;
 using Application.WPF.ViewModels.Profile;
@@ -21,6 +22,8 @@ public static class ViewModelsRegistration
         services.AddTransient<ProfileViewModel>();
         services.AddTransient<TradingAccountViewModel>();
         services.AddTransient<TradingStrategyViewModel>();
+        services.AddTransient<TradeJournalViewModel>();
+        services.AddTransient<TradeAnalyticsViewModel>();
         services.AddTransient<StrategyRaterViewModel>();
         services.AddTransient<Func<StrategyRaterViewModel>>(sp => () => sp.GetRequiredService<StrategyRaterViewModel>());
         return services;
