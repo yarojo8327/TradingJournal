@@ -210,8 +210,12 @@
                         <!-- Símbolo -->
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="{loc:Tr Journal_Filter_Symbol}" Style="{StaticResource FieldLabel}" />
-                            <TextBox Text="{Binding FilterSymbol, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{DynamicResource FormTextBox}" Tag="EURUSD…" />
+                            <ComboBox ItemsSource="{Binding FilterSymbols}"
+                                      Text="{Binding FilterSymbol, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="True"
+                                      StaysOpenOnEdit="True"
+                                      Style="{DynamicResource FormComboBox}" />
                         </StackPanel>
 
                         <!-- Resultado -->

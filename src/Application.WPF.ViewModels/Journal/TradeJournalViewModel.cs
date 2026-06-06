@@ -65,6 +65,30 @@ public partial class TradeJournalViewModel : BaseViewModel
     public IReadOnlyList<int?> RatingOptions { get; } =
         new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
+    // Catálogo para el filtro: primer ítem vacío = "todos"
+    public IReadOnlyList<string> FilterSymbols { get; } = new List<string>
+    {
+        string.Empty,
+        // Forex Majors
+        "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP",
+        // Forex Crosses EUR
+        "EURJPY","EURCAD","EURAUD","EURNZD","EURCHF",
+        // Forex Crosses GBP
+        "GBPJPY","GBPCHF","GBPCAD","GBPAUD","GBPNZD",
+        // Forex Crosses JPY
+        "AUDJPY","CADJPY","NZDJPY","CHFJPY",
+        // Forex Otros
+        "AUDCAD","AUDCHF","AUDNZD","CADCHF","NZDCAD","NZDCHF",
+        // Exóticos
+        "USDMXN","USDZAR","USDSGD","USDNOK","USDSEK","USDTRY",
+        // Metales y commodities
+        "XAUUSD","XAGUSD","USOIL","UKOIL",
+        // Cripto
+        "BTCUSD","ETHUSD","BNBUSD","SOLUSD","XRPUSD","ADAUSD","AVAXUSD","DOTUSD","LINKUSD","MATICUSD",
+        // Índices
+        "US30","US500","NAS100","GER40","UK100","JP225","AUS200","HK50","FRA40","EU50"
+    };
+
     public IReadOnlyList<string> Symbols { get; } = new List<string>
     {
         // Forex Majors
