@@ -277,8 +277,7 @@
             </Border>
 
             <!-- ═══ ESTADO VACÍO ═══ -->
-            <Border Padding="24,32" Margin="0,0,0,16"
-                    Visibility="{Binding HasData, Converter={StaticResource BoolToVisibility}}">
+            <Border Padding="24,32" Margin="0,0,0,16">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Visibility" Value="Visible" />
