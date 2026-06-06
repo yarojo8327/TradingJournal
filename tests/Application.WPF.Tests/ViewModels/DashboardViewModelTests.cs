@@ -1,3 +1,4 @@
+using Application.WPF.Models.Entities;
 using Application.WPF.Services.Interfaces;
 using Application.WPF.ViewModels;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -8,55 +9,68 @@ namespace Application.WPF.Tests.ViewModels;
 
 public class DashboardViewModelTests
 {
-    private readonly Mock<IDialogService> _dialogMock = new();
-    private readonly DashboardViewModel _sut;
+    private readonly Mock<ITradeService>           _tradeMock    = new();
+    private readonly Mock<ITradingAccountService>  _accountMock  = new();
+    private readonly Mock<ITradingStrategyService> _strategyMock = new();
+    private readonly Mock<IPlaybookService>        _playbookMock = new();
+    private readonly Mock<ISessionService>         _sessionMock  = new();
 
-    public DashboardViewModelTests()
+    private DashboardViewModel BuildSut()
     {
-        _sut = new DashboardViewModel(_dialogMock.Object, NullLogger<DashboardViewModel>.Instance);
+        // Default: authenticated user, empty data
+        _sessionMock.Setup(s => s.CurrentUser).Returns(new User { Id = 1, Username = "test" });
+        _tradeMock.Setup(s => s.GetAllByUserIdAsync(It.IsAny<int>()))
+                  .ReturnsAsync(new List<TradeEntry>());
+        _accountMock.Setup(s => s.GetAllByUserIdAsync(It.IsAny<int>()))
+                    .ReturnsAsync(new List<TradingAccount>());
+        _playbookMock.Setup(s => s.GetAllByUserIdAsync(It.IsAny<int>()))
+                     .ReturnsAsync(new List<PlaybookEntry>());
+
+        return new DashboardViewModel(
+            _tradeMock.Object,
+            _accountMock.Object,
+            _strategyMock.Object,
+            _playbookMock.Object,
+            _sessionMock.Object,
+            NullLogger<DashboardViewModel>.Instance);
     }
 
     [Fact]
-    public void Constructor_SetsTitleToDashboard()
+    public void Constructor_SetsTitleToPanel()
     {
-        Assert.Equal("Dashboard", _sut.Title);
+        var sut = BuildSut();
+        Assert.Equal("Panel", sut.Title);
     }
 
     [Fact]
-    public async Task InitializeAsync_SetsStatusMessage()
+    public async Task InitializeAsync_LoadsDataWithoutError()
     {
-        await _sut.InitializeAsync();
-
-        Assert.False(string.IsNullOrEmpty(_sut.StatusMessage));
+        var sut = BuildSut();
+        await sut.InitializeAsync();
+        Assert.False(sut.IsBusy);
     }
 
     [Fact]
-    public void ShowSampleDialogCommand_CallsDialogService()
+    public async Task InitializeAsync_SetsHasDataFalseWhenNoTrades()
     {
-        _sut.ShowSampleDialogCommand.Execute(null);
-
-        _dialogMock.Verify(d => d.ShowInformation(
-            It.IsAny<string>(),
-            It.IsAny<string>()), Times.Once);
+        var sut = BuildSut();
+        await sut.InitializeAsync();
+        Assert.False(sut.HasData);
     }
 
     [Fact]
     public async Task RefreshCommand_SetsIsBusyFalseWhenComplete()
     {
-        await _sut.RefreshCommand.ExecuteAsync(null);
-
-        Assert.False(_sut.IsBusy);
+        var sut = BuildSut();
+        await sut.RefreshCommand.ExecuteAsync(null);
+        Assert.False(sut.IsBusy);
     }
 
     [Fact]
-    public async Task RefreshCommand_UpdatesStatusMessage()
+    public async Task RefreshCommand_SetsLastRefreshed()
     {
-        await _sut.InitializeAsync();
-        var initial = _sut.StatusMessage;
-
-        await Task.Delay(10);
-        await _sut.RefreshCommand.ExecuteAsync(null);
-
-        Assert.False(string.IsNullOrEmpty(_sut.StatusMessage));
+        var sut = BuildSut();
+        await sut.RefreshCommand.ExecuteAsync(null);
+        Assert.False(string.IsNullOrEmpty(sut.LastRefreshed));
     }
 }
