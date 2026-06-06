@@ -23,6 +23,7 @@ public static class ViewModelsRegistration
         services.AddTransient<TradingAccountViewModel>();
         services.AddTransient<TradingStrategyViewModel>();
         services.AddTransient<TradeJournalViewModel>();
+        services.AddTransient<TradeAnalyticsViewModel>();
         services.AddTransient<StrategyRaterViewModel>();
         services.AddTransient<Func<StrategyRaterViewModel>>(sp => () => sp.GetRequiredService<StrategyRaterViewModel>());
         return services;

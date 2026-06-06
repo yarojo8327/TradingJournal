@@ -106,6 +106,10 @@ public partial class MainViewModel : BaseViewModel
         _navigationService.NavigateTo<TradeJournalViewModel>();
 
     [RelayCommand]
+    private void GoToAnalytics() =>
+        _navigationService.NavigateTo<TradeAnalyticsViewModel>();
+
+    [RelayCommand]
     private void Logout()
     {
         _sessionService.Clear();

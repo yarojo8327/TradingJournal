@@ -102,7 +102,8 @@
                     <Button Content="{loc:Tr Nav_Journal}"
                             Style="{DynamicResource GhostButton}"
                             Command="{Binding GoToJournalCommand}" />
-                    <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}" />
+                    <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToAnalyticsCommand}" />
 
                     <Button Content="{loc:Tr Nav_Account}"
                             Style="{DynamicResource GhostButton}"
