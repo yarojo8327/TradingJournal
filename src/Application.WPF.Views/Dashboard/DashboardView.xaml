@@ -230,6 +230,101 @@
                 </Border>
             </Grid>
 
+            <!-- ══ ACCESO RÁPIDO ══════════════════════════════════════════════ -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Bitácora -->
+                <Button Grid.Column="0" Style="{DynamicResource GhostButton}"
+                        Command="{Binding GoToJournalCommand}" Cursor="Hand" Padding="0" Height="44">
+                    <Border CornerRadius="8" Background="#0A00D4FF" Width="300" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="📓" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="BITÁCORA" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                                <TextBlock Text="Ver operaciones" FontSize="10"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+                <!-- Análisis -->
+                <Button Grid.Column="2" Style="{DynamicResource GhostButton}"
+                        Command="{Binding GoToAnalyticsCommand}" Cursor="Hand" Padding="0" Height="44">
+                    <Border CornerRadius="8" Background="#0A00D4FF" Width="300" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="📈" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="ANÁLISIS" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                                <TextBlock Text="Estadísticas" FontSize="10"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+                <!-- Estrategias -->
+                <Button Grid.Column="4" Style="{DynamicResource GhostButton}"
+                        Command="{Binding GoToStrategiesCommand}" Cursor="Hand" Padding="0" Height="44">
+                    <Border CornerRadius="8" Background="#0A00D4FF" Width="300" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="⚡" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="ESTRATEGIAS" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                                <TextBlock Text="Gestionar playbook" FontSize="10"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+                <!-- Playbook -->
+                <Button Grid.Column="6" Style="{DynamicResource GhostButton}"
+                        Command="{Binding GoToPlaybookCommand}" Cursor="Hand" Padding="0" Height="44">
+                    <Border CornerRadius="8" Background="#0A00D4FF" Width="300" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="🏆" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="PLAYBOOK" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                                <TextBlock Text="Trades destacados" FontSize="10"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+                <!-- Cuentas -->
+                <Button Grid.Column="8" Style="{DynamicResource GhostButton}"
+                        Command="{Binding GoToAccountCommand}" Cursor="Hand" Padding="0" Height="44">
+                    <Border CornerRadius="8" Background="#0A00D4FF" Width="300" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="💼" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="CUENTAS" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                                <TextBlock Text="Gestionar cuentas" FontSize="10"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Button>
+            </Grid>
+
             <!-- ══ ROW 2: CURVA DE EQUITY  +  DISTRIBUCIÓN  +  CAPITAL ════════ -->
             <Grid Margin="0,0,0,16">
                 <Grid.ColumnDefinitions>
@@ -243,7 +338,17 @@
                 <!-- Equity curve card -->
                 <Border Grid.Column="0" Style="{DynamicResource AccentCard}" Padding="16,14,16,14">
                     <StackPanel>
-                        <TextBlock Text="CURVA DE EQUITY" Style="{StaticResource SectionLabel}" />
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="CURVA DE EQUITY" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="Ver análisis →" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource CyanGlowBrush}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Cursor="Hand">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding GoToAnalyticsCommand}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </Grid>
                         <!-- Canvas container — code-behind draws here -->
                         <Border Height="130" Background="#08FFFFFF" CornerRadius="6"
                                 ClipToBounds="True">
@@ -384,7 +489,16 @@
                 <!-- Capital summary -->
                 <Border Grid.Column="4" Style="{DynamicResource Card}" Padding="16,14">
                     <StackPanel>
-                        <TextBlock Text="RESUMEN DE CAPITAL" Style="{StaticResource SectionLabel}" />
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="RESUMEN DE CAPITAL" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="Cuentas →" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource CyanGlowBrush}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding GoToAccountCommand}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </Grid>
 
                         <StackPanel Margin="0,0,0,10">
                             <TextBlock Text="Capital inicial" Style="{StaticResource Caption}" Margin="0,0,0,2" />
@@ -433,7 +547,16 @@
                         <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,10" />
 
                         <!-- Playbook summary -->
-                        <TextBlock Text="PLAYBOOK" Style="{StaticResource SectionLabel}" Margin="0" />
+                        <Grid Margin="0,0,0,0">
+                            <TextBlock Text="PLAYBOOK" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="Ver →" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource CyanGlowBrush}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding GoToPlaybookCommand}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </Grid>
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                             <Border Background="#1500D4FF" CornerRadius="5" Padding="8,4" Margin="0,0,8,0">
                                 <TextBlock FontSize="13" FontWeight="Bold" Foreground="{DynamicResource CyanGlowBrush}">
@@ -462,7 +585,16 @@
                 <!-- Trades recientes -->
                 <Border Grid.Column="0" Style="{DynamicResource AccentCard}" Padding="16,14">
                     <StackPanel>
-                        <TextBlock Text="ÚLTIMAS OPERACIONES" Style="{StaticResource SectionLabel}" />
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="ÚLTIMAS OPERACIONES" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="Ver bitácora →" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource CyanGlowBrush}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding GoToJournalCommand}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </Grid>
 
                         <!-- Header -->
                         <Grid Margin="0,0,0,8">
@@ -590,7 +722,16 @@
                 <!-- Strategy performance -->
                 <Border Grid.Column="2" Style="{DynamicResource Card}" Padding="16,14">
                     <StackPanel>
-                        <TextBlock Text="RENDIMIENTO POR ESTRATEGIA" Style="{StaticResource SectionLabel}" />
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="RENDIMIENTO POR ESTRATEGIA" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="Ver →" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource CyanGlowBrush}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding GoToStrategiesCommand}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </Grid>
 
                         <ItemsControl ItemsSource="{Binding StrategyStats}">
                             <ItemsControl.ItemTemplate>
