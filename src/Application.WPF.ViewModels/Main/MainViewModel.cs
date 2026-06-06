@@ -3,6 +3,7 @@ using Application.WPF.Common.ViewModels;
 using Application.WPF.Services.Interfaces;
 using Application.WPF.ViewModels.Journal;
 using Application.WPF.ViewModels.Login;
+using Application.WPF.ViewModels.Playbook;
 using Application.WPF.ViewModels.Profile;
 using Application.WPF.ViewModels.Register;
 using Application.WPF.ViewModels.Strategies;
@@ -108,6 +109,10 @@ public partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private void GoToAnalytics() =>
         _navigationService.NavigateTo<TradeAnalyticsViewModel>();
+
+    [RelayCommand]
+    private void GoToPlaybook() =>
+        _navigationService.NavigateTo<PlaybookViewModel>();
 
     [RelayCommand]
     private void Logout()
