@@ -56,10 +56,22 @@ public partial class TradeAnalyticsViewModel : BaseViewModel
 
     // ── KPIs ─────────────────────────────────────────────────────────────
 
-    [ObservableProperty] private int    _totalTrades;
-    [ObservableProperty] private int    _winningTrades;
-    [ObservableProperty] private int    _losingTrades;
-    [ObservableProperty] private int    _breakEvenTrades;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(WinBarWidth), nameof(LossBarWidth), nameof(BEBarWidth))]
+    private int _totalTrades;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(WinBarWidth))]
+    private int _winningTrades;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(LossBarWidth))]
+    private int _losingTrades;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(BEBarWidth))]
+    private int _breakEvenTrades;
+
     [ObservableProperty] private int    _openTrades;
     [ObservableProperty] private double _winRatePct;
     [ObservableProperty] private string _winRateDisplay      = "—";
@@ -79,13 +91,62 @@ public partial class TradeAnalyticsViewModel : BaseViewModel
     [ObservableProperty] private string _expectancyDisplay   = "—";
     [ObservableProperty] private bool   _expectancyPositive;
 
+    // Ancho de barras de distribución de resultados (max 400px)
+    public double WinBarWidth  => TotalTrades > 0 ? (double)WinningTrades   / TotalTrades * 400 : 0;
+    public double LossBarWidth => TotalTrades > 0 ? (double)LosingTrades    / TotalTrades * 400 : 0;
+    public double BEBarWidth   => TotalTrades > 0 ? (double)BreakEvenTrades / TotalTrades * 400 : 0;
+
+    public double WinPct  => TotalTrades > 0 ? (double)WinningTrades   / TotalTrades * 100 : 0;
+    public double LossPct => TotalTrades > 0 ? (double)LosingTrades    / TotalTrades * 100 : 0;
+    public double BEPct   => TotalTrades > 0 ? (double)BreakEvenTrades / TotalTrades * 100 : 0;
+
     // ── Desgloses ────────────────────────────────────────────────────────
 
+    // Colecciones completas (para cómputo interno y export)
+    private List<SymbolAnalytics>   _allBySymbol   = new();
+    private List<StrategyAnalytics> _allByStrategy = new();
+
+    // Colecciones paginadas (bound en la View)
     [ObservableProperty] private ObservableCollection<SymbolAnalytics>    _bySymbol    = new();
     [ObservableProperty] private ObservableCollection<StrategyAnalytics>  _byStrategy  = new();
     [ObservableProperty] private ObservableCollection<SessionAnalytics>   _bySession   = new();
     [ObservableProperty] private ObservableCollection<DirectionAnalytics> _byDirection = new();
     [ObservableProperty] private ObservableCollection<MonthlyAnalytics>   _byMonth     = new();
+
+    // ── Paginación de Símbolo ─────────────────────────────────────────────
+
+    private const int TablePageSize = 8;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SymbolPageInfo), nameof(SymbolIsFirstPage), nameof(SymbolIsLastPage))]
+    private int _symbolCurrentPage = 1;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SymbolPageInfo), nameof(SymbolIsLastPage))]
+    private int _symbolTotalPages = 1;
+
+    public string SymbolPageInfo   => $"{SymbolCurrentPage} / {SymbolTotalPages}";
+    public bool   SymbolIsFirstPage => SymbolCurrentPage <= 1;
+    public bool   SymbolIsLastPage  => SymbolCurrentPage >= SymbolTotalPages;
+
+    // ── Paginación de Estrategia ──────────────────────────────────────────
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StrategyPageInfo), nameof(StrategyIsFirstPage), nameof(StrategyIsLastPage))]
+    private int _strategyCurrentPage = 1;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StrategyPageInfo), nameof(StrategyIsLastPage))]
+    private int _strategyTotalPages = 1;
+
+    public string StrategyPageInfo    => $"{StrategyCurrentPage} / {StrategyTotalPages}";
+    public bool   StrategyIsFirstPage => StrategyCurrentPage <= 1;
+    public bool   StrategyIsLastPage  => StrategyCurrentPage >= StrategyTotalPages;
+
+    // ── Datos de gráficos ─────────────────────────────────────────────────
+
+    [ObservableProperty] private ObservableCollection<MonthlyChartPoint>  _monthlyChart  = new();
+    [ObservableProperty] private ObservableCollection<SessionChartPoint>  _sessionChart  = new();
 
     // ── Constructor ───────────────────────────────────────────────────────
 
@@ -118,6 +179,27 @@ public partial class TradeAnalyticsViewModel : BaseViewModel
     }
 
     // ── Comandos ─────────────────────────────────────────────────────────
+
+    [RelayCommand] private void NextSymbolPage()     { if (!SymbolIsLastPage)    { SymbolCurrentPage++;    RefreshSymbolPage(); } }
+    [RelayCommand] private void PrevSymbolPage()     { if (!SymbolIsFirstPage)   { SymbolCurrentPage--;    RefreshSymbolPage(); } }
+    [RelayCommand] private void NextStrategyPage()   { if (!StrategyIsLastPage)  { StrategyCurrentPage++;  RefreshStrategyPage(); } }
+    [RelayCommand] private void PrevStrategyPage()   { if (!StrategyIsFirstPage) { StrategyCurrentPage--;  RefreshStrategyPage(); } }
+
+    private void RefreshSymbolPage()
+    {
+        SymbolTotalPages  = Math.Max(1, (int)Math.Ceiling((double)_allBySymbol.Count   / TablePageSize));
+        if (SymbolCurrentPage > SymbolTotalPages) SymbolCurrentPage = SymbolTotalPages;
+        BySymbol   = new ObservableCollection<SymbolAnalytics>(
+            _allBySymbol.Skip((SymbolCurrentPage - 1) * TablePageSize).Take(TablePageSize));
+    }
+
+    private void RefreshStrategyPage()
+    {
+        StrategyTotalPages = Math.Max(1, (int)Math.Ceiling((double)_allByStrategy.Count / TablePageSize));
+        if (StrategyCurrentPage > StrategyTotalPages) StrategyCurrentPage = StrategyTotalPages;
+        ByStrategy = new ObservableCollection<StrategyAnalytics>(
+            _allByStrategy.Skip((StrategyCurrentPage - 1) * TablePageSize).Take(TablePageSize));
+    }
 
     [RelayCommand]
     private async Task ApplyFilterAsync() => await ComputeAsync();
@@ -265,6 +347,11 @@ public partial class TradeAnalyticsViewModel : BaseViewModel
             ExpectancyPositive = exp >= 0;
         }
         else { ExpectancyDisplay = "—"; ExpectancyPositive = false; }
+
+        // Notify computed bar widths
+        OnPropertyChanged(nameof(WinPct));
+        OnPropertyChanged(nameof(LossPct));
+        OnPropertyChanged(nameof(BEPct));
     }
 
     private static (int win, int loss) ComputeStreaks(List<TradeResult> r)
@@ -282,23 +369,38 @@ public partial class TradeAnalyticsViewModel : BaseViewModel
     // ── Desgloses ────────────────────────────────────────────────────────
 
     private void ComputeBySymbol(List<TradeEntry> t)
-        => BySymbol = new ObservableCollection<SymbolAnalytics>(
-            t.GroupBy(x => x.Symbol)
-             .Select(g => MakeSymbol(g.Key, g.ToList()))
-             .OrderByDescending(s => s.TotalPL).Take(15));
+    {
+        _allBySymbol = t.GroupBy(x => x.Symbol)
+                        .Select(g => MakeSymbol(g.Key, g.ToList()))
+                        .OrderByDescending(s => s.TotalPL)
+                        .ToList();
+        SymbolCurrentPage = 1;
+        RefreshSymbolPage();
+    }
 
     private void ComputeByStrategy(List<TradeEntry> t)
-        => ByStrategy = new ObservableCollection<StrategyAnalytics>(
-            t.GroupBy(x => x.Strategy?.Title ?? "Sin estrategia")
-             .Select(g => MakeStrategy(g.Key, g.ToList()))
-             .OrderByDescending(s => s.TotalPL));
+    {
+        _allByStrategy = t.GroupBy(x => x.Strategy?.Title ?? "Sin estrategia")
+                          .Select(g => MakeStrategy(g.Key, g.ToList()))
+                          .OrderByDescending(s => s.TotalPL)
+                          .ToList();
+        StrategyCurrentPage = 1;
+        RefreshStrategyPage();
+    }
 
     private void ComputeBySession(List<TradeEntry> t)
-        => BySession = new ObservableCollection<SessionAnalytics>(
-            t.Where(x => x.Session.HasValue)
-             .GroupBy(x => x.Session!.Value)
-             .Select(g => MakeSession(g.Key, g.ToList()))
-             .OrderByDescending(s => s.Total));
+    {
+        var sessions = t.Where(x => x.Session.HasValue)
+                        .GroupBy(x => x.Session!.Value)
+                        .Select(g => MakeSession(g.Key, g.ToList()))
+                        .OrderByDescending(s => s.Total)
+                        .ToList();
+        BySession = new ObservableCollection<SessionAnalytics>(sessions);
+
+        // Chart: barras de win rate por sesión (max 240px)
+        SessionChart = new ObservableCollection<SessionChartPoint>(
+            sessions.Select(s => new SessionChartPoint(s.Session, s.WinRate, s.WinRate / 100.0 * 240)));
+    }
 
     private void ComputeByDirection(List<TradeEntry> t)
         => ByDirection = new ObservableCollection<DirectionAnalytics>(
@@ -307,10 +409,23 @@ public partial class TradeAnalyticsViewModel : BaseViewModel
              .OrderBy(d => d.SortOrder));
 
     private void ComputeByMonth(List<TradeEntry> t)
-        => ByMonth = new ObservableCollection<MonthlyAnalytics>(
-            t.GroupBy(x => new { x.EntryDate.Year, x.EntryDate.Month })
-             .Select(g => MakeMonth(g.Key.Year, g.Key.Month, g.ToList()))
-             .OrderByDescending(m => m.SortKey));
+    {
+        var groups = t.GroupBy(x => new { x.EntryDate.Year, x.EntryDate.Month })
+                      .Select(g => MakeMonth(g.Key.Year, g.Key.Month, g.ToList()))
+                      .OrderByDescending(m => m.SortKey)
+                      .ToList();
+        ByMonth = new ObservableCollection<MonthlyAnalytics>(groups);
+
+        // Chart: barras horizontales de P&L mensual (max 300px)
+        double maxAbs = groups.Any() ? (double)groups.Max(m => Math.Abs(m.TotalPL)) : 1;
+        if (maxAbs == 0) maxAbs = 1;
+        MonthlyChart = new ObservableCollection<MonthlyChartPoint>(
+            groups.Select(m => new MonthlyChartPoint(
+                m.Month,
+                m.TotalPL,
+                m.TotalPL >= 0,
+                (double)Math.Abs(m.TotalPL) / maxAbs * 300)));
+    }
 
     // ── Builders ─────────────────────────────────────────────────────────
 
@@ -393,6 +508,13 @@ public partial class TradeAnalyticsViewModel : BaseViewModel
         TotalPLPositive = AvgPLPositive = ExpectancyPositive = false;
         BySymbol.Clear(); ByStrategy.Clear(); BySession.Clear();
         ByDirection.Clear(); ByMonth.Clear();
+        MonthlyChart.Clear(); SessionChart.Clear();
+        _allBySymbol.Clear(); _allByStrategy.Clear();
+        SymbolCurrentPage = StrategyCurrentPage = 1;
+        SymbolTotalPages  = StrategyTotalPages  = 1;
+        OnPropertyChanged(nameof(WinPct));
+        OnPropertyChanged(nameof(LossPct));
+        OnPropertyChanged(nameof(BEPct));
     }
 
     // ── Excel builders ────────────────────────────────────────────────────
@@ -574,3 +696,9 @@ public record DirectionAnalytics(
 public record MonthlyAnalytics(
     string Month, int SortKey, int Total, int Wins, int Losses,
     double WinRate, decimal TotalPL);
+
+// ── DTOs de gráficos ──────────────────────────────────────────────────────
+
+public record MonthlyChartPoint(string Month, decimal PL, bool IsPositive, double BarWidth);
+
+public record SessionChartPoint(string Session, double WinRate, double BarWidth);

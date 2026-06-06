@@ -23,11 +23,41 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     private int _tradeId;
 
-    // ── Lista ─────────────────────────────────────────────────────────────
+    // ── Lista paginada ────────────────────────────────────────────────────
+
+    private List<TradeEntry> _rawTrades = new();   // sin filtrar (para resumen de cuentas)
+    private List<TradeEntry> _allTrades = new();
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasNoTrades))]
-    private ObservableCollection<TradeEntry> _trades = new();
+    [NotifyPropertyChangedFor(nameof(HasNoTrades), nameof(PageInfo))]
+    private int _totalCount;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PageInfo), nameof(IsLastPage))]
+    private int _totalPages = 1;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PageInfo), nameof(IsFirstPage), nameof(IsLastPage))]
+    private int _currentPage = 1;
+
+    public bool IsFirstPage => CurrentPage <= 1;
+    public bool IsLastPage  => CurrentPage >= TotalPages;
+
+    private const int PageSize = 25;
+
+    [ObservableProperty]
+    private ObservableCollection<TradeEntry> _pagedTrades = new();
+
+    public bool HasNoTrades => TotalCount == 0;
+    public string PageInfo  => $"Página {CurrentPage} de {TotalPages}  ·  {TotalCount} trades";
+
+    // ── Resumen de cuentas ────────────────────────────────────────────────
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasAccountSummaries))]
+    private ObservableCollection<AccountSummaryItem> _accountSummaries = new();
+
+    public bool HasAccountSummaries => AccountSummaries.Count > 0;
 
     [ObservableProperty] private bool   _isFormVisible;
     [ObservableProperty] private bool   _isEditMode;
@@ -43,8 +73,6 @@ public partial class TradeJournalViewModel : BaseViewModel
     [ObservableProperty] private int?                  _filterRatingMin;
     [ObservableProperty] private int?                  _filterRatingMax;
 
-    public bool HasNoTrades => !Trades.Any();
-
     // ── Catálogos ─────────────────────────────────────────────────────────
 
     [ObservableProperty]
@@ -55,7 +83,6 @@ public partial class TradeJournalViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(FilterStrategies))]
     private ObservableCollection<TradingStrategy> _strategies = new();
 
-    // Incluye null como primer ítem para los filtros
     public IReadOnlyList<TradingAccountEntity?> FilterAccounts =>
         new[] { (TradingAccountEntity?)null }.Concat(Accounts).ToList();
 
@@ -65,49 +92,30 @@ public partial class TradeJournalViewModel : BaseViewModel
     public IReadOnlyList<int?> RatingOptions { get; } =
         new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-    // Catálogo para el filtro: primer ítem vacío = "todos"
     public IReadOnlyList<string> FilterSymbols { get; } = new List<string>
     {
         string.Empty,
-        // Forex Majors
         "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP",
-        // Forex Crosses EUR
         "EURJPY","EURCAD","EURAUD","EURNZD","EURCHF",
-        // Forex Crosses GBP
         "GBPJPY","GBPCHF","GBPCAD","GBPAUD","GBPNZD",
-        // Forex Crosses JPY
         "AUDJPY","CADJPY","NZDJPY","CHFJPY",
-        // Forex Otros
         "AUDCAD","AUDCHF","AUDNZD","CADCHF","NZDCAD","NZDCHF",
-        // Exóticos
         "USDMXN","USDZAR","USDSGD","USDNOK","USDSEK","USDTRY",
-        // Metales y commodities
         "XAUUSD","XAGUSD","USOIL","UKOIL",
-        // Cripto
         "BTCUSD","ETHUSD","BNBUSD","SOLUSD","XRPUSD","ADAUSD","AVAXUSD","DOTUSD","LINKUSD","MATICUSD",
-        // Índices
         "US30","US500","NAS100","GER40","UK100","JP225","AUS200","HK50","FRA40","EU50"
     };
 
     public IReadOnlyList<string> Symbols { get; } = new List<string>
     {
-        // Forex Majors
         "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP",
-        // Forex Crosses EUR
         "EURJPY","EURCAD","EURAUD","EURNZD","EURCHF",
-        // Forex Crosses GBP
         "GBPJPY","GBPCHF","GBPCAD","GBPAUD","GBPNZD",
-        // Forex Crosses JPY
         "AUDJPY","CADJPY","NZDJPY","CHFJPY",
-        // Forex Otros
         "AUDCAD","AUDCHF","AUDNZD","CADCHF","NZDCAD","NZDCHF",
-        // Exóticos
         "USDMXN","USDZAR","USDSGD","USDNOK","USDSEK","USDTRY",
-        // Metales y commodities
         "XAUUSD","XAGUSD","USOIL","UKOIL",
-        // Cripto
         "BTCUSD","ETHUSD","BNBUSD","SOLUSD","XRPUSD","ADAUSD","AVAXUSD","DOTUSD","LINKUSD","MATICUSD",
-        // Índices
         "US30","US500","NAS100","GER40","UK100","JP225","AUS200","HK50","FRA40","EU50"
     };
 
@@ -300,7 +308,7 @@ public partial class TradeJournalViewModel : BaseViewModel
         {
             result = diff > 0 ? TradeResult.Profit : TradeResult.Loss;
         }
-        else // Short
+        else
         {
             result = diff < 0 ? TradeResult.Profit : TradeResult.Loss;
         }
@@ -322,7 +330,56 @@ public partial class TradeJournalViewModel : BaseViewModel
     private async Task LoadTradesAsync(int userId)
     {
         var list = await _tradeService.GetAllByUserIdAsync(userId);
-        Trades = new ObservableCollection<TradeEntry>(ApplyFilters(list));
+        _rawTrades  = list.ToList();
+        _allTrades  = ApplyFilters(_rawTrades).ToList();
+        CurrentPage = 1;
+        RefreshPage();
+    }
+
+    private void RefreshPage()
+    {
+        TotalCount = _allTrades.Count;
+        TotalPages = Math.Max(1, (int)Math.Ceiling((double)TotalCount / PageSize));
+        if (CurrentPage > TotalPages) CurrentPage = TotalPages;
+        if (CurrentPage < 1) CurrentPage = 1;
+
+        PagedTrades = new ObservableCollection<TradeEntry>(
+            _allTrades.Skip((CurrentPage - 1) * PageSize).Take(PageSize));
+
+        RefreshAccountSummaries();
+    }
+
+    private void RefreshAccountSummaries()
+    {
+        // Si hay filtro de cuenta activo, mostrar solo esa cuenta; si no, todas las cuentas.
+        var tradesToSummarize = FilterAccount is not null
+            ? _rawTrades.Where(t => t.AccountId == FilterAccount.Id)
+            : (IEnumerable<TradeEntry>)_rawTrades;
+
+        var summaries = tradesToSummarize
+            .Where(t => t.Account is not null)
+            .GroupBy(t => t.AccountId)
+            .Select(g =>
+            {
+                var account = Accounts.FirstOrDefault(a => a.Id == g.Key);
+                if (account is null) return null;
+
+                var totalPL = g.Where(t => t.ProfitLoss.HasValue).Sum(t => t.ProfitLoss!.Value);
+                var initial = account.InitialCapital;
+                var pct     = initial > 0 ? Math.Round((double)(totalPL / initial * 100m), 2) : 0.0;
+
+                return new AccountSummaryItem(
+                    AccountName:    account.ToString(),
+                    Currency:       account.BaseCurrency,
+                    InitialCapital: initial,
+                    TotalPL:        totalPL,
+                    PctChange:      pct,
+                    IsPositive:     totalPL >= 0);
+            })
+            .OfType<AccountSummaryItem>()
+            .ToList();
+
+        AccountSummaries = new ObservableCollection<AccountSummaryItem>(summaries);
     }
 
     private IEnumerable<TradeEntry> ApplyFilters(IEnumerable<TradeEntry> list)
@@ -428,6 +485,26 @@ public partial class TradeJournalViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private void NextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+            RefreshPage();
+        }
+    }
+
+    [RelayCommand]
+    private void PreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+            RefreshPage();
+        }
+    }
+
+    [RelayCommand]
     private void OpenScreenshot(string? url)
     {
         if (string.IsNullOrWhiteSpace(url)) return;
@@ -445,7 +522,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     [RelayCommand]
     private void ExportToExcel()
     {
-        if (!Trades.Any())
+        if (!_allTrades.Any())
         {
             GeneralError   = "No hay trades para exportar.";
             GeneralSuccess = string.Empty;
@@ -465,7 +542,6 @@ public partial class TradeJournalViewModel : BaseViewModel
             using var wb = new XLWorkbook();
             var ws = wb.Worksheets.Add("Trades");
 
-            // Cabeceras
             string[] headers = {
                 "Fecha", "Símbolo", "Dirección", "Cuenta", "Estrategia",
                 "Entrada", "Salida", "SL", "TP", "Lotes",
@@ -475,16 +551,14 @@ public partial class TradeJournalViewModel : BaseViewModel
             for (int c = 0; c < headers.Length; c++)
                 ws.Cell(1, c + 1).Value = headers[c];
 
-            // Estilo cabecera
             var hdr = ws.Range(1, 1, 1, headers.Length);
             hdr.Style.Font.Bold            = true;
             hdr.Style.Font.FontColor       = XLColor.White;
             hdr.Style.Fill.BackgroundColor = XLColor.FromHtml("#1E3A5F");
             hdr.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            // Filas de datos
             int row = 2;
-            foreach (var t in Trades)
+            foreach (var t in _allTrades)
             {
                 ws.Cell(row, 1).Value  = t.EntryDate.ToString("dd/MM/yyyy HH:mm");
                 ws.Cell(row, 2).Value  = t.Symbol;
@@ -514,7 +588,7 @@ public partial class TradeJournalViewModel : BaseViewModel
                     TradingSession.LondonNewYork => "Londres / NY",
                     _                            => string.Empty
                 };
-                if (t.Rating.HasValue)           ws.Cell(row, 15).Value = t.Rating.Value;
+                if (t.Rating.HasValue) ws.Cell(row, 15).Value = t.Rating.Value;
                 ws.Cell(row, 16).Value = t.EmotionalState switch
                 {
                     EmotionalState.Calm        => "Calmado",
@@ -531,7 +605,6 @@ public partial class TradeJournalViewModel : BaseViewModel
                 ws.Cell(row, 18).Value = t.Notes ?? string.Empty;
                 ws.Cell(row, 19).Value = t.ScreenshotUrl ?? string.Empty;
 
-                // Color condicional P&L
                 if (t.ProfitLoss.HasValue)
                 {
                     var plCell = ws.Cell(row, 11);
@@ -541,21 +614,19 @@ public partial class TradeJournalViewModel : BaseViewModel
                         plCell.Style.Font.FontColor = XLColor.FromHtml("#FF5252");
                 }
 
-                // Alternar fondo de filas
                 if (row % 2 == 0)
                     ws.Row(row).Style.Fill.BackgroundColor = XLColor.FromHtml("#F0F4F8");
 
                 row++;
             }
 
-            // Borde tabla y auto-ancho
             ws.Range(1, 1, row - 1, headers.Length).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             ws.Range(1, 1, row - 1, headers.Length).Style.Border.InsideBorder  = XLBorderStyleValues.Hair;
             ws.Columns().AdjustToContents(8, 60);
 
             wb.SaveAs(dlg.FileName);
 
-            GeneralSuccess = $"Exportado: {System.IO.Path.GetFileName(dlg.FileName)}  ({Trades.Count} trades)";
+            GeneralSuccess = $"Exportado: {System.IO.Path.GetFileName(dlg.FileName)}  ({_allTrades.Count} trades)";
             GeneralError   = string.Empty;
         }
         catch (Exception ex)
@@ -785,4 +856,26 @@ public record SessionOption(TradingSession? Value, string Display)
 public record EmotionalStateOption(EmotionalState? Value, string Display)
 {
     public override string ToString() => Display;
+}
+
+// ── Resumen de cuenta ─────────────────────────────────────────────────────
+
+public record AccountSummaryItem(
+    string  AccountName,
+    string  Currency,
+    decimal InitialCapital,
+    decimal TotalPL,
+    double  PctChange,
+    bool    IsPositive)
+{
+    public decimal CurrentCapital => InitialCapital + TotalPL;
+
+    public string InitialCapitalDisplay => $"{InitialCapital:N2} {Currency}";
+    public string CurrentCapitalDisplay => $"{CurrentCapital:N2} {Currency}";
+    public string TotalPLDisplay        => TotalPL >= 0
+        ? $"+{TotalPL:N2} {Currency}"
+        : $"{TotalPL:N2} {Currency}";
+    public string PctChangeDisplay      => PctChange >= 0
+        ? $"+{PctChange:F2} %"
+        : $"{PctChange:F2} %";
 }
