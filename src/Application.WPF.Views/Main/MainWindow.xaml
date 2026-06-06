@@ -99,8 +99,11 @@
                             Foreground="{DynamicResource PrimaryBrush}"
                             Command="{Binding GoToDashboardCommand}" />
 
-                    <Button Content="{loc:Tr Nav_Journal}"   Style="{DynamicResource GhostButton}" />
-                    <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}" />
+                    <Button Content="{loc:Tr Nav_Journal}"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToJournalCommand}" />
+                    <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToAnalyticsCommand}" />
 
                     <Button Content="{loc:Tr Nav_Account}"
                             Style="{DynamicResource GhostButton}"
@@ -119,41 +122,15 @@
                             VerticalAlignment="Center" Margin="0,0,0,0">
 
                     <!-- Language selector -->
-                    <Border CornerRadius="4"
-                            Background="{DynamicResource SurfaceElevatedBrush}"
-                            BorderBrush="{DynamicResource BorderBrush}"
-                            BorderThickness="1"
-                            Margin="0,0,10,0"
-                            Padding="2,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="🌐"
-                                       FontSize="13"
-                                       VerticalAlignment="Center"
-                                       Margin="6,0,4,0" />
-                            <ComboBox ItemsSource="{Binding AvailableLanguages}"
-                                      SelectedItem="{Binding SelectedLanguage}"
-                                      DisplayMemberPath="DisplayName"
-                                      MinWidth="148"
-                                      BorderThickness="0"
-                                      Background="Transparent"
-                                      Foreground="{DynamicResource TextSecondaryBrush}"
-                                      FontSize="12"
-                                      VerticalAlignment="Center">
-                                <ComboBox.ItemContainerStyle>
-                                    <Style TargetType="ComboBoxItem">
-                                        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
-                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-                                        <Setter Property="Padding"    Value="10,6" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsHighlighted" Value="True">
-                                                <Setter Property="Background" Value="{DynamicResource SurfaceElevatedBrush}" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ComboBox.ItemContainerStyle>
-                            </ComboBox>
-                        </StackPanel>
-                    </Border>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <TextBlock Text="🌐" FontSize="13"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"
+                                   Foreground="{DynamicResource TextMutedBrush}" />
+                        <ComboBox ItemsSource="{Binding AvailableLanguages}"
+                                  SelectedItem="{Binding SelectedLanguage}"
+                                  Style="{DynamicResource FormComboBox}"
+                                  MinWidth="155" Height="30" FontSize="12" />
+                    </StackPanel>
 
                     <!-- Usuario autenticado — chip con menú desplegable -->
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center"

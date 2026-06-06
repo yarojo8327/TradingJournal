@@ -17,4 +17,6 @@ public class TradingAccount
     public DateTime?   UpdatedAt      { get; set; }
 
     public User User { get; set; } = null!;
+
+    public override string ToString() => $"{Broker}  —  {AccountNumber}";
 }

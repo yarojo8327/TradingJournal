@@ -25,6 +25,8 @@ public class TradingStrategy
     /// <summary>Un setup se considera de calidad si el promedio supera 6.5.</summary>
     public bool IsQualifiedSetup => AverageRating.HasValue && AverageRating.Value >= 6.5;
 
+    public override string ToString() => Title;
+
     public User                           User         { get; set; } = null!;
     public ICollection<StrategyRule>      Rules        { get; set; } = new List<StrategyRule>();
     public ICollection<StrategyConfluence> Confluences  { get; set; } = new List<StrategyConfluence>();

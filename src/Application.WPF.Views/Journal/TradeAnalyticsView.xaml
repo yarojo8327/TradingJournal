@@ -1,0 +1,1293 @@
+<UserControl x:Class="Application.WPF.Views.Journal.TradeAnalyticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Application.WPF.ViewModels.Journal;assembly=Application.WPF.ViewModels"
+             xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:TradeAnalyticsViewModel}"
+             Background="{DynamicResource BackgroundBrush}"
+             FontFamily="Segoe UI">
+
+    <UserControl.Resources>
+
+        <converters:InverseBoolConverter x:Key="InverseBool" />
+
+        <!-- Botón de navegación de tabla (autónomo, sin BasedOn) -->
+        <Style x:Key="TableNavBtn" TargetType="Button">
+            <Setter Property="Background"      Value="#12FFFFFF" />
+            <Setter Property="Foreground"      Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#25FFFFFF" />
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{DynamicResource CyanGlowBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TblHdr" TargetType="TextBlock">
+            <Setter Property="Foreground"        Value="{DynamicResource TextMutedBrush}" />
+            <Setter Property="FontSize"          Value="9" />
+            <Setter Property="FontWeight"        Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin"            Value="8,0" />
+        </Style>
+        <Style x:Key="TblCell" TargetType="TextBlock">
+            <Setter Property="Foreground"        Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="FontSize"          Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin"            Value="8,0" />
+            <Setter Property="TextTrimming"      Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="TblRow" TargetType="Border">
+            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="0,1,0,0" />
+            <Setter Property="Padding"         Value="0,9" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource SurfaceElevatedBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="FldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Margin"     Value="0,0,0,5" />
+        </Style>
+        <Style x:Key="SecLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="9" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource CyanGlowBrush}" />
+            <Setter Property="Margin"     Value="0,0,0,10" />
+        </Style>
+        <Style x:Key="KpiCard" TargetType="Border">
+            <Setter Property="Background"      Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius"    Value="8" />
+            <Setter Property="Padding"         Value="16,14" />
+        </Style>
+        <Style x:Key="ChartCard" TargetType="Border">
+            <Setter Property="Background"      Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius"    Value="8" />
+            <Setter Property="Padding"         Value="20,16" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Background="Transparent">
+            <StackPanel Margin="32,24,32,40">
+
+                <!-- ═══ ENCABEZADO ═══ -->
+                <Grid Margin="0,0,0,18">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                            <Border Width="3" Height="22" CornerRadius="1.5"
+                                    Background="{DynamicResource CyanGlowBrush}"
+                                    Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Análisis de Trading"
+                                       FontSize="20" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock Text="Métricas y estadísticas de tu operativa"
+                                   FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
+                                   Margin="13,0,0,0" />
+                    </StackPanel>
+                    <Button Grid.Column="1" VerticalAlignment="Center"
+                            Style="{DynamicResource PrimaryButton}"
+                            Command="{Binding ExportToExcelCommand}"
+                            Height="36" Padding="16,0" FontSize="13">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14" Margin="0,0,7,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Exportar análisis" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <!-- ═══ ERROR ═══ -->
+                <Border Background="#1AFF4444" BorderBrush="{DynamicResource AccentRedBrush}"
+                        BorderThickness="1" CornerRadius="6" Padding="14,10" Margin="0,0,0,10">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GeneralError}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding GeneralError}" FontSize="12"
+                               Foreground="{DynamicResource AccentRedBrush}" TextWrapping="Wrap" />
+                </Border>
+
+                <!-- ═══ FILTROS ═══ -->
+                <Border Style="{DynamicResource Card}" Margin="0,0,0,16" Padding="16,14,16,12">
+                    <StackPanel>
+                        <TextBlock Text="FILTROS" Style="{StaticResource SecLabel}" />
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Cuenta" Style="{StaticResource FldLabel}" />
+                                <ComboBox ItemsSource="{Binding FilterAccounts}"
+                                          SelectedItem="{Binding FilterAccount}"
+                                          Style="{DynamicResource FormComboBox}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock FontSize="13">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text"       Value="{Binding Broker}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                                <Setter Property="Text"       Value="— Todas las cuentas —" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Estrategia" Style="{StaticResource FldLabel}" />
+                                <ComboBox ItemsSource="{Binding FilterStrategies}"
+                                          SelectedItem="{Binding FilterStrategy}"
+                                          Style="{DynamicResource FormComboBox}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock FontSize="13">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text"       Value="{Binding Title}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                                <Setter Property="Text"       Value="— Todas las estrategias —" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Cal. mínima" Style="{StaticResource FldLabel}" />
+                                <ComboBox ItemsSource="{Binding RatingOptions}"
+                                          SelectedItem="{Binding FilterRatingMin}"
+                                          Style="{DynamicResource FormComboBox}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock FontSize="13">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text"       Value="{Binding}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                                <Setter Property="Text"       Value="— Sin mínimo —" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="6">
+                                <TextBlock Text="Cal. máxima" Style="{StaticResource FldLabel}" />
+                                <ComboBox ItemsSource="{Binding RatingOptions}"
+                                          SelectedItem="{Binding FilterRatingMax}"
+                                          Style="{DynamicResource FormComboBox}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock FontSize="13">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text"       Value="{Binding}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                                <Setter Property="Text"       Value="— Sin máximo —" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="8" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Fecha desde" Style="{StaticResource FldLabel}" />
+                                <DatePicker SelectedDate="{Binding FilterDateFrom}"
+                                            Style="{DynamicResource FormDatePicker}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Fecha hasta" Style="{StaticResource FldLabel}" />
+                                <DatePicker SelectedDate="{Binding FilterDateTo}"
+                                            Style="{DynamicResource FormDatePicker}" />
+                            </StackPanel>
+                            <Button Grid.Column="4" Content="Filtrar"
+                                    Style="{DynamicResource PrimaryButton}"
+                                    Command="{Binding ApplyFilterCommand}"
+                                    Height="34" Padding="20,0" VerticalAlignment="Bottom" />
+                            <Button Grid.Column="6" Content="Limpiar"
+                                    Style="{DynamicResource GhostButton}"
+                                    Command="{Binding ClearFilterCommand}"
+                                    Height="34" Padding="14,0" VerticalAlignment="Bottom" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ ESTADO VACÍO ═══ -->
+                <Border Padding="24,32" Margin="0,0,0,16">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasData}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="📊" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,12" />
+                        <TextBlock Text="Sin datos para el período seleccionado"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="Ajusta los filtros o registra trades en la Bitácora"
+                                   FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                   HorizontalAlignment="Center" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ CONTENIDO ANALÍTICO ═══ -->
+                <StackPanel>
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasData}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
+                    <!-- ── KPI ROW 1: Trades / Win Rate / P&L / Profit Factor ── -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="TOTAL TRADES" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding TotalTrades}" FontSize="32" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <Border Background="#1500E676" CornerRadius="4" Padding="6,2" Margin="0,0,6,0">
+                                        <TextBlock FontSize="11" Foreground="#00E676">
+                                            <Run Text="✔" /><Run Text="{Binding WinningTrades}" />
+                                        </TextBlock>
+                                    </Border>
+                                    <Border Background="#1AFF5555" CornerRadius="4" Padding="6,2" Margin="0,0,6,0">
+                                        <TextBlock FontSize="11" Foreground="#FF5555">
+                                            <Run Text="✖" /><Run Text="{Binding LosingTrades}" />
+                                        </TextBlock>
+                                    </Border>
+                                    <Border Background="#15FF9800" CornerRadius="4" Padding="6,2">
+                                        <TextBlock FontSize="11" Foreground="#FF9800">
+                                            <Run Text="=" /><Run Text="{Binding BreakEvenTrades}" />
+                                        </TextBlock>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="WIN RATE" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding WinRateDisplay}" FontSize="32" FontWeight="Bold"
+                                           Foreground="#00E676" />
+                                <ProgressBar Value="{Binding WinRatePct}" Minimum="0" Maximum="100"
+                                             Height="4" Margin="0,10,0,0"
+                                             Background="{DynamicResource BorderBrush}"
+                                             Foreground="#00E676" BorderThickness="0" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="4" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="P&amp;L TOTAL" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding TotalPLDisplay}" FontSize="28" FontWeight="Bold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#FF5555" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding TotalPLPositive}" Value="True">
+                                                    <Setter Property="Foreground" Value="#00E676" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                    <TextBlock Text="{Binding GrossProfitDisplay}" FontSize="11"
+                                               Foreground="#00E676" Margin="0,0,12,0" />
+                                    <TextBlock Text="{Binding GrossLossDisplay}" FontSize="11" Foreground="#FF5555" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="6" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="FACTOR DE GANANCIA" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding ProfitFactorDisplay}" FontSize="32" FontWeight="Bold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                                <TextBlock Text="Ganancia bruta / Pérdida bruta" FontSize="10"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- ── KPI ROW 2: Avg P&L / Avg R:R / Mejor / Peor ── -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="P&amp;L PROMEDIO" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding AvgPLDisplay}" FontSize="26" FontWeight="Bold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#FF5555" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AvgPLPositive}" Value="True">
+                                                    <Setter Property="Foreground" Value="#00E676" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="R:R PROMEDIO" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding AvgRRDisplay}" FontSize="26" FontWeight="Bold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="4" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="MEJOR TRADE" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding BestTradeDisplay}" FontSize="26" FontWeight="Bold"
+                                           Foreground="#00E676" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="6" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="PEOR TRADE" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding WorstTradeDisplay}" FontSize="26" FontWeight="Bold"
+                                           Foreground="#FF5555" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- ── KPI ROW 3: Expectancia / Cal. Prom / Racha Win / Racha Loss ── -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="EXPECTANCIA" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding ExpectancyDisplay}" FontSize="26" FontWeight="Bold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#FF5555" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ExpectancyPositive}" Value="True">
+                                                    <Setter Property="Foreground" Value="#00E676" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="Por trade (Win% × AvgWin + Loss% × AvgLoss)"
+                                           FontSize="9" Foreground="{DynamicResource TextMutedBrush}"
+                                           Margin="0,6,0,0" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="CALIFICACIÓN PROMEDIO" FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding AvgRatingDisplay}" FontSize="26" FontWeight="Bold"
+                                           Foreground="#FF9800" />
+                                <TextBlock Text="Escala 1–10" FontSize="10"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="4" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="RACHA GANADORA MÁX." FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding MaxWinStreak}" FontSize="32" FontWeight="Bold"
+                                               Foreground="#00E676" />
+                                    <TextBlock Text=" trades" FontSize="14"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Bottom" Margin="4,0,0,5" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="6" Style="{StaticResource KpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="RACHA PERDEDORA MÁX." FontSize="9" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding MaxLossStreak}" FontSize="32" FontWeight="Bold"
+                                               Foreground="#FF5555" />
+                                    <TextBlock Text=" trades" FontSize="14"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Bottom" Margin="4,0,0,5" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- ─── FILA DE GRÁFICOS ────────────────────────── -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- ── Gráfico: P&L Mensual ── -->
+                        <Border Grid.Column="0" Style="{StaticResource ChartCard}">
+                            <StackPanel>
+                                <TextBlock Text="P&amp;L MENSUAL" Style="{StaticResource SecLabel}" />
+
+                                <!-- Leyenda -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                    <Border Width="10" Height="10" CornerRadius="2" Background="#00E676" Margin="0,0,5,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="Positivo" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,14,0" VerticalAlignment="Center" />
+                                    <Border Width="10" Height="10" CornerRadius="2" Background="#FF5555" Margin="0,0,5,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="Negativo" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <!-- Barras -->
+                                <ItemsControl ItemsSource="{Binding MonthlyChart}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vm:MonthlyChartPoint}">
+                                            <Grid Margin="0,3" Height="28">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="110" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="90" />
+                                                </Grid.ColumnDefinitions>
+                                                <!-- Label mes -->
+                                                <TextBlock Grid.Column="0" Text="{Binding Month}"
+                                                           FontSize="11" VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                <!-- Barra -->
+                                                <Grid Grid.Column="1" VerticalAlignment="Center">
+                                                    <Border Height="14" CornerRadius="2"
+                                                            HorizontalAlignment="Left"
+                                                            Width="{Binding BarWidth}">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="#FF5555" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsPositive}" Value="True">
+                                                                        <Setter Property="Background" Value="#00E676" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </Grid>
+                                                <!-- Valor -->
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding PL, StringFormat={}{0:+#,##0.00;-#,##0.00;0}}"
+                                                           FontSize="11" FontWeight="SemiBold"
+                                                           HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="#FF5555" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsPositive}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#00E676" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- ── Gráfico: Distribución + Win Rate por Sesión ── -->
+                        <Border Grid.Column="2" Style="{StaticResource ChartCard}">
+                            <StackPanel>
+                                <!-- Distribución de resultados -->
+                                <TextBlock Text="DISTRIBUCIÓN DE RESULTADOS" Style="{StaticResource SecLabel}" />
+                                <StackPanel Margin="0,0,0,20">
+                                    <!-- Win -->
+                                    <Grid Margin="0,4" Height="28">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="50" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Ganadores" FontSize="11"
+                                                   Foreground="#00E676" VerticalAlignment="Center" />
+                                        <Grid Grid.Column="1" VerticalAlignment="Center">
+                                            <Border Height="14" CornerRadius="2" Background="#15FFFFFF"
+                                                    HorizontalAlignment="Stretch" />
+                                            <Border Height="14" CornerRadius="2" Background="#00E676"
+                                                    HorizontalAlignment="Left"
+                                                    Width="{Binding WinBarWidth}" />
+                                        </Grid>
+                                        <TextBlock Grid.Column="2" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="#00E676" HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding WinPct, StringFormat={}{0:F0}%}" />
+                                    </Grid>
+                                    <!-- Loss -->
+                                    <Grid Margin="0,4" Height="28">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="50" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Perdedores" FontSize="11"
+                                                   Foreground="#FF5555" VerticalAlignment="Center" />
+                                        <Grid Grid.Column="1" VerticalAlignment="Center">
+                                            <Border Height="14" CornerRadius="2" Background="#15FFFFFF"
+                                                    HorizontalAlignment="Stretch" />
+                                            <Border Height="14" CornerRadius="2" Background="#FF5555"
+                                                    HorizontalAlignment="Left"
+                                                    Width="{Binding LossBarWidth}" />
+                                        </Grid>
+                                        <TextBlock Grid.Column="2" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="#FF5555" HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding LossPct, StringFormat={}{0:F0}%}" />
+                                    </Grid>
+                                    <!-- BE -->
+                                    <Grid Margin="0,4" Height="28">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="50" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="BreakEven" FontSize="11"
+                                                   Foreground="#FF9800" VerticalAlignment="Center" />
+                                        <Grid Grid.Column="1" VerticalAlignment="Center">
+                                            <Border Height="14" CornerRadius="2" Background="#15FFFFFF"
+                                                    HorizontalAlignment="Stretch" />
+                                            <Border Height="14" CornerRadius="2" Background="#FF9800"
+                                                    HorizontalAlignment="Left"
+                                                    Width="{Binding BEBarWidth}" />
+                                        </Grid>
+                                        <TextBlock Grid.Column="2" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="#FF9800" HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding BEPct, StringFormat={}{0:F0}%}" />
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Separador -->
+                                <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,16" />
+
+                                <!-- Win Rate por Sesión -->
+                                <TextBlock Text="WIN RATE POR SESIÓN" Style="{StaticResource SecLabel}" />
+                                <ItemsControl ItemsSource="{Binding SessionChart}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vm:SessionChartPoint}">
+                                            <Grid Margin="0,4" Height="26">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="90" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="50" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Session}"
+                                                           FontSize="11" VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                <Grid Grid.Column="1" VerticalAlignment="Center">
+                                                    <Border Height="12" CornerRadius="2" Background="#15FFFFFF"
+                                                            HorizontalAlignment="Stretch" />
+                                                    <Border Height="12" CornerRadius="2"
+                                                            Background="{DynamicResource CyanGlowBrush}"
+                                                            HorizontalAlignment="Left"
+                                                            Width="{Binding BarWidth}" />
+                                                </Grid>
+                                                <TextBlock Grid.Column="2" FontSize="11" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource CyanGlowBrush}"
+                                                           HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                           Text="{Binding WinRate, StringFormat={}{0:F0}%}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- ── FILA: Símbolo | Estrategia ── -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Por Símbolo -->
+                        <Border Grid.Column="0" Style="{DynamicResource Card}" Padding="0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Cabecera -->
+                                <Border Grid.Row="0" Background="{DynamicResource SurfaceElevatedBrush}"
+                                        CornerRadius="6,6,0,0" Padding="0,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="55" />
+                                            <ColumnDefinition Width="50" />
+                                            <ColumnDefinition Width="50" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="70" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="SÍMBOLO"  Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="TRADES"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="GANAD."   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="PERD."    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="WIN RATE" Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="5" Text="P&amp;L"  Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="6" Text="R:R"      Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- Sub-label -->
+                                <Border Grid.Row="1" Padding="12,5">
+                                    <TextBlock FontSize="9" FontWeight="SemiBold">
+                                        <Run Text="POR SÍMBOLO" Foreground="{DynamicResource CyanGlowBrush}" />
+                                        <Run Text=" — ordenado por P&amp;L" Foreground="{DynamicResource TextMutedBrush}" />
+                                    </TextBlock>
+                                </Border>
+
+                                <!-- Filas (altura fija = 8 × 46px = 368px) -->
+                                <ItemsControl Grid.Row="2" ItemsSource="{Binding BySymbol}"
+                                              MinHeight="368">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vm:SymbolAnalytics}">
+                                            <Border Style="{StaticResource TblRow}" Height="46">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="90" />
+                                                        <ColumnDefinition Width="55" />
+                                                        <ColumnDefinition Width="50" />
+                                                        <ColumnDefinition Width="50" />
+                                                        <ColumnDefinition Width="80" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="70" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Symbol}"
+                                                               Style="{StaticResource TblCell}" FontWeight="SemiBold" FontSize="11" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Total}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" FontSize="11" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding Wins}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center"
+                                                               Foreground="#00E676" FontSize="11" />
+                                                    <TextBlock Grid.Column="3" Text="{Binding Losses}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center"
+                                                               Foreground="#FF5555" FontSize="11" />
+                                                    <Grid Grid.Column="4" Margin="6,0">
+                                                        <StackPanel VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding WinRate, StringFormat={}{0:F0}%}"
+                                                                       FontSize="11" HorizontalAlignment="Center"
+                                                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                            <ProgressBar Value="{Binding WinRate}"
+                                                                         Minimum="0" Maximum="100"
+                                                                         Height="3" Margin="0,2,0,0"
+                                                                         Background="{DynamicResource BorderBrush}"
+                                                                         Foreground="#00E676" BorderThickness="0" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <TextBlock Grid.Column="5"
+                                                               Text="{Binding TotalPL, StringFormat={}{0:+#,##0.00;-#,##0.00;0}}"
+                                                               HorizontalAlignment="Right" FontWeight="SemiBold" FontSize="11">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource TblCell}">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding TotalPL}" Value="0">
+                                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                    <TextBlock Grid.Column="6"
+                                                               Text="{Binding AvgRR, StringFormat={}{0:F1}}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource CyanGlowBrush}" FontSize="11" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Paginación Símbolo -->
+                                <Border Grid.Row="3" BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="0,1,0,0" Padding="12,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0"
+                                                Style="{StaticResource TableNavBtn}"
+                                                Command="{Binding PrevSymbolPageCommand}"
+                                                IsEnabled="{Binding SymbolIsFirstPage,
+                                                            Converter={StaticResource InverseBool}}"
+                                                Width="30" Height="26" Padding="0">
+                                            <TextBlock Text="‹" FontSize="16" FontWeight="Bold"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Button>
+                                        <TextBlock Grid.Column="1" Text="{Binding SymbolPageInfo}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
+                                        <Button Grid.Column="2"
+                                                Style="{StaticResource TableNavBtn}"
+                                                Command="{Binding NextSymbolPageCommand}"
+                                                IsEnabled="{Binding SymbolIsLastPage,
+                                                            Converter={StaticResource InverseBool}}"
+                                                Width="30" Height="26" Padding="0">
+                                            <TextBlock Text="›" FontSize="16" FontWeight="Bold"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Por Estrategia -->
+                        <Border Grid.Column="2" Style="{DynamicResource Card}" Padding="0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Cabecera -->
+                                <Border Grid.Row="0" Background="{DynamicResource SurfaceElevatedBrush}"
+                                        CornerRadius="6,6,0,0" Padding="0,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" MinWidth="80" />
+                                            <ColumnDefinition Width="55" />
+                                            <ColumnDefinition Width="50" />
+                                            <ColumnDefinition Width="50" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="55" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="ESTRATEGIA" Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="TRADES"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="GANAD."     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="PERD."      Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="WIN RATE"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="5" Text="P&amp;L"    Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="6" Text="R:R"        Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="7" Text="CAL."       Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- Sub-label -->
+                                <Border Grid.Row="1" Padding="12,5">
+                                    <TextBlock Text="POR ESTRATEGIA" FontSize="9" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource CyanGlowBrush}" />
+                                </Border>
+
+                                <!-- Filas (altura fija = 8 × 46px = 368px) -->
+                                <ItemsControl Grid.Row="2" ItemsSource="{Binding ByStrategy}"
+                                              MinHeight="368">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vm:StrategyAnalytics}">
+                                            <Border Style="{StaticResource TblRow}" Height="46">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" MinWidth="80" />
+                                                        <ColumnDefinition Width="55" />
+                                                        <ColumnDefinition Width="50" />
+                                                        <ColumnDefinition Width="50" />
+                                                        <ColumnDefinition Width="80" />
+                                                        <ColumnDefinition Width="80" />
+                                                        <ColumnDefinition Width="60" />
+                                                        <ColumnDefinition Width="55" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Strategy}"
+                                                               Style="{StaticResource TblCell}" FontWeight="SemiBold" FontSize="11" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Total}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" FontSize="11" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding Wins}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center"
+                                                               Foreground="#00E676" FontSize="11" />
+                                                    <TextBlock Grid.Column="3" Text="{Binding Losses}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center"
+                                                               Foreground="#FF5555" FontSize="11" />
+                                                    <Grid Grid.Column="4" Margin="6,0">
+                                                        <StackPanel VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding WinRate, StringFormat={}{0:F0}%}"
+                                                                       FontSize="11" HorizontalAlignment="Center"
+                                                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                            <ProgressBar Value="{Binding WinRate}"
+                                                                         Minimum="0" Maximum="100"
+                                                                         Height="3" Margin="0,2,0,0"
+                                                                         Background="{DynamicResource BorderBrush}"
+                                                                         Foreground="#00E676" BorderThickness="0" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <TextBlock Grid.Column="5"
+                                                               Text="{Binding TotalPL, StringFormat={}{0:+#,##0.00;-#,##0.00;0}}"
+                                                               HorizontalAlignment="Right" FontWeight="SemiBold" FontSize="11">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource TblCell}">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding TotalPL}" Value="0">
+                                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                    <TextBlock Grid.Column="6"
+                                                               Text="{Binding AvgRR, StringFormat={}{0:F1}}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource CyanGlowBrush}" FontSize="11" />
+                                                    <TextBlock Grid.Column="7"
+                                                               Text="{Binding AvgRatingDisplay}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center"
+                                                               Foreground="#FF9800" FontSize="11" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Paginación Estrategia -->
+                                <Border Grid.Row="3" BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="0,1,0,0" Padding="12,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0"
+                                                Style="{StaticResource TableNavBtn}"
+                                                Command="{Binding PrevStrategyPageCommand}"
+                                                IsEnabled="{Binding StrategyIsFirstPage,
+                                                            Converter={StaticResource InverseBool}}"
+                                                Width="30" Height="26" Padding="0">
+                                            <TextBlock Text="‹" FontSize="16" FontWeight="Bold"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Button>
+                                        <TextBlock Grid.Column="1" Text="{Binding StrategyPageInfo}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
+                                        <Button Grid.Column="2"
+                                                Style="{StaticResource TableNavBtn}"
+                                                Command="{Binding NextStrategyPageCommand}"
+                                                IsEnabled="{Binding StrategyIsLastPage,
+                                                            Converter={StaticResource InverseBool}}"
+                                                Width="30" Height="26" Padding="0">
+                                            <TextBlock Text="›" FontSize="16" FontWeight="Bold"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- ── FILA: Dirección | Sesión ── -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Por Dirección -->
+                        <Border Grid.Column="0" Style="{DynamicResource Card}" Padding="0">
+                            <StackPanel>
+                                <Border Background="{DynamicResource SurfaceElevatedBrush}"
+                                        CornerRadius="6,6,0,0" Padding="0,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="DIRECCIÓN" Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="TRADES"    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="GANAD."    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="WIN %"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="P&amp;L"   Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                    </Grid>
+                                </Border>
+                                <ItemsControl ItemsSource="{Binding ByDirection}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vm:DirectionAnalytics}">
+                                            <Border Style="{StaticResource TblRow}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="110" />
+                                                        <ColumnDefinition Width="60" />
+                                                        <ColumnDefinition Width="60" />
+                                                        <ColumnDefinition Width="60" />
+                                                        <ColumnDefinition Width="80" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Label}" FontWeight="SemiBold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource TblCell}">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding SortOrder}" Value="0">
+                                                                        <Setter Property="Foreground" Value="#00E676" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Total}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding Wins}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" Foreground="#00E676" />
+                                                    <TextBlock Grid.Column="3" Text="{Binding WinRate, StringFormat={}{0:F1}%}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" />
+                                                    <TextBlock Grid.Column="4"
+                                                               Text="{Binding TotalPL, StringFormat={}{0:+#,##0.00;-#,##0.00;0}}"
+                                                               HorizontalAlignment="Right" FontWeight="SemiBold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource TblCell}">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding TotalPL}" Value="0">
+                                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Por Sesión -->
+                        <Border Grid.Column="2" Style="{DynamicResource Card}" Padding="0">
+                            <StackPanel>
+                                <Border Background="{DynamicResource SurfaceElevatedBrush}"
+                                        CornerRadius="6,6,0,0" Padding="0,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="SESIÓN"  Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="TRADES"  Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="GANAD."  Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="WIN %"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="P&amp;L" Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                    </Grid>
+                                </Border>
+                                <ItemsControl ItemsSource="{Binding BySession}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vm:SessionAnalytics}">
+                                            <Border Style="{StaticResource TblRow}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="110" />
+                                                        <ColumnDefinition Width="60" />
+                                                        <ColumnDefinition Width="60" />
+                                                        <ColumnDefinition Width="60" />
+                                                        <ColumnDefinition Width="80" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Session}"
+                                                               Style="{StaticResource TblCell}" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Total}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding Wins}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" Foreground="#00E676" />
+                                                    <TextBlock Grid.Column="3" Text="{Binding WinRate, StringFormat={}{0:F1}%}"
+                                                               Style="{StaticResource TblCell}" HorizontalAlignment="Center" />
+                                                    <TextBlock Grid.Column="4"
+                                                               Text="{Binding TotalPL, StringFormat={}{0:+#,##0.00;-#,##0.00;0}}"
+                                                               HorizontalAlignment="Right" FontWeight="SemiBold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource TblCell}">
+                                                                <Setter Property="Foreground" Value="#FF5555" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding TotalPL}" Value="0">
+                                                                        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- ── POR MES (tabla completa) ── -->
+                    <Border Style="{DynamicResource Card}" Margin="0,0,0,16" Padding="0">
+                        <StackPanel>
+                            <Border Background="{DynamicResource SurfaceElevatedBrush}"
+                                    CornerRadius="6,6,0,0" Padding="0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="120" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="MES"            Style="{StaticResource TblHdr}" />
+                                    <TextBlock Grid.Column="1" Text="TRADES"         Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="2" Text="GANAD."         Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="3" Text="PERD."          Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="4" Text="WIN RATE"       Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="5" Text="P&amp;L TOTAL"  Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                </Grid>
+                            </Border>
+                            <Border Padding="14,6">
+                                <TextBlock Text="RENDIMIENTO MENSUAL" FontSize="9" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource CyanGlowBrush}" />
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding ByMonth}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:MonthlyAnalytics}">
+                                        <Border Style="{StaticResource TblRow}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="150" />
+                                                    <ColumnDefinition Width="80" />
+                                                    <ColumnDefinition Width="80" />
+                                                    <ColumnDefinition Width="80" />
+                                                    <ColumnDefinition Width="100" />
+                                                    <ColumnDefinition Width="120" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Month}"
+                                                           Style="{StaticResource TblCell}" FontWeight="SemiBold" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Total}"
+                                                           Style="{StaticResource TblCell}" HorizontalAlignment="Center" />
+                                                <TextBlock Grid.Column="2" Text="{Binding Wins}"
+                                                           Style="{StaticResource TblCell}" HorizontalAlignment="Center" Foreground="#00E676" />
+                                                <TextBlock Grid.Column="3" Text="{Binding Losses}"
+                                                           Style="{StaticResource TblCell}" HorizontalAlignment="Center" Foreground="#FF5555" />
+                                                <Grid Grid.Column="4" Margin="8,0">
+                                                    <StackPanel VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding WinRate, StringFormat={}{0:F1}%}"
+                                                                   FontSize="12" HorizontalAlignment="Center"
+                                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                        <ProgressBar Value="{Binding WinRate}" Minimum="0" Maximum="100"
+                                                                     Height="3" Margin="0,3,0,0"
+                                                                     Background="{DynamicResource BorderBrush}"
+                                                                     Foreground="#00E676" BorderThickness="0" />
+                                                    </StackPanel>
+                                                </Grid>
+                                                <TextBlock Grid.Column="5"
+                                                           Text="{Binding TotalPL, StringFormat={}{0:+#,##0.00;-#,##0.00;0}}"
+                                                           HorizontalAlignment="Right" FontWeight="Bold" FontSize="13">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource TblCell}">
+                                                            <Setter Property="Foreground" Value="#FF5555" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding TotalPL}" Value="0">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+                <!-- /HasData -->
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ══ Loading Overlay ══ -->
+        <Border>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background"  Value="#CC0D1117" />
+                    <Setter Property="Visibility"  Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="260" Height="3"
+                             Foreground="{DynamicResource CyanGlowBrush}"
+                             Background="{DynamicResource BorderBrush}"
+                             BorderThickness="0" />
+                <TextBlock Text="Calculando análisis..."
+                           FontSize="14" Foreground="{DynamicResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center" Margin="0,14,0,0" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
