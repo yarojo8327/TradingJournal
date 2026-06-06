@@ -16,7 +16,41 @@
         FontFamily="Segoe UI">
 
     <Window.Resources>
-        <converters:ViewModelToViewConverter x:Key="ViewModelToView" />
+        <converters:ViewModelToViewConverter   x:Key="ViewModelToView" />
+        <converters:BoolToVisibilityConverter  x:Key="BoolToVisibility" />
+
+        <!-- ToggleButton con aspecto idéntico a GhostButton -->
+        <Style x:Key="GhostToggleButton" TargetType="ToggleButton">
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="Foreground"      Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="FontSize"        Value="13" />
+            <Setter Property="Padding"         Value="12,8" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#0FFFFFFF" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#15FFFFFF" />
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -28,13 +62,15 @@
         </Grid.RowDefinitions>
 
         <!-- Top cyan line -->
-        <Border Grid.Row="0" Background="{DynamicResource CyanGlowBrush}" />
+        <Border Grid.Row="0" Background="{DynamicResource CyanGlowBrush}"
+                Visibility="{Binding ShowShell, Converter={StaticResource BoolToVisibility}}" />
 
         <!-- Navbar -->
         <Border Grid.Row="1"
                 Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0,0,0,1"
+                Visibility="{Binding ShowShell, Converter={StaticResource BoolToVisibility}}">
             <Grid Margin="20,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -56,12 +92,29 @@
                 <!-- Nav links -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                    <!-- Dashboard -->
                     <Button Content="{loc:Tr Nav_Dashboard}"
                             Style="{DynamicResource GhostButton}"
-                            Foreground="{DynamicResource PrimaryBrush}" />
-                    <Button Content="{loc:Tr Nav_Journal}"   Style="{DynamicResource GhostButton}" />
-                    <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}" />
-                    <Button Content="{loc:Tr Nav_Settings}"  Style="{DynamicResource GhostButton}" />
+                            Foreground="{DynamicResource PrimaryBrush}"
+                            Command="{Binding GoToDashboardCommand}" />
+
+                    <Button Content="{loc:Tr Nav_Journal}"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToJournalCommand}" />
+                    <Button Content="{loc:Tr Nav_Analytics}" Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToAnalyticsCommand}" />
+
+                    <Button Content="{loc:Tr Nav_Account}"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToTradingAccountCommand}" />
+
+                    <Button Content="{loc:Tr Nav_Strategies}"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToStrategiesCommand}" />
+
+                    <Button Content="{loc:Tr Nav_Settings}" Style="{DynamicResource GhostButton}" />
+
                 </StackPanel>
 
                 <!-- Right side: Language selector + LIVE badge -->
@@ -69,41 +122,119 @@
                             VerticalAlignment="Center" Margin="0,0,0,0">
 
                     <!-- Language selector -->
-                    <Border CornerRadius="4"
-                            Background="{DynamicResource SurfaceElevatedBrush}"
-                            BorderBrush="{DynamicResource BorderBrush}"
-                            BorderThickness="1"
-                            Margin="0,0,10,0"
-                            Padding="2,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="🌐"
-                                       FontSize="13"
-                                       VerticalAlignment="Center"
-                                       Margin="6,0,4,0" />
-                            <ComboBox ItemsSource="{Binding AvailableLanguages}"
-                                      SelectedItem="{Binding SelectedLanguage}"
-                                      DisplayMemberPath="DisplayName"
-                                      MinWidth="148"
-                                      BorderThickness="0"
-                                      Background="Transparent"
-                                      Foreground="{DynamicResource TextSecondaryBrush}"
-                                      FontSize="12"
-                                      VerticalAlignment="Center">
-                                <ComboBox.ItemContainerStyle>
-                                    <Style TargetType="ComboBoxItem">
-                                        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
-                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-                                        <Setter Property="Padding"    Value="10,6" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsHighlighted" Value="True">
-                                                <Setter Property="Background" Value="{DynamicResource SurfaceElevatedBrush}" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ComboBox.ItemContainerStyle>
-                            </ComboBox>
-                        </StackPanel>
-                    </Border>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <TextBlock Text="🌐" FontSize="13"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"
+                                   Foreground="{DynamicResource TextMutedBrush}" />
+                        <ComboBox ItemsSource="{Binding AvailableLanguages}"
+                                  SelectedItem="{Binding SelectedLanguage}"
+                                  Style="{DynamicResource FormComboBox}"
+                                  MinWidth="155" Height="30" FontSize="12" />
+                    </StackPanel>
+
+                    <!-- Usuario autenticado — chip con menú desplegable -->
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center"
+                                Margin="0,0,10,0"
+                                Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibility}}">
+
+                        <ToggleButton x:Name="UserMenuToggle"
+                                      Style="{StaticResource GhostToggleButton}"
+                                      Padding="8,5">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="24" Height="24" CornerRadius="12"
+                                        Background="{DynamicResource CyanGlowBrush}"
+                                        Margin="0,0,8,0">
+                                    <TextBlock Text="{Binding CurrentUsername[0], FallbackValue=?}"
+                                               FontSize="11" FontWeight="Bold"
+                                               Foreground="#0A0E1A"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                </Border>
+                                <TextBlock Text="{Binding CurrentUsername}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,6,0" />
+                                <TextBlock Text="▾" FontSize="9"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ToggleButton>
+
+                        <Popup IsOpen="{Binding IsChecked, ElementName=UserMenuToggle}"
+                               PlacementTarget="{Binding ElementName=UserMenuToggle}"
+                               Placement="Bottom"
+                               StaysOpen="False"
+                               AllowsTransparency="True"
+                               PopupAnimation="Fade">
+                            <Border Background="{DynamicResource SurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    MinWidth="200"
+                                    Margin="0,4,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" BlurRadius="16"
+                                                      ShadowDepth="4" Opacity="0.5" />
+                                </Border.Effect>
+                                <StackPanel Margin="4">
+
+                                    <!-- Cabecera con nombre completo -->
+                                    <StackPanel Margin="12,10,12,8">
+                                        <TextBlock Text="{Binding CurrentUsername}"
+                                                   FontSize="13" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                        <TextBlock Text="{loc:Tr Nav_MyAccount}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}" />
+                                    </StackPanel>
+                                    <Rectangle Height="1" Fill="{DynamicResource BorderBrush}"
+                                               Margin="8,0,8,4" />
+
+                                    <!-- Perfil de usuario -->
+                                    <Button Style="{DynamicResource GhostButton}"
+                                            HorizontalContentAlignment="Left"
+                                            HorizontalAlignment="Stretch"
+                                            Padding="12,10"
+                                            Command="{Binding GoToSettingsCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="👤" FontSize="13"
+                                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                                            <StackPanel>
+                                                <TextBlock Text="{loc:Tr Nav_Profile}"
+                                                           FontSize="13" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                <TextBlock Text="{loc:Tr Nav_ProfileDesc}"
+                                                           FontSize="11"
+                                                           Foreground="{DynamicResource TextMutedBrush}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Rectangle Height="1" Fill="{DynamicResource BorderBrush}"
+                                               Margin="8,4" />
+
+                                    <!-- Cerrar sesión -->
+                                    <Button Style="{DynamicResource GhostButton}"
+                                            HorizontalContentAlignment="Left"
+                                            HorizontalAlignment="Stretch"
+                                            Padding="12,10"
+                                            Command="{Binding LogoutCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="⏻" FontSize="13"
+                                                       Foreground="{DynamicResource AccentRedBrush}"
+                                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                                            <TextBlock Text="{loc:Tr Nav_Logout}"
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource AccentRedBrush}"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                    </StackPanel>
 
                     <!-- LIVE badge -->
                     <Border CornerRadius="4"
@@ -136,7 +267,8 @@
         <Border Grid.Row="3"
                 Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="0,1,0,0">
+                BorderThickness="0,1,0,0"
+                Visibility="{Binding ShowShell, Converter={StaticResource BoolToVisibility}}">
             <Grid Margin="20,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
