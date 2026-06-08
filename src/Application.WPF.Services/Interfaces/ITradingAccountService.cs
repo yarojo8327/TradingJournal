@@ -14,4 +14,12 @@ public interface ITradingAccountService
     Task<TradingAccount>  UpdateAsync(int accountId, string broker, string accountNumber,
                                       AccountType accountType, decimal initialCapital,
                                       string baseCurrency, string leverage, DateTime startDate);
+
+    /// <summary>
+    /// Returns true if the account has at least one trade registered in the journal.
+    /// Used to block deletion.
+    /// </summary>
+    Task<bool> HasTradesAsync(int accountId);
+
+    Task DeleteAsync(int accountId);
 }

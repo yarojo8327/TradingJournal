@@ -55,6 +55,20 @@ public class TradingAccountService : ITradingAccountService
         return account;
     }
 
+    public async Task<bool> HasTradesAsync(int accountId) =>
+        await _db.TradeEntries.AnyAsync(t => t.AccountId == accountId);
+
+    public async Task DeleteAsync(int accountId)
+    {
+        var account = await _db.TradingAccounts.FindAsync(accountId)
+            ?? throw new InvalidOperationException("Cuenta de trading no encontrada.");
+
+        _db.TradingAccounts.Remove(account);
+        await _db.SaveChangesAsync();
+
+        _logger.LogInformation("Trading account {Id} deleted", accountId);
+    }
+
     public async Task<TradingAccount> UpdateAsync(
         int accountId, string broker, string accountNumber,
         AccountType accountType, decimal initialCapital,
