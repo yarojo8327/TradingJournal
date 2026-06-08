@@ -14,6 +14,14 @@ using System.Collections.ObjectModel;
 
 namespace Application.WPF.ViewModels;
 
+// ── Account filter wrapper ────────────────────────────────────────────────
+
+public record AccountFilterItem(TradingAccountEntity? Account)
+{
+    public string DisplayName => Account is null ? "Todas las cuentas" : Account.ToString();
+    public override string ToString() => DisplayName;
+}
+
 // ── Helper display models ──────────────────────────────────────────────────
 
 public class StrategyStatItem
@@ -116,6 +124,26 @@ public partial class DashboardViewModel : BaseViewModel
     [ObservableProperty] private string _playbookAvgRatingLabel = "—";
     [ObservableProperty] private bool   _hasPlaybook;
 
+    // ── Selector de cuenta ────────────────────────────────────────────────
+    public ObservableCollection<AccountFilterItem> AccountsForFilter { get; } = new();
+
+    [ObservableProperty] private AccountFilterItem? _selectedAccountFilter;
+    [ObservableProperty] private TradingAccountEntity? _selectedAccount;
+
+    private bool _suppressAccountReload;
+
+    partial void OnSelectedAccountFilterChanged(AccountFilterItem? value)
+    {
+        // Sync the underlying entity; LoadDataAsync is triggered by OnSelectedAccountChanged
+        SelectedAccount = value?.Account;
+    }
+
+    partial void OnSelectedAccountChanged(TradingAccountEntity? value)
+    {
+        if (_suppressAccountReload) return;
+        var _ = LoadDataAsync();
+    }
+
     // ── Estado ────────────────────────────────────────────────────────────
     [ObservableProperty] private string _lastRefreshed = string.Empty;
     [ObservableProperty] private bool   _hasData;
@@ -173,7 +201,33 @@ public partial class DashboardViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var (trades, accounts, playbook) = await FetchAllDataAsync(user.Id);
+            var (allTrades, allAccounts, playbook) = await FetchAllDataAsync(user.Id);
+
+            // ── Populate account selector (only on first load / when accounts change) ─
+            if (AccountsForFilter.Count == 0 || AccountsForFilter.Count != allAccounts.Count + 1)
+            {
+                AccountsForFilter.Clear();
+                AccountsForFilter.Add(new AccountFilterItem(null));   // "Todas las cuentas"
+                foreach (var a in allAccounts)
+                    AccountsForFilter.Add(new AccountFilterItem(a));
+
+                // Default to "Todas" on first load — suppress the re-entrant reload
+                if (SelectedAccountFilter is null)
+                {
+                    _suppressAccountReload = true;
+                    SelectedAccountFilter  = AccountsForFilter[0];
+                    _suppressAccountReload = false;
+                }
+            }
+
+            // ── Apply account filter ──────────────────────────────────────
+            var trades   = SelectedAccount is null
+                ? allTrades
+                : (IReadOnlyList<TradeEntry>)allTrades.Where(t => t.AccountId == SelectedAccount.Id).ToList();
+
+            var accounts = SelectedAccount is null
+                ? allAccounts
+                : (IReadOnlyList<TradingAccountEntity>)allAccounts.Where(a => a.Id == SelectedAccount.Id).ToList();
 
             ComputeKpis(trades);
             ComputeCapitalSummary(accounts, trades);
@@ -184,8 +238,8 @@ public partial class DashboardViewModel : BaseViewModel
             BuildEquityCurve(trades, accounts);
             BuildPlaybookSummary(playbook);
 
-            HasData         = trades.Count > 0;
-            LastRefreshed   = $"Actualizado {DateTime.Now:HH:mm}";
+            HasData       = trades.Count > 0;
+            LastRefreshed = $"Actualizado {DateTime.Now:HH:mm}";
         }
         catch (Exception ex)
         {

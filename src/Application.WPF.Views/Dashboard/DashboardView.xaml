@@ -82,6 +82,8 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+
+                <!-- Title + subtitle -->
                 <StackPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
                         <Border Width="3" Height="22" CornerRadius="2"
@@ -93,7 +95,26 @@
                     <TextBlock Text="{Binding LastRefreshed}"
                                Style="{DynamicResource Caption}" Margin="13,0,0,0" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                <!-- Account selector + Refresh -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            VerticalAlignment="Center" Margin="0,0,0,0">
+
+                    <!-- Account filter label -->
+                    <TextBlock Text="💼  Cuenta:"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               FontSize="12" Margin="0,0,8,0" />
+
+                    <!-- ComboBox: primera opción = "Todas las cuentas" -->
+                    <ComboBox Width="210"
+                              Height="32"
+                              VerticalContentAlignment="Center"
+                              ItemsSource="{Binding AccountsForFilter}"
+                              SelectedItem="{Binding SelectedAccountFilter, Mode=TwoWay}"
+                              DisplayMemberPath="DisplayName"
+                              Margin="0,0,12,0" />
+
                     <Button Content="🔄  Actualizar"
                             Style="{DynamicResource SecondaryButton}"
                             Command="{Binding RefreshCommand}" />
