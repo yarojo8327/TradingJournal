@@ -78,6 +78,24 @@
             </Setter>
         </Style>
 
+        <!-- Etiqueta KPI (izquierda) -->
+        <Style x:Key="KpiLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Margin"     Value="0,2,8,2" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <!-- Valor KPI (derecha) -->
+        <Style x:Key="KpiValue" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="Margin"     Value="0,2,0,2" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+
         <!-- Botón link (texto subrayado) -->
         <Style x:Key="LinkButton" TargetType="Button">
             <Setter Property="Background"      Value="Transparent" />
@@ -487,6 +505,148 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
+            </Border>
+
+            <!-- ═══ PANEL DE ESTADÍSTICAS ═══ -->
+            <Border x:Name="StatsBorder"
+                    Style="{DynamicResource Card}" Margin="0,6,0,0" Padding="16,14,16,14"
+                    Visibility="{Binding HasStats, Converter={StaticResource BoolToVisibility}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="0.75*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="170" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Título -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="ESTADÍSTICAS"
+                               FontSize="9" FontWeight="Bold"
+                               Foreground="{DynamicResource CyanGlowBrush}" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="EQUITY CURVE"
+                               FontSize="9" FontWeight="Bold"
+                               Foreground="{DynamicResource TextMutedBrush}" />
+                    <TextBlock Grid.Row="0" Grid.Column="4" Text="RENDIMIENTO POR OPERACIÓN"
+                               FontSize="9" FontWeight="Bold"
+                               Foreground="{DynamicResource TextMutedBrush}" />
+
+                    <!-- ── Columna izquierda: KPI + Pie ─────────────────────────── -->
+                    <Grid Grid.Row="2" Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="130" />
+                        </Grid.RowDefinitions>
+
+                        <!-- KPI table -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Row styles defined inline via style triggers -->
+                            <TextBlock Grid.Row="0" Grid.Column="0"  Text="Capital Inicial"        Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1"  Text="{Binding StatsInitialCapital}" Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0"  Text="Total Operaciones"      Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding StatsTotalOps}" Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0"  Text="Ganadas"                Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1"  Text="{Binding StatsWon}"      Foreground="#00E676" Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0"  Text="Pérdidas"               Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1"  Text="{Binding StatsLost}"     Foreground="{DynamicResource AccentRedBrush}" Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0"  Text="Win Rate"               Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="4" Grid.Column="1"  Text="{Binding StatsWinRate}"  Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="5" Grid.Column="0"  Text="Balance P&amp;L"        Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="5" Grid.Column="1"  Text="{Binding StatsNetPnl}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
+                                        <Setter Property="Foreground" Value="#00E676" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StatsNetPnlPositive}" Value="False">
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentRedBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="6" Grid.Column="0"  Text="Mejor Operación"        Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="6" Grid.Column="1"  Text="{Binding StatsBestTrade}"  Foreground="#00E676" Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="7" Grid.Column="0"  Text="Peor Operación"         Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="7" Grid.Column="1"  Text="{Binding StatsWorstTrade}" Foreground="{DynamicResource AccentRedBrush}" Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="8" Grid.Column="0"  Text="Prom. x Operación"      Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="8" Grid.Column="1"  Text="{Binding StatsAvgPnl}"   Style="{StaticResource KpiValue}" />
+
+                            <TextBlock Grid.Row="9" Grid.Column="0"  Text="Capital Total"           Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="9" Grid.Column="1"  Text="{Binding StatsTotal}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
+                                        <Setter Property="Foreground" Value="#00E676" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StatsGainPositive}" Value="False">
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentRedBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="10" Grid.Column="0" Text="% Ganancia"              Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding StatsGainPct}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
+                                        <Setter Property="Foreground" Value="#00E676" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StatsGainPositive}" Value="False">
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentRedBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+
+                        <!-- Pie chart canvas -->
+                        <Canvas x:Name="PieCanvas" Grid.Row="2"
+                                SizeChanged="PieCanvas_SizeChanged" />
+                    </Grid>
+
+                    <!-- ── Equity Curve canvas ─────────────────────────────────── -->
+                    <Canvas x:Name="StatsEquityCanvas"
+                            Grid.Row="2" Grid.Column="2"
+                            SizeChanged="StatsEquityCanvas_SizeChanged" />
+
+                    <!-- ── P&L per trade bar chart canvas ──────────────────────── -->
+                    <Canvas x:Name="PnlBarsCanvas"
+                            Grid.Row="2" Grid.Column="4"
+                            SizeChanged="PnlBarsCanvas_SizeChanged" />
+                </Grid>
             </Border>
 
             <!-- ═══ TABLA DE TRADES ═══ -->

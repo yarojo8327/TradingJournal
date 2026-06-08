@@ -60,6 +60,35 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     public bool HasAccountSummaries => AccountSummaries.Count > 0;
 
+    // ── Panel de estadísticas ─────────────────────────────────────────────
+
+    [ObservableProperty] private string _statsInitialCapital = "—";
+    [ObservableProperty] private string _statsTotalOps       = "0";
+    [ObservableProperty] private string _statsWon            = "0";
+    [ObservableProperty] private string _statsLost           = "0";
+    [ObservableProperty] private string _statsWinRate        = "—";
+    [ObservableProperty] private string _statsNetPnl         = "—";
+    [ObservableProperty] private bool   _statsNetPnlPositive = true;
+    [ObservableProperty] private string _statsBestTrade      = "—";
+    [ObservableProperty] private string _statsWorstTrade     = "—";
+    [ObservableProperty] private string _statsAvgPnl         = "—";
+    [ObservableProperty] private string _statsTotal          = "—";
+    [ObservableProperty] private string _statsGainPct        = "—";
+    [ObservableProperty] private bool   _statsGainPositive   = true;
+    [ObservableProperty] private bool   _hasStats;
+
+    /// <summary>Cumulative balance per closed trade, starting from initial capital.</summary>
+    private List<double> _equityPoints = new();
+    /// <summary>P&L value per closed trade (in trade order).</summary>
+    private List<double> _pnlPoints    = new();
+    public IReadOnlyList<double> EquityPoints => _equityPoints;
+    public IReadOnlyList<double> PnlPoints    => _pnlPoints;
+    public int StatsWonCount  { get; private set; }
+    public int StatsLostCount { get; private set; }
+
+    /// <summary>Fired when stats data is ready — triggers canvas redraw in code-behind.</summary>
+    public event EventHandler? StatsUpdated;
+
     [ObservableProperty] private bool   _isFormVisible;
     [ObservableProperty] private bool   _isEditMode;
     [ObservableProperty] private string _formSectionTitle = string.Empty;
@@ -352,6 +381,73 @@ public partial class TradeJournalViewModel : BaseViewModel
             _allTrades.Skip((CurrentPage - 1) * PageSize).Take(PageSize));
 
         RefreshAccountSummaries();
+        ComputeStats();
+    }
+
+    private void ComputeStats()
+    {
+        var closed = _allTrades
+            .Where(t => t.Result is TradeResult.Profit or TradeResult.Loss or TradeResult.BreakEven)
+            .OrderBy(t => t.ExitDate ?? t.EntryDate)
+            .ToList();
+
+        var wins   = closed.Where(t => t.Result == TradeResult.Profit).ToList();
+        var losses = closed.Where(t => t.Result == TradeResult.Loss).ToList();
+
+        StatsWonCount  = wins.Count;
+        StatsLostCount = losses.Count;
+        HasStats       = _allTrades.Count > 0;
+
+        if (!HasStats)
+        {
+            StatsUpdated?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
+        // ── KPIs ──────────────────────────────────────────────────────────
+
+        var initial = FilterAccount?.InitialCapital ?? 0m;
+        StatsInitialCapital = initial > 0 ? $"$ {initial:N2}" : "—";
+        StatsTotalOps       = _allTrades.Count.ToString();
+        StatsWon            = wins.Count.ToString();
+        StatsLost           = losses.Count.ToString();
+
+        var wr = closed.Count > 0 ? (double)wins.Count / closed.Count : 0;
+        StatsWinRate = closed.Count > 0 ? $"{wr:P0}" : "—";
+
+        var netPnl = _allTrades.Where(t => t.ProfitLoss.HasValue).Sum(t => t.ProfitLoss!.Value);
+        StatsNetPnlPositive = netPnl >= 0;
+        StatsNetPnl = netPnl >= 0 ? $"$ {netPnl:N2}" : $"-$ {Math.Abs(netPnl):N2}";
+
+        var pnlList = closed.Where(t => t.ProfitLoss.HasValue).Select(t => t.ProfitLoss!.Value).ToList();
+        StatsBestTrade  = pnlList.Count > 0 ? $"$ {pnlList.Max():N2}"                 : "—";
+        StatsWorstTrade = pnlList.Count > 0 ? $"-$ {Math.Abs(pnlList.Min()):N2}"      : "—";
+        StatsAvgPnl     = pnlList.Count > 0 ? $"$ {pnlList.Average():N2}"             : "—";
+
+        var totalBalance = initial + netPnl;
+        StatsTotal     = $"$ {totalBalance:N2}";
+
+        var gainPct = initial > 0 ? (double)(netPnl / initial) * 100 : 0;
+        StatsGainPositive = gainPct >= 0;
+        StatsGainPct      = initial > 0 ? $"{gainPct:F2} %" : "—";
+
+        // ── Chart data ────────────────────────────────────────────────────
+
+        _equityPoints = new List<double>();
+        _pnlPoints    = new List<double>();
+
+        double cum = initial > 0 ? (double)initial : 0;
+        if (cum > 0) _equityPoints.Add(cum);   // starting point
+
+        foreach (var t in closed.Where(t => t.ProfitLoss.HasValue))
+        {
+            var pnl = (double)t.ProfitLoss!.Value;
+            cum += pnl;
+            _equityPoints.Add(cum);
+            _pnlPoints.Add(pnl);
+        }
+
+        StatsUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     private void RefreshAccountSummaries()
