@@ -102,13 +102,13 @@ internal static class Mt5ReportParser
         var posId      = row.Cell(2).GetString().Trim();
         var symbol     = NormalizeSymbol(row.Cell(3).GetString());
         var direction  = ParseDirection(row.Cell(4).GetString());
-        var volume     = ParseDec(row.Cell(5).GetString());
-        var entryPrice = ParseDec(row.Cell(6).GetString());
-        var sl         = ParseDec(row.Cell(7).GetString());
-        var tp         = ParseDec(row.Cell(8).GetString());
+        var volume     = GetDecimal(row.Cell(5));
+        var entryPrice = GetDecimal(row.Cell(6));
+        var sl         = GetDecimal(row.Cell(7));
+        var tp         = GetDecimal(row.Cell(8));
         var exitDate   = ParseDate(row.Cell(9).GetString());
-        var exitPrice  = ParseDec(row.Cell(10).GetString());
-        var pnl        = ParseDec(row.Cell(13).GetString());
+        var exitPrice  = GetDecimal(row.Cell(10));
+        var pnl        = GetDecimalKeepZero(row.Cell(13));
 
         if (entryPrice is null || string.IsNullOrEmpty(symbol)) return null;
 
@@ -163,10 +163,10 @@ internal static class Mt5ReportParser
         var posId      = row.Cell(2).GetString().Trim();
         var symbol     = NormalizeSymbol(row.Cell(3).GetString());
         var direction  = ParseDirection(row.Cell(4).GetString());
-        var volume     = ParseDec(row.Cell(5).GetString());
-        var entryPrice = ParseDec(row.Cell(6).GetString());
-        var sl         = ParseDec(row.Cell(7).GetString());
-        var tp         = ParseDec(row.Cell(8).GetString());
+        var volume     = GetDecimal(row.Cell(5));
+        var entryPrice = GetDecimal(row.Cell(6));
+        var sl         = GetDecimal(row.Cell(7));
+        var tp         = GetDecimal(row.Cell(8));
 
         if (entryPrice is null || string.IsNullOrEmpty(symbol)) return null;
 
@@ -225,11 +225,38 @@ internal static class Mt5ReportParser
             CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt) ? dt : null;
     }
 
-    private static decimal? ParseDec(string s)
+    /// <summary>
+    /// Reads a decimal from a cell safely.
+    /// Numeric cells in ClosedXML 0.102 expose their raw double via
+    /// <c>cell.Value.GetNumber()</c>  — using <c>GetString()</c> would apply
+    /// the cell's number format (e.g. "0") and silently drop decimal places.
+    /// </summary>
+    private static decimal? GetDecimal(IXLCell cell)
     {
+        var v = cell.Value;
+        if (v.IsBlank) return null;
+        if (v.IsNumber)
+        {
+            var d = v.GetNumber();
+            return d == 0d ? (decimal?)null : (decimal)d;
+        }
+        // Text cell fallback (some cells may store numbers as text)
+        var s = v.IsText ? v.GetText()?.Trim() : cell.GetString()?.Trim();
         if (string.IsNullOrWhiteSpace(s)) return null;
-        return decimal.TryParse(s.Trim(), NumberStyles.Any,
-            CultureInfo.InvariantCulture, out var v) ? v : null;
+        return decimal.TryParse(s, NumberStyles.Any,
+            CultureInfo.InvariantCulture, out var dec) ? dec : null;
+    }
+
+    /// <summary>Same as <see cref="GetDecimal"/> but keeps zero values (e.g. PnL = 0 → BreakEven).</summary>
+    private static decimal? GetDecimalKeepZero(IXLCell cell)
+    {
+        var v = cell.Value;
+        if (v.IsBlank) return null;
+        if (v.IsNumber) return (decimal)v.GetNumber();
+        var s = v.IsText ? v.GetText()?.Trim() : cell.GetString()?.Trim();
+        if (string.IsNullOrWhiteSpace(s)) return null;
+        return decimal.TryParse(s, NumberStyles.Any,
+            CultureInfo.InvariantCulture, out var dec) ? dec : null;
     }
 
     // ─────────────────────────────────────────────────────────────────────
