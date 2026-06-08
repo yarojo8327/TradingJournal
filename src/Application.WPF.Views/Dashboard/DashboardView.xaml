@@ -108,8 +108,8 @@
 
                     <!-- ComboBox: primera opción = "Todas las cuentas" -->
                     <ComboBox Width="210"
-                              Height="32"
-                              VerticalContentAlignment="Center"
+                              Style="{StaticResource FormComboBox}"
+                              Height="34"
                               ItemsSource="{Binding AccountsForFilter}"
                               SelectedItem="{Binding SelectedAccountFilter, Mode=TwoWay}"
                               DisplayMemberPath="DisplayName"
