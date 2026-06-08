@@ -323,6 +323,10 @@ public partial class TradeJournalViewModel : BaseViewModel
         var accs = await _accountService.GetAllByUserIdAsync(userId);
         Accounts = new ObservableCollection<TradingAccountEntity>(accs);
 
+        // Pre-select first account so the journal opens filtered by default
+        if (FilterAccount is null && Accounts.Count > 0)
+            FilterAccount = Accounts[0];
+
         var strats = await _strategyService.GetAllByUserIdAsync(userId);
         Strategies = new ObservableCollection<TradingStrategy>(strats);
     }

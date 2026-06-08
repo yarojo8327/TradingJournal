@@ -122,14 +122,14 @@ public class DashboardViewModelTests
 
         await sut.InitializeAsync();
 
-        // All accounts → 2 trades
-        Assert.Equal(2, sut.TotalTrades);
-
-        // Filter to account 1 only → 1 trade (profit)
-        sut.SelectedAccountFilter = sut.AccountsForFilter.First(a => a.Account?.Id == 1);
-        await Task.Delay(200); // allow async reload
+        // Default = first account (Id 1) → 1 trade (profit)
         Assert.Equal(1, sut.TotalTrades);
         Assert.Equal(1, sut.WinCount);
         Assert.Equal(0, sut.LossCount);
+
+        // Switch to "Todas las cuentas" (null) → 2 trades
+        sut.SelectedAccountFilter = sut.AccountsForFilter.First(a => a.Account is null);
+        await Task.Delay(200); // allow async reload
+        Assert.Equal(2, sut.TotalTrades);
     }
 }

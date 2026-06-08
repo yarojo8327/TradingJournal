@@ -211,11 +211,13 @@ public partial class DashboardViewModel : BaseViewModel
                 foreach (var a in allAccounts)
                     AccountsForFilter.Add(new AccountFilterItem(a));
 
-                // Default to "Todas" on first load — suppress the re-entrant reload
+                // Default to first real account on first load (index 1); fallback to "Todas" if no accounts
                 if (SelectedAccountFilter is null)
                 {
                     _suppressAccountReload = true;
-                    SelectedAccountFilter  = AccountsForFilter[0];
+                    SelectedAccountFilter  = AccountsForFilter.Count > 1
+                        ? AccountsForFilter[1]
+                        : AccountsForFilter[0];
                     _suppressAccountReload = false;
                 }
             }
