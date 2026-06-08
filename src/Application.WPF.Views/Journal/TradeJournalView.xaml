@@ -659,44 +659,42 @@
                             CornerRadius="6,6,0,0" Padding="0,10">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="105" />  <!-- Fecha -->
-                                <ColumnDefinition Width="72" />   <!-- Símbolo -->
-                                <ColumnDefinition Width="48" />   <!-- Dir -->
-                                <ColumnDefinition Width="130" />  <!-- Cuenta -->
-                                <ColumnDefinition Width="110" />  <!-- Estrategia -->
-                                <ColumnDefinition Width="76" />   <!-- Entrada -->
-                                <ColumnDefinition Width="76" />   <!-- Salida -->
-                                <ColumnDefinition Width="66" />   <!-- SL -->
-                                <ColumnDefinition Width="66" />   <!-- TP -->
-                                <ColumnDefinition Width="52" />   <!-- Lotes -->
-                                <ColumnDefinition Width="72" />   <!-- P&L -->
-                                <ColumnDefinition Width="64" />   <!-- % Cap. -->
-                                <ColumnDefinition Width="46" />   <!-- R:R -->
-                                <ColumnDefinition Width="78" />   <!-- Resultado -->
-                                <ColumnDefinition Width="80" />   <!-- Sesión -->
-                                <ColumnDefinition Width="46" />   <!-- Rating -->
-                                <ColumnDefinition Width="36" />   <!-- 📊 -->
-                                <ColumnDefinition Width="*" />    <!-- flex -->
-                                <ColumnDefinition Width="165" />  <!-- Acciones -->
+                                <ColumnDefinition Width="88" />   <!-- 0  Fecha -->
+                                <ColumnDefinition Width="68" />   <!-- 1  Símbolo -->
+                                <ColumnDefinition Width="42" />   <!-- 2  Dir -->
+                                <ColumnDefinition Width="88" />   <!-- 3  Cuenta -->
+                                <ColumnDefinition Width="85" />   <!-- 4  Estrategia -->
+                                <ColumnDefinition Width="70" />   <!-- 5  Entrada -->
+                                <ColumnDefinition Width="70" />   <!-- 6  Salida -->
+                                <ColumnDefinition Width="58" />   <!-- 7  SL -->
+                                <ColumnDefinition Width="58" />   <!-- 8  TP -->
+                                <ColumnDefinition Width="46" />   <!-- 9  Lotes -->
+                                <ColumnDefinition Width="68" />   <!-- 10 P&L -->
+                                <ColumnDefinition Width="60" />   <!-- 11 % Cap -->
+                                <ColumnDefinition Width="42" />   <!-- 12 R:R -->
+                                <ColumnDefinition Width="68" />   <!-- 13 Resultado -->
+                                <ColumnDefinition Width="65" />   <!-- 14 Sesión -->
+                                <ColumnDefinition Width="40" />   <!-- 15 Cal -->
+                                <ColumnDefinition Width="*" />    <!-- 16 flex -->
+                                <ColumnDefinition Width="172" />  <!-- 17 Acciones -->
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"  Text="{loc:Tr Journal_Col_Date}"     Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="1"  Text="{loc:Tr Journal_Col_Symbol}"   Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="0"  Text="{loc:Tr Journal_Col_Date}"      Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="1"  Text="{loc:Tr Journal_Col_Symbol}"    Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="2"  Text="{loc:Tr Journal_Col_Direction}" Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="3"  Text="{loc:Tr Journal_Col_Account}"  Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="4"  Text="{loc:Tr Journal_Col_Strategy}" Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="5"  Text="{loc:Tr Journal_Col_Entry}"    Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="6"  Text="{loc:Tr Journal_Col_Exit}"     Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="7"  Text="{loc:Tr Journal_Col_SL}"       Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="8"  Text="{loc:Tr Journal_Col_TP}"       Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="9"  Text="{loc:Tr Journal_Col_Lots}"     Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="10" Text="{loc:Tr Journal_Col_PL}"       Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="11" Text="% Cap."                         Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="12" Text="{loc:Tr Journal_Col_RR}"       Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="13" Text="{loc:Tr Journal_Col_Result}"   Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="14" Text="{loc:Tr Journal_Col_Session}"  Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="15" Text="{loc:Tr Journal_Col_Rating}"   Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
-                            <TextBlock Grid.Column="16" Text="↗"                              Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
-                            <TextBlock Grid.Column="18" Text="{loc:Tr Journal_Col_Actions}"  Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="3"  Text="{loc:Tr Journal_Col_Account}"   Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="4"  Text="{loc:Tr Journal_Col_Strategy}"  Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="5"  Text="{loc:Tr Journal_Col_Entry}"     Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="6"  Text="{loc:Tr Journal_Col_Exit}"      Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="7"  Text="{loc:Tr Journal_Col_SL}"        Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="8"  Text="{loc:Tr Journal_Col_TP}"        Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="9"  Text="{loc:Tr Journal_Col_Lots}"      Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="10" Text="{loc:Tr Journal_Col_PL}"        Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="11" Text="% Cap."                          Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="12" Text="{loc:Tr Journal_Col_RR}"        Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="13" Text="{loc:Tr Journal_Col_Result}"    Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="14" Text="{loc:Tr Journal_Col_Session}"   Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="15" Text="{loc:Tr Journal_Col_Rating}"    Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="17" Text="{loc:Tr Journal_Col_Actions}"   Style="{StaticResource ColHeader}" />
                         </Grid>
                     </Border>
 
@@ -717,25 +715,24 @@
                                     </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="105" />
-                                            <ColumnDefinition Width="72" />
-                                            <ColumnDefinition Width="48" />
-                                            <ColumnDefinition Width="130" />
-                                            <ColumnDefinition Width="110" />
-                                            <ColumnDefinition Width="76" />
-                                            <ColumnDefinition Width="76" />
-                                            <ColumnDefinition Width="66" />
-                                            <ColumnDefinition Width="66" />
-                                            <ColumnDefinition Width="52" />
-                                            <ColumnDefinition Width="72" />
-                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition Width="88" />
+                                            <ColumnDefinition Width="68" />
+                                            <ColumnDefinition Width="42" />
+                                            <ColumnDefinition Width="88" />
+                                            <ColumnDefinition Width="85" />
+                                            <ColumnDefinition Width="70" />
+                                            <ColumnDefinition Width="70" />
+                                            <ColumnDefinition Width="58" />
+                                            <ColumnDefinition Width="58" />
                                             <ColumnDefinition Width="46" />
-                                            <ColumnDefinition Width="78" />
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="46" />
-                                            <ColumnDefinition Width="36" />
+                                            <ColumnDefinition Width="68" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="42" />
+                                            <ColumnDefinition Width="68" />
+                                            <ColumnDefinition Width="65" />
+                                            <ColumnDefinition Width="40" />
                                             <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="130" />
+                                            <ColumnDefinition Width="172" />
                                         </Grid.ColumnDefinitions>
 
                                         <!-- Fecha -->
@@ -943,42 +940,41 @@
                                             </TextBlock>
                                         </Border>
 
-                                        <!-- Ícono de gráfico (solo visible si hay URL) -->
-                                        <Button Grid.Column="16"
-                                                BorderThickness="0"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Center"
-                                                ToolTip="Abrir gráfico"
-                                                Padding="4"
-                                                Command="{Binding DataContext.OpenScreenshotCommand,
-                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding ScreenshotUrl}">
-                                            <Button.Style>
-                                                <Style TargetType="Button" BasedOn="{StaticResource SmallActionBtn}">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ScreenshotUrl,
-                                                                     Converter={StaticResource StringToVisibility}}"
-                                                                     Value="Visible">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                            <TextBlock Text="↗" FontSize="13" FontWeight="Bold"
-                                                       Foreground="White" VerticalAlignment="Center" />
-                                        </Button>
-
-                                        <!-- Acciones: Editar | Eliminar -->
-                                        <StackPanel Grid.Column="18" Orientation="Horizontal"
+                                        <!-- Acciones: ↗ Gráfico | Editar | Eliminar -->
+                                        <StackPanel Grid.Column="17" Orientation="Horizontal"
                                                     VerticalAlignment="Center" Margin="4,0,0,0">
+
+                                            <!-- Abrir gráfico (solo si hay URL) -->
+                                            <Button ToolTip="Abrir gráfico"
+                                                    Command="{Binding DataContext.OpenScreenshotCommand,
+                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding ScreenshotUrl}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource SmallActionBtn}">
+                                                        <Setter Property="Visibility"   Value="Collapsed" />
+                                                        <Setter Property="BorderBrush"  Value="#44FFFFFF" />
+                                                        <Setter Property="Foreground"   Value="{DynamicResource TextSecondaryBrush}" />
+                                                        <Setter Property="Margin"       Value="0,0,5,0" />
+                                                        <Setter Property="Padding"      Value="5,3" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ScreenshotUrl,
+                                                                         Converter={StaticResource StringToVisibility}}"
+                                                                         Value="Visible">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <TextBlock Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="12" VerticalAlignment="Center" />
+                                            </Button>
 
                                             <!-- Editar -->
                                             <Button Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource CyanGlowBrush}"
                                                     Foreground="{DynamicResource CyanGlowBrush}"
                                                     ToolTip="Editar operación"
-                                                    Margin="0,0,6,0" Padding="7,3"
+                                                    Margin="0,0,5,0" Padding="7,3"
                                                     Command="{Binding DataContext.EditTradeCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}">
