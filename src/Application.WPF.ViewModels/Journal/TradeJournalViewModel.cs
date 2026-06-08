@@ -20,6 +20,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     private readonly ITradingAccountService   _accountService;
     private readonly ITradingStrategyService  _strategyService;
     private readonly ISessionService          _sessionService;
+    private readonly IDialogService           _dialogService;
     private readonly ILogger<TradeJournalViewModel> _logger;
 
     private int _tradeId;
@@ -284,12 +285,14 @@ public partial class TradeJournalViewModel : BaseViewModel
         ITradingAccountService         accountService,
         ITradingStrategyService        strategyService,
         ISessionService                sessionService,
+        IDialogService                 dialogService,
         ILogger<TradeJournalViewModel> logger)
     {
         _tradeService    = tradeService;
         _accountService  = accountService;
         _strategyService = strategyService;
         _sessionService  = sessionService;
+        _dialogService   = dialogService;
         _logger          = logger;
         Title            = "Bitácora de Trading";
 
@@ -562,18 +565,24 @@ public partial class TradeJournalViewModel : BaseViewModel
     [RelayCommand]
     private async Task DeleteTradeAsync(TradeEntry trade)
     {
+        var confirmed = _dialogService.ShowConfirmation(
+            $"¿Eliminar la operación {trade.Symbol} del {(trade.ExitDate ?? trade.EntryDate):dd/MM/yyyy}?\nEsta acción no se puede deshacer.",
+            "Confirmar eliminación");
+
+        if (!confirmed) return;
+
         try
         {
             await _tradeService.DeleteAsync(trade.Id);
             var user = _sessionService.CurrentUser;
             if (user is not null) await LoadTradesAsync(user.Id);
-            GeneralSuccess = "Trade eliminado correctamente.";
+            GeneralSuccess = $"Operación {trade.Symbol} eliminada correctamente.";
             GeneralError   = string.Empty;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting trade {Id}", trade.Id);
-            GeneralError   = "Error al eliminar el trade.";
+            GeneralError   = "Error al eliminar la operación.";
             GeneralSuccess = string.Empty;
         }
     }

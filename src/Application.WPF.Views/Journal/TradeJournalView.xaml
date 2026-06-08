@@ -677,7 +677,7 @@
                                 <ColumnDefinition Width="46" />   <!-- Rating -->
                                 <ColumnDefinition Width="36" />   <!-- 📊 -->
                                 <ColumnDefinition Width="*" />    <!-- flex -->
-                                <ColumnDefinition Width="130" />  <!-- Acciones -->
+                                <ColumnDefinition Width="165" />  <!-- Acciones -->
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"  Text="{loc:Tr Journal_Col_Date}"     Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="1"  Text="{loc:Tr Journal_Col_Symbol}"   Style="{StaticResource ColHeader}" />
@@ -969,23 +969,41 @@
                                                        Foreground="White" VerticalAlignment="Center" />
                                         </Button>
 
-                                        <!-- Acciones Editar / Eliminar -->
-                                        <StackPanel Grid.Column="18" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Content="{loc:Tr Journal_Edit}"
-                                                    Style="{StaticResource SmallActionBtn}"
+                                        <!-- Acciones: Editar | Eliminar -->
+                                        <StackPanel Grid.Column="18" Orientation="Horizontal"
+                                                    VerticalAlignment="Center" Margin="4,0,0,0">
+
+                                            <!-- Editar -->
+                                            <Button Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource CyanGlowBrush}"
                                                     Foreground="{DynamicResource CyanGlowBrush}"
-                                                    Margin="6,0,4,0"
+                                                    ToolTip="Editar operación"
+                                                    Margin="0,0,6,0" Padding="7,3"
                                                     Command="{Binding DataContext.EditTradeCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}" />
-                                            <Button Content="{loc:Tr Journal_Delete}"
-                                                    Style="{StaticResource SmallActionBtn}"
+                                                    CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
+                                                    <TextBlock Text="Editar" FontSize="11" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
+
+                                            <!-- Eliminar -->
+                                            <Button Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource AccentRedBrush}"
                                                     Foreground="{DynamicResource AccentRedBrush}"
+                                                    ToolTip="Eliminar operación"
+                                                    Padding="7,3"
                                                     Command="{Binding DataContext.DeleteTradeCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}" />
+                                                    CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
+                                                    <TextBlock Text="Eliminar" FontSize="11" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
