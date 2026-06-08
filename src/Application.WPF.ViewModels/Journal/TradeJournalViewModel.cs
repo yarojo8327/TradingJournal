@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using TradingAccountEntity = Application.WPF.Models.Entities.TradingAccount;
 
 namespace Application.WPF.ViewModels.Journal;
@@ -19,6 +20,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     private readonly ITradingAccountService   _accountService;
     private readonly ITradingStrategyService  _strategyService;
     private readonly ISessionService          _sessionService;
+    private readonly IDialogService           _dialogService;
     private readonly ILogger<TradeJournalViewModel> _logger;
 
     private int _tradeId;
@@ -58,6 +60,35 @@ public partial class TradeJournalViewModel : BaseViewModel
     private ObservableCollection<AccountSummaryItem> _accountSummaries = new();
 
     public bool HasAccountSummaries => AccountSummaries.Count > 0;
+
+    // ── Panel de estadísticas ─────────────────────────────────────────────
+
+    [ObservableProperty] private string _statsInitialCapital = "—";
+    [ObservableProperty] private string _statsTotalOps       = "0";
+    [ObservableProperty] private string _statsWon            = "0";
+    [ObservableProperty] private string _statsLost           = "0";
+    [ObservableProperty] private string _statsWinRate        = "—";
+    [ObservableProperty] private string _statsNetPnl         = "—";
+    [ObservableProperty] private bool   _statsNetPnlPositive = true;
+    [ObservableProperty] private string _statsBestTrade      = "—";
+    [ObservableProperty] private string _statsWorstTrade     = "—";
+    [ObservableProperty] private string _statsAvgPnl         = "—";
+    [ObservableProperty] private string _statsTotal          = "—";
+    [ObservableProperty] private string _statsGainPct        = "—";
+    [ObservableProperty] private bool   _statsGainPositive   = true;
+    [ObservableProperty] private bool   _hasStats;
+
+    /// <summary>Cumulative balance per closed trade, starting from initial capital.</summary>
+    private List<double> _equityPoints = new();
+    /// <summary>P&L value per closed trade (in trade order).</summary>
+    private List<double> _pnlPoints    = new();
+    public IReadOnlyList<double> EquityPoints => _equityPoints;
+    public IReadOnlyList<double> PnlPoints    => _pnlPoints;
+    public int StatsWonCount  { get; private set; }
+    public int StatsLostCount { get; private set; }
+
+    /// <summary>Fired when stats data is ready — triggers canvas redraw in code-behind.</summary>
+    public event EventHandler? StatsUpdated;
 
     [ObservableProperty] private bool   _isFormVisible;
     [ObservableProperty] private bool   _isEditMode;
@@ -254,12 +285,14 @@ public partial class TradeJournalViewModel : BaseViewModel
         ITradingAccountService         accountService,
         ITradingStrategyService        strategyService,
         ISessionService                sessionService,
+        IDialogService                 dialogService,
         ILogger<TradeJournalViewModel> logger)
     {
         _tradeService    = tradeService;
         _accountService  = accountService;
         _strategyService = strategyService;
         _sessionService  = sessionService;
+        _dialogService   = dialogService;
         _logger          = logger;
         Title            = "Bitácora de Trading";
 
@@ -323,6 +356,10 @@ public partial class TradeJournalViewModel : BaseViewModel
         var accs = await _accountService.GetAllByUserIdAsync(userId);
         Accounts = new ObservableCollection<TradingAccountEntity>(accs);
 
+        // Pre-select first account so the journal opens filtered by default
+        if (FilterAccount is null && Accounts.Count > 0)
+            FilterAccount = Accounts[0];
+
         var strats = await _strategyService.GetAllByUserIdAsync(userId);
         Strategies = new ObservableCollection<TradingStrategy>(strats);
     }
@@ -347,6 +384,73 @@ public partial class TradeJournalViewModel : BaseViewModel
             _allTrades.Skip((CurrentPage - 1) * PageSize).Take(PageSize));
 
         RefreshAccountSummaries();
+        ComputeStats();
+    }
+
+    private void ComputeStats()
+    {
+        var closed = _allTrades
+            .Where(t => t.Result is TradeResult.Profit or TradeResult.Loss or TradeResult.BreakEven)
+            .OrderBy(t => t.ExitDate ?? t.EntryDate)
+            .ToList();
+
+        var wins   = closed.Where(t => t.Result == TradeResult.Profit).ToList();
+        var losses = closed.Where(t => t.Result == TradeResult.Loss).ToList();
+
+        StatsWonCount  = wins.Count;
+        StatsLostCount = losses.Count;
+        HasStats       = _allTrades.Count > 0;
+
+        if (!HasStats)
+        {
+            StatsUpdated?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
+        // ── KPIs ──────────────────────────────────────────────────────────
+
+        var initial = FilterAccount?.InitialCapital ?? 0m;
+        StatsInitialCapital = initial > 0 ? $"$ {initial:N2}" : "—";
+        StatsTotalOps       = _allTrades.Count.ToString();
+        StatsWon            = wins.Count.ToString();
+        StatsLost           = losses.Count.ToString();
+
+        var wr = closed.Count > 0 ? (double)wins.Count / closed.Count : 0;
+        StatsWinRate = closed.Count > 0 ? $"{wr:P0}" : "—";
+
+        var netPnl = _allTrades.Where(t => t.ProfitLoss.HasValue).Sum(t => t.ProfitLoss!.Value);
+        StatsNetPnlPositive = netPnl >= 0;
+        StatsNetPnl = netPnl >= 0 ? $"$ {netPnl:N2}" : $"-$ {Math.Abs(netPnl):N2}";
+
+        var pnlList = closed.Where(t => t.ProfitLoss.HasValue).Select(t => t.ProfitLoss!.Value).ToList();
+        StatsBestTrade  = pnlList.Count > 0 ? $"$ {pnlList.Max():N2}"                 : "—";
+        StatsWorstTrade = pnlList.Count > 0 ? $"-$ {Math.Abs(pnlList.Min()):N2}"      : "—";
+        StatsAvgPnl     = pnlList.Count > 0 ? $"$ {pnlList.Average():N2}"             : "—";
+
+        var totalBalance = initial + netPnl;
+        StatsTotal     = $"$ {totalBalance:N2}";
+
+        var gainPct = initial > 0 ? (double)(netPnl / initial) * 100 : 0;
+        StatsGainPositive = gainPct >= 0;
+        StatsGainPct      = initial > 0 ? $"{gainPct:F2} %" : "—";
+
+        // ── Chart data ────────────────────────────────────────────────────
+
+        _equityPoints = new List<double>();
+        _pnlPoints    = new List<double>();
+
+        double cum = initial > 0 ? (double)initial : 0;
+        if (cum > 0) _equityPoints.Add(cum);   // starting point
+
+        foreach (var t in closed.Where(t => t.ProfitLoss.HasValue))
+        {
+            var pnl = (double)t.ProfitLoss!.Value;
+            cum += pnl;
+            _equityPoints.Add(cum);
+            _pnlPoints.Add(pnl);
+        }
+
+        StatsUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     private void RefreshAccountSummaries()
@@ -461,18 +565,24 @@ public partial class TradeJournalViewModel : BaseViewModel
     [RelayCommand]
     private async Task DeleteTradeAsync(TradeEntry trade)
     {
+        var confirmed = _dialogService.ShowConfirmation(
+            $"¿Eliminar la operación {trade.Symbol} del {(trade.ExitDate ?? trade.EntryDate):dd/MM/yyyy}?\nEsta acción no se puede deshacer.",
+            "Confirmar eliminación");
+
+        if (!confirmed) return;
+
         try
         {
             await _tradeService.DeleteAsync(trade.Id);
             var user = _sessionService.CurrentUser;
             if (user is not null) await LoadTradesAsync(user.Id);
-            GeneralSuccess = "Trade eliminado correctamente.";
+            GeneralSuccess = $"Operación {trade.Symbol} eliminada correctamente.";
             GeneralError   = string.Empty;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting trade {Id}", trade.Id);
-            GeneralError   = "Error al eliminar el trade.";
+            GeneralError   = "Error al eliminar la operación.";
             GeneralSuccess = string.Empty;
         }
     }
@@ -634,6 +744,75 @@ public partial class TradeJournalViewModel : BaseViewModel
             _logger.LogError(ex, "Error exporting to Excel");
             GeneralError   = "Error al exportar el archivo Excel.";
             GeneralSuccess = string.Empty;
+        }
+    }
+
+    // ── Importar desde Excel (MT5 History Report) ─────────────────────────
+
+    [RelayCommand]
+    private async Task ImportFromExcelAsync()
+    {
+        if (FilterAccount is null)
+        {
+            GeneralError   = "Seleccione una cuenta antes de importar.";
+            GeneralSuccess = string.Empty;
+            return;
+        }
+
+        var dlg = new OpenFileDialog
+        {
+            Title  = "Importar historial MT5 — seleccione el archivo Excel",
+            Filter = "Excel (*.xlsx)|*.xlsx"
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var user = _sessionService.CurrentUser;
+        if (user is null) return;
+
+        IsBusy       = true;
+        GeneralError = GeneralSuccess = string.Empty;
+
+        try
+        {
+            // Parse in background thread (file I/O)
+            var parsed = await Task.Run(() => Mt5ReportParser.Parse(dlg.FileName, FilterAccount.Id));
+
+            if (parsed.Count == 0)
+            {
+                GeneralError = "No se encontraron operaciones válidas en el archivo.";
+                return;
+            }
+
+            // Deduplication: load existing trades for the account
+            var existing = await _tradeService.GetAllByAccountIdAsync(FilterAccount.Id);
+            var existingKeys = existing
+                .Select(t => $"{t.EntryDate:yyyyMMddHHmm}|{t.Symbol}|{t.EntryPrice:F5}")
+                .ToHashSet(StringComparer.Ordinal);
+
+            int imported = 0, skipped = 0;
+            foreach (var data in parsed)
+            {
+                var key = $"{data.EntryDate:yyyyMMddHHmm}|{data.Symbol}|{data.EntryPrice:F5}";
+                if (existingKeys.Contains(key)) { skipped++; continue; }
+                await _tradeService.CreateAsync(data);
+                imported++;
+            }
+
+            await LoadTradesAsync(user.Id);
+
+            GeneralSuccess = imported > 0
+                ? $"✓  {imported} operación(es) importada(s) correctamente" +
+                  (skipped > 0 ? $"  ·  {skipped} omitida(s) (ya existían)" : string.Empty) + "."
+                : $"No se importaron operaciones nuevas — {skipped} ya existían en la bitácora.";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error importing MT5 Excel report");
+            GeneralError = $"Error al importar: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 

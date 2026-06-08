@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         Title="{loc:Tr App_Title}"
+        Icon="pack://application:,,,/TradingJournal.ico"
         MinHeight="640" MinWidth="960"
         Height="760" Width="1360"
         WindowStartupLocation="CenterScreen"
