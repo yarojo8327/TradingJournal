@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using TradingAccountEntity = Application.WPF.Models.Entities.TradingAccount;
 
 namespace Application.WPF.ViewModels.Journal;
@@ -638,6 +639,75 @@ public partial class TradeJournalViewModel : BaseViewModel
             _logger.LogError(ex, "Error exporting to Excel");
             GeneralError   = "Error al exportar el archivo Excel.";
             GeneralSuccess = string.Empty;
+        }
+    }
+
+    // ── Importar desde Excel (MT5 History Report) ─────────────────────────
+
+    [RelayCommand]
+    private async Task ImportFromExcelAsync()
+    {
+        if (FilterAccount is null)
+        {
+            GeneralError   = "Seleccione una cuenta antes de importar.";
+            GeneralSuccess = string.Empty;
+            return;
+        }
+
+        var dlg = new OpenFileDialog
+        {
+            Title  = "Importar historial MT5 — seleccione el archivo Excel",
+            Filter = "Excel (*.xlsx)|*.xlsx"
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var user = _sessionService.CurrentUser;
+        if (user is null) return;
+
+        IsBusy       = true;
+        GeneralError = GeneralSuccess = string.Empty;
+
+        try
+        {
+            // Parse in background thread (file I/O)
+            var parsed = await Task.Run(() => Mt5ReportParser.Parse(dlg.FileName, FilterAccount.Id));
+
+            if (parsed.Count == 0)
+            {
+                GeneralError = "No se encontraron operaciones válidas en el archivo.";
+                return;
+            }
+
+            // Deduplication: load existing trades for the account
+            var existing = await _tradeService.GetAllByAccountIdAsync(FilterAccount.Id);
+            var existingKeys = existing
+                .Select(t => $"{t.EntryDate:yyyyMMddHHmm}|{t.Symbol}|{t.EntryPrice:F5}")
+                .ToHashSet(StringComparer.Ordinal);
+
+            int imported = 0, skipped = 0;
+            foreach (var data in parsed)
+            {
+                var key = $"{data.EntryDate:yyyyMMddHHmm}|{data.Symbol}|{data.EntryPrice:F5}";
+                if (existingKeys.Contains(key)) { skipped++; continue; }
+                await _tradeService.CreateAsync(data);
+                imported++;
+            }
+
+            await LoadTradesAsync(user.Id);
+
+            GeneralSuccess = imported > 0
+                ? $"✓  {imported} operación(es) importada(s) correctamente" +
+                  (skipped > 0 ? $"  ·  {skipped} omitida(s) (ya existían)" : string.Empty) + "."
+                : $"No se importaron operaciones nuevas — {skipped} ya existían en la bitácora.";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error importing MT5 Excel report");
+            GeneralError = $"Error al importar: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 

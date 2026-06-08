@@ -129,6 +129,20 @@
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
                             VerticalAlignment="Center" HorizontalAlignment="Right">
+
+                    <!-- Importar MT5 Excel -->
+                    <Button Style="{DynamicResource GhostButton}"
+                            Command="{Binding ImportFromExcelCommand}"
+                            Height="36" Padding="12,0" FontSize="12" Margin="0,0,8,0"
+                            ToolTip="Importar historial de operaciones desde reporte MT5 (.xlsx)">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource CyanGlowBrush}" />
+                            <TextBlock Text="Importar MT5" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
                     <!-- Exportar Excel -->
                     <Button Style="{DynamicResource GhostButton}"
                             Command="{Binding ExportToExcelCommand}"
@@ -140,6 +154,7 @@
                             <TextBlock Text="Exportar Excel" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
+
                     <!-- Nuevo Trade -->
                     <Button Style="{DynamicResource PrimaryButton}"
                             Command="{Binding NewTradeCommand}"
