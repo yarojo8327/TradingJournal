@@ -14,6 +14,7 @@ public partial class TradingAccountViewModel : BaseViewModel
 {
     private readonly ITradingAccountService          _accountService;
     private readonly ISessionService                 _sessionService;
+    private readonly IDialogService                  _dialogService;
     private readonly ILogger<TradingAccountViewModel> _logger;
 
     private int _accountId;
@@ -98,10 +99,12 @@ public partial class TradingAccountViewModel : BaseViewModel
     public TradingAccountViewModel(
         ITradingAccountService           accountService,
         ISessionService                  sessionService,
+        IDialogService                   dialogService,
         ILogger<TradingAccountViewModel> logger)
     {
         _accountService = accountService;
         _sessionService = sessionService;
+        _dialogService  = dialogService;
         _logger         = logger;
         Title           = "Cuentas de Trading";
     }
@@ -156,6 +159,57 @@ public partial class TradingAccountViewModel : BaseViewModel
         FormTitle           = "Editar cuenta de trading";
         GeneralError        = string.Empty;
         GeneralSuccess      = string.Empty;
+    }
+
+    [RelayCommand]
+    private async Task DeleteAccountAsync(TradingAccountEntity account)
+    {
+        // ── Verificar que no tenga trades registrados ──────────────────────
+        var hasTrades = await _accountService.HasTradesAsync(account.Id);
+        if (hasTrades)
+        {
+            GeneralError   = $"No se puede eliminar '{account.Broker} — {account.AccountNumber}': " +
+                              "tiene operaciones registradas en la bitácora. " +
+                              "Elimina primero los trades asociados.";
+            GeneralSuccess = string.Empty;
+            return;
+        }
+
+        // ── Confirmación ───────────────────────────────────────────────────
+        var confirmed = _dialogService.ShowConfirmation(
+            $"¿Eliminar la cuenta '{account.Broker} — {account.AccountNumber}'?\nEsta acción no se puede deshacer.",
+            "Confirmar eliminación");
+
+        if (!confirmed) return;
+
+        IsBusy = true;
+        try
+        {
+            await _accountService.DeleteAsync(account.Id);
+
+            var user = _sessionService.CurrentUser;
+            if (user is not null) await LoadAccountsAsync(user.Id);
+
+            GeneralSuccess = $"Cuenta '{account.Broker} — {account.AccountNumber}' eliminada correctamente.";
+            GeneralError   = string.Empty;
+
+            // Si ya no hay cuentas, mostrar el formulario de alta
+            if (!Accounts.Any())
+            {
+                IsFormVisible = true;
+                FormTitle     = "Registrar cuenta de trading";
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting account {Id}", account.Id);
+            GeneralError   = "Error al eliminar la cuenta.";
+            GeneralSuccess = string.Empty;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]

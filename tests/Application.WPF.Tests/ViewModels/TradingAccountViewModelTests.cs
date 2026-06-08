@@ -10,8 +10,9 @@ namespace Application.WPF.Tests.ViewModels;
 
 public class TradingAccountViewModelTests
 {
-    private readonly Mock<ITradingAccountService> _accountSvc = new();
-    private readonly Mock<ISessionService>        _session    = new();
+    private readonly Mock<ITradingAccountService> _accountSvc  = new();
+    private readonly Mock<ISessionService>        _session     = new();
+    private readonly Mock<IDialogService>         _dialogSvc   = new();
     private readonly TradingAccountViewModel      _sut;
 
     private static readonly User SampleUser = new()
@@ -32,6 +33,7 @@ public class TradingAccountViewModelTests
         _sut = new TradingAccountViewModel(
             _accountSvc.Object,
             _session.Object,
+            _dialogSvc.Object,
             NullLogger<TradingAccountViewModel>.Instance);
     }
 
@@ -310,5 +312,45 @@ public class TradingAccountViewModelTests
         _sut.BaseCurrency        = "USD";
         _sut.Leverage            = "1:200";
         _sut.StartDate           = DateTime.Today;
+    }
+
+    // ── DeleteAccountCommand ─────────────────────────────────────────────
+
+    [Fact]
+    public async Task DeleteAccount_WhenHasTrades_SetsGeneralError()
+    {
+        _accountSvc.Setup(s => s.HasTradesAsync(SampleAccount.Id)).ReturnsAsync(true);
+
+        await _sut.DeleteAccountCommand.ExecuteAsync(SampleAccount);
+
+        Assert.False(string.IsNullOrEmpty(_sut.GeneralError));
+        _accountSvc.Verify(s => s.DeleteAsync(It.IsAny<int>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_WhenUserCancels_DoesNotDelete()
+    {
+        _accountSvc.Setup(s => s.HasTradesAsync(SampleAccount.Id)).ReturnsAsync(false);
+        _dialogSvc.Setup(d => d.ShowConfirmation(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
+
+        await _sut.DeleteAccountCommand.ExecuteAsync(SampleAccount);
+
+        _accountSvc.Verify(s => s.DeleteAsync(It.IsAny<int>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_WhenConfirmed_DeletesAndReloads()
+    {
+        _session.Setup(s => s.CurrentUser).Returns(SampleUser);
+        _accountSvc.Setup(s => s.HasTradesAsync(SampleAccount.Id)).ReturnsAsync(false);
+        _dialogSvc.Setup(d => d.ShowConfirmation(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+        _accountSvc.Setup(s => s.DeleteAsync(SampleAccount.Id)).Returns(Task.CompletedTask);
+        _accountSvc.Setup(s => s.GetAllByUserIdAsync(1)).ReturnsAsync(new List<TradingAccount>());
+
+        await _sut.DeleteAccountCommand.ExecuteAsync(SampleAccount);
+
+        _accountSvc.Verify(s => s.DeleteAsync(SampleAccount.Id), Times.Once);
+        Assert.False(string.IsNullOrEmpty(_sut.GeneralSuccess));
+        Assert.Empty(_sut.GeneralError);
     }
 }

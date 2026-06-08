@@ -116,7 +116,7 @@
                                 <ColumnDefinition Width="70" />
                                 <ColumnDefinition Width="80" />
                                 <ColumnDefinition Width="110" />
-                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="160" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="{loc:Tr Account_Table_Broker}"
                                        Style="{StaticResource DataGridCellText}" FontWeight="SemiBold"
@@ -169,7 +169,7 @@
                                             <ColumnDefinition Width="70" />
                                             <ColumnDefinition Width="80" />
                                             <ColumnDefinition Width="110" />
-                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="160" />
                                         </Grid.ColumnDefinitions>
 
                                         <TextBlock Grid.Column="0" Text="{Binding Broker}"
@@ -220,12 +220,31 @@
                                         <TextBlock Grid.Column="6"
                                                    Text="{Binding StartDate, StringFormat={}{0:dd/MM/yyyy}}"
                                                    Style="{StaticResource DataGridCellText}" />
-                                        <Button Grid.Column="7"
-                                                Content="{loc:Tr Account_Edit}"
-                                                Style="{StaticResource TableEditButton}"
-                                                Command="{Binding DataContext.EditAccountCommand,
-                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}" />
+                                        <!-- Acciones: Editar | Eliminar -->
+                                        <StackPanel Grid.Column="7" Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+
+                                            <Button Content="{loc:Tr Account_Edit}"
+                                                    Style="{StaticResource TableEditButton}"
+                                                    Margin="0,0,8,0"
+                                                    Command="{Binding DataContext.EditAccountCommand,
+                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}" />
+
+                                            <Button Style="{StaticResource TableEditButton}"
+                                                    Foreground="{DynamicResource AccentRedBrush}"
+                                                    BorderBrush="{DynamicResource AccentRedBrush}"
+                                                    ToolTip="Eliminar cuenta (solo si no tiene operaciones)"
+                                                    Command="{Binding DataContext.DeleteAccountCommand,
+                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
+                                                    <TextBlock Text="Eliminar" FontSize="11" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
