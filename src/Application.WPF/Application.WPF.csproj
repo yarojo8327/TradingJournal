@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>TradingJournal.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,10 @@
     <Content Include="appsettings.json" CopyToOutputDirectory="Always" />
     <Content Include="appsettings.Development.json" CopyToOutputDirectory="Always" />
     <Content Include="appsettings.Production.json" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="TradingJournal.ico" />
   </ItemGroup>
 
   <ItemGroup>
