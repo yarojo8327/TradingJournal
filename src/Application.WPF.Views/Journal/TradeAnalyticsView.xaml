@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Application.WPF.ViewModels.Journal;assembly=Application.WPF.ViewModels"
              xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+             xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:TradeAnalyticsViewModel}"
              Background="{DynamicResource BackgroundBrush}"
@@ -112,12 +113,12 @@
                             <Border Width="3" Height="22" CornerRadius="1.5"
                                     Background="{DynamicResource CyanGlowBrush}"
                                     Margin="0,0,10,0" VerticalAlignment="Center" />
-                            <TextBlock Text="Análisis de Trading"
+                            <TextBlock Text="{loc:Tr Analytics_Title}"
                                        FontSize="20" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
-                        <TextBlock Text="Métricas y estadísticas de tu operativa"
+                        <TextBlock Text="{loc:Tr Analytics_Subtitle}"
                                    FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                                    Margin="13,0,0,0" />
                     </StackPanel>
@@ -128,7 +129,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="14" Margin="0,0,7,0" VerticalAlignment="Center" />
-                            <TextBlock Text="Exportar análisis" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Analytics_Export}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                 </Grid>
@@ -153,7 +154,7 @@
                 <!-- ═══ FILTROS ═══ -->
                 <Border Style="{DynamicResource Card}" Margin="0,0,0,16" Padding="16,14,16,12">
                     <StackPanel>
-                        <TextBlock Text="FILTROS" Style="{StaticResource SecLabel}" />
+                        <TextBlock Text="{loc:Tr Analytics_Section_Filters}" Style="{StaticResource SecLabel}" />
                         <Grid Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -165,7 +166,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Cuenta" Style="{StaticResource FldLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Filter_Account}" Style="{StaticResource FldLabel}" />
                                 <ComboBox ItemsSource="{Binding FilterAccounts}"
                                           SelectedItem="{Binding FilterAccount}"
                                           Style="{DynamicResource FormComboBox}">
@@ -178,7 +179,7 @@
                                                         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                                <Setter Property="Text"       Value="— Todas las cuentas —" />
+                                                                <Setter Property="Text"       Value="{loc:Tr Common_AllAccounts}" />
                                                                 <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -190,7 +191,7 @@
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Estrategia" Style="{StaticResource FldLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Filter_Strategy}" Style="{StaticResource FldLabel}" />
                                 <ComboBox ItemsSource="{Binding FilterStrategies}"
                                           SelectedItem="{Binding FilterStrategy}"
                                           Style="{DynamicResource FormComboBox}">
@@ -203,7 +204,7 @@
                                                         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                                <Setter Property="Text"       Value="— Todas las estrategias —" />
+                                                                <Setter Property="Text"       Value="{loc:Tr Common_AllStrategies}" />
                                                                 <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -215,7 +216,7 @@
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Column="4">
-                                <TextBlock Text="Cal. mínima" Style="{StaticResource FldLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Filter_RatingMin}" Style="{StaticResource FldLabel}" />
                                 <ComboBox ItemsSource="{Binding RatingOptions}"
                                           SelectedItem="{Binding FilterRatingMin}"
                                           Style="{DynamicResource FormComboBox}">
@@ -228,7 +229,7 @@
                                                         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                                <Setter Property="Text"       Value="— Sin mínimo —" />
+                                                                <Setter Property="Text"       Value="{loc:Tr Analytics_Filter_NoMin}" />
                                                                 <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -240,7 +241,7 @@
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Column="6">
-                                <TextBlock Text="Cal. máxima" Style="{StaticResource FldLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Filter_RatingMax}" Style="{StaticResource FldLabel}" />
                                 <ComboBox ItemsSource="{Binding RatingOptions}"
                                           SelectedItem="{Binding FilterRatingMax}"
                                           Style="{DynamicResource FormComboBox}">
@@ -253,7 +254,7 @@
                                                         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                                <Setter Property="Text"       Value="— Sin máximo —" />
+                                                                <Setter Property="Text"       Value="{loc:Tr Analytics_Filter_NoMax}" />
                                                                 <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -276,20 +277,20 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Fecha desde" Style="{StaticResource FldLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Filter_DateFrom}" Style="{StaticResource FldLabel}" />
                                 <DatePicker SelectedDate="{Binding FilterDateFrom}"
                                             Style="{DynamicResource FormDatePicker}" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Fecha hasta" Style="{StaticResource FldLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Filter_DateTo}" Style="{StaticResource FldLabel}" />
                                 <DatePicker SelectedDate="{Binding FilterDateTo}"
                                             Style="{DynamicResource FormDatePicker}" />
                             </StackPanel>
-                            <Button Grid.Column="4" Content="Filtrar"
+                            <Button Grid.Column="4" Content="{loc:Tr Journal_Filter_Apply}"
                                     Style="{DynamicResource PrimaryButton}"
                                     Command="{Binding ApplyFilterCommand}"
                                     Height="34" Padding="20,0" VerticalAlignment="Bottom" />
-                            <Button Grid.Column="6" Content="Limpiar"
+                            <Button Grid.Column="6" Content="{loc:Tr Journal_Filter_Clear}"
                                     Style="{DynamicResource GhostButton}"
                                     Command="{Binding ClearFilterCommand}"
                                     Height="34" Padding="14,0" VerticalAlignment="Bottom" />
@@ -311,11 +312,11 @@
                     </Border.Style>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="📊" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,12" />
-                        <TextBlock Text="Sin datos para el período seleccionado"
+                        <TextBlock Text="{loc:Tr Analytics_NoData}"
                                    FontSize="14" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                    HorizontalAlignment="Center" />
-                        <TextBlock Text="Ajusta los filtros o registra trades en la Bitácora"
+                        <TextBlock Text="{loc:Tr Analytics_NoDataHint}"
                                    FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
                                    HorizontalAlignment="Center" Margin="0,4,0,0" />
                     </StackPanel>
@@ -348,7 +349,7 @@
 
                         <Border Grid.Column="0" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="TOTAL TRADES" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_TotalTrades}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding TotalTrades}" FontSize="32" FontWeight="Bold"
                                            Foreground="{DynamicResource TextPrimaryBrush}" />
@@ -374,7 +375,7 @@
 
                         <Border Grid.Column="2" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="WIN RATE" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_WinRate}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding WinRateDisplay}" FontSize="32" FontWeight="Bold"
                                            Foreground="#00E676" />
@@ -387,7 +388,7 @@
 
                         <Border Grid.Column="4" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="P&amp;L TOTAL" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_PnlTotal}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding TotalPLDisplay}" FontSize="28" FontWeight="Bold">
                                     <TextBlock.Style>
@@ -411,11 +412,11 @@
 
                         <Border Grid.Column="6" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="FACTOR DE GANANCIA" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_ProfitFactor}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding ProfitFactorDisplay}" FontSize="32" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
-                                <TextBlock Text="Ganancia bruta / Pérdida bruta" FontSize="10"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_ProfitFactorDesc}" FontSize="10"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" />
                             </StackPanel>
                         </Border>
@@ -435,7 +436,7 @@
 
                         <Border Grid.Column="0" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="P&amp;L PROMEDIO" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_AvgPnl}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding AvgPLDisplay}" FontSize="26" FontWeight="Bold">
                                     <TextBlock.Style>
@@ -454,7 +455,7 @@
 
                         <Border Grid.Column="2" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="R:R PROMEDIO" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_AvgRR}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding AvgRRDisplay}" FontSize="26" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
@@ -463,7 +464,7 @@
 
                         <Border Grid.Column="4" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="MEJOR TRADE" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_BestTrade}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding BestTradeDisplay}" FontSize="26" FontWeight="Bold"
                                            Foreground="#00E676" />
@@ -472,7 +473,7 @@
 
                         <Border Grid.Column="6" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="PEOR TRADE" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_WorstTrade}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding WorstTradeDisplay}" FontSize="26" FontWeight="Bold"
                                            Foreground="#FF5555" />
@@ -494,7 +495,7 @@
 
                         <Border Grid.Column="0" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="EXPECTANCIA" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_Expectancy}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding ExpectancyDisplay}" FontSize="26" FontWeight="Bold">
                                     <TextBlock.Style>
@@ -508,7 +509,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <TextBlock Text="Por trade (Win% × AvgWin + Loss% × AvgLoss)"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_ExpectancyDesc}"
                                            FontSize="9" Foreground="{DynamicResource TextMutedBrush}"
                                            Margin="0,6,0,0" TextWrapping="Wrap" />
                             </StackPanel>
@@ -516,23 +517,23 @@
 
                         <Border Grid.Column="2" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="CALIFICACIÓN PROMEDIO" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_AvgRating}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <TextBlock Text="{Binding AvgRatingDisplay}" FontSize="26" FontWeight="Bold"
                                            Foreground="#FF9800" />
-                                <TextBlock Text="Escala 1–10" FontSize="10"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_RatingScale}" FontSize="10"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" />
                             </StackPanel>
                         </Border>
 
                         <Border Grid.Column="4" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="RACHA GANADORA MÁX." FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_MaxWinStreak}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding MaxWinStreak}" FontSize="32" FontWeight="Bold"
                                                Foreground="#00E676" />
-                                    <TextBlock Text=" trades" FontSize="14"
+                                    <TextBlock Text="{loc:Tr Analytics_Trades_Suffix}" FontSize="14"
                                                Foreground="{DynamicResource TextMutedBrush}"
                                                VerticalAlignment="Bottom" Margin="4,0,0,5" />
                                 </StackPanel>
@@ -541,12 +542,12 @@
 
                         <Border Grid.Column="6" Style="{StaticResource KpiCard}">
                             <StackPanel>
-                                <TextBlock Text="RACHA PERDEDORA MÁX." FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Analytics_Kpi_MaxLossStreak}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6" />
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding MaxLossStreak}" FontSize="32" FontWeight="Bold"
                                                Foreground="#FF5555" />
-                                    <TextBlock Text=" trades" FontSize="14"
+                                    <TextBlock Text="{loc:Tr Analytics_Trades_Suffix}" FontSize="14"
                                                Foreground="{DynamicResource TextMutedBrush}"
                                                VerticalAlignment="Bottom" Margin="4,0,0,5" />
                                 </StackPanel>
@@ -567,14 +568,14 @@
                         <!-- ── Gráfico: P&L Mensual ── -->
                         <Border Grid.Column="0" Style="{StaticResource ChartCard}">
                             <StackPanel>
-                                <TextBlock Text="P&amp;L MENSUAL" Style="{StaticResource SecLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Chart_PnlMonthly}" Style="{StaticResource SecLabel}" />
 
                                 <!-- Leyenda -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
                                     <Border Width="10" Height="10" CornerRadius="2" Background="#00E676" Margin="0,0,5,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="Positivo" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,14,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="{loc:Tr Analytics_Chart_Positive}" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,14,0" VerticalAlignment="Center" />
                                     <Border Width="10" Height="10" CornerRadius="2" Background="#FF5555" Margin="0,0,5,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="Negativo" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="{loc:Tr Analytics_Chart_Negative}" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" />
                                 </StackPanel>
 
                                 <!-- Barras -->
@@ -636,7 +637,7 @@
                         <Border Grid.Column="2" Style="{StaticResource ChartCard}">
                             <StackPanel>
                                 <!-- Distribución de resultados -->
-                                <TextBlock Text="DISTRIBUCIÓN DE RESULTADOS" Style="{StaticResource SecLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Chart_Distribution}" Style="{StaticResource SecLabel}" />
                                 <StackPanel Margin="0,0,0,20">
                                     <!-- Win -->
                                     <Grid Margin="0,4" Height="28">
@@ -645,7 +646,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="50" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="Ganadores" FontSize="11"
+                                        <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Chart_Winners}" FontSize="11"
                                                    Foreground="#00E676" VerticalAlignment="Center" />
                                         <Grid Grid.Column="1" VerticalAlignment="Center">
                                             <Border Height="14" CornerRadius="2" Background="#15FFFFFF"
@@ -666,7 +667,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="50" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="Perdedores" FontSize="11"
+                                        <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Chart_Losers}" FontSize="11"
                                                    Foreground="#FF5555" VerticalAlignment="Center" />
                                         <Grid Grid.Column="1" VerticalAlignment="Center">
                                             <Border Height="14" CornerRadius="2" Background="#15FFFFFF"
@@ -687,7 +688,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="50" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="BreakEven" FontSize="11"
+                                        <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Chart_BreakEven}" FontSize="11"
                                                    Foreground="#FF9800" VerticalAlignment="Center" />
                                         <Grid Grid.Column="1" VerticalAlignment="Center">
                                             <Border Height="14" CornerRadius="2" Background="#15FFFFFF"
@@ -707,7 +708,7 @@
                                 <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,16" />
 
                                 <!-- Win Rate por Sesión -->
-                                <TextBlock Text="WIN RATE POR SESIÓN" Style="{StaticResource SecLabel}" />
+                                <TextBlock Text="{loc:Tr Analytics_Chart_SessionWR}" Style="{StaticResource SecLabel}" />
                                 <ItemsControl ItemsSource="{Binding SessionChart}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type vm:SessionChartPoint}">
@@ -772,22 +773,20 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="70" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="SÍMBOLO"  Style="{StaticResource TblHdr}" />
-                                        <TextBlock Grid.Column="1" Text="TRADES"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="2" Text="GANAD."   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="3" Text="PERD."    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="4" Text="WIN RATE" Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="5" Text="P&amp;L"  Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
-                                        <TextBlock Grid.Column="6" Text="R:R"      Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Col_Symbol}"  Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="{loc:Tr Analytics_Col_Trades}"  Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{loc:Tr Analytics_Col_Won}"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="{loc:Tr Analytics_Col_Lost}"    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="{loc:Tr Analytics_Col_WinRate}" Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="5" Text="{loc:Tr Analytics_Col_PnlL}"   Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="6" Text="{loc:Tr Analytics_Col_RR}"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
                                     </Grid>
                                 </Border>
 
                                 <!-- Sub-label -->
                                 <Border Grid.Row="1" Padding="12,5">
-                                    <TextBlock FontSize="9" FontWeight="SemiBold">
-                                        <Run Text="POR SÍMBOLO" Foreground="{DynamicResource CyanGlowBrush}" />
-                                        <Run Text=" — ordenado por P&amp;L" Foreground="{DynamicResource TextMutedBrush}" />
-                                    </TextBlock>
+                                    <TextBlock Text="{loc:Tr Analytics_Section_BySymbol}" FontSize="9" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource CyanGlowBrush}" />
                                 </Border>
 
                                 <!-- Filas (altura fija = 8 × 46px = 368px) -->
@@ -911,20 +910,20 @@
                                             <ColumnDefinition Width="60" />
                                             <ColumnDefinition Width="55" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="ESTRATEGIA" Style="{StaticResource TblHdr}" />
-                                        <TextBlock Grid.Column="1" Text="TRADES"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="2" Text="GANAD."     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="3" Text="PERD."      Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="4" Text="WIN RATE"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="5" Text="P&amp;L"    Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
-                                        <TextBlock Grid.Column="6" Text="R:R"        Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="7" Text="CAL."       Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Col_Strategy}" Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="{loc:Tr Analytics_Col_Trades}"  Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{loc:Tr Analytics_Col_Won}"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="{loc:Tr Analytics_Col_Lost}"    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="{loc:Tr Analytics_Col_WinRate}" Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="5" Text="{loc:Tr Analytics_Col_PnlL}"   Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="6" Text="{loc:Tr Analytics_Col_RR}"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="7" Text="{loc:Tr Analytics_Col_Rating}" Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
                                     </Grid>
                                 </Border>
 
                                 <!-- Sub-label -->
                                 <Border Grid.Row="1" Padding="12,5">
-                                    <TextBlock Text="POR ESTRATEGIA" FontSize="9" FontWeight="SemiBold"
+                                    <TextBlock Text="{loc:Tr Analytics_Section_ByStrategy}" FontSize="9" FontWeight="SemiBold"
                                                Foreground="{DynamicResource CyanGlowBrush}" />
                                 </Border>
 
@@ -1053,11 +1052,11 @@
                                             <ColumnDefinition Width="80" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="DIRECCIÓN" Style="{StaticResource TblHdr}" />
-                                        <TextBlock Grid.Column="1" Text="TRADES"    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="2" Text="GANAD."    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="3" Text="WIN %"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="4" Text="P&amp;L"   Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Col_Direction}" Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="{loc:Tr Analytics_Col_Trades}"    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{loc:Tr Analytics_Col_Won}"       Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="{loc:Tr Analytics_Col_WinPct}"    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="{loc:Tr Analytics_Col_PnlL}"      Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
                                     </Grid>
                                 </Border>
                                 <ItemsControl ItemsSource="{Binding ByDirection}">
@@ -1127,11 +1126,11 @@
                                             <ColumnDefinition Width="80" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="SESIÓN"  Style="{StaticResource TblHdr}" />
-                                        <TextBlock Grid.Column="1" Text="TRADES"  Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="2" Text="GANAD."  Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="3" Text="WIN %"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="4" Text="P&amp;L" Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Col_Session}" Style="{StaticResource TblHdr}" />
+                                        <TextBlock Grid.Column="1" Text="{loc:Tr Analytics_Col_Trades}"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{loc:Tr Analytics_Col_Won}"      Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="{loc:Tr Analytics_Col_WinPct}"   Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="{loc:Tr Analytics_Col_PnlL}"     Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
                                     </Grid>
                                 </Border>
                                 <ItemsControl ItemsSource="{Binding BySession}">
@@ -1193,16 +1192,16 @@
                                         <ColumnDefinition Width="120" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="MES"            Style="{StaticResource TblHdr}" />
-                                    <TextBlock Grid.Column="1" Text="TRADES"         Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                    <TextBlock Grid.Column="2" Text="GANAD."         Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                    <TextBlock Grid.Column="3" Text="PERD."          Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                    <TextBlock Grid.Column="4" Text="WIN RATE"       Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
-                                    <TextBlock Grid.Column="5" Text="P&amp;L TOTAL"  Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
+                                    <TextBlock Grid.Column="0" Text="{loc:Tr Analytics_Col_Month}"    Style="{StaticResource TblHdr}" />
+                                    <TextBlock Grid.Column="1" Text="{loc:Tr Analytics_Col_Trades}"  Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="2" Text="{loc:Tr Analytics_Col_Won}"     Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="3" Text="{loc:Tr Analytics_Col_Lost}"    Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="4" Text="{loc:Tr Analytics_Col_WinRate}" Style="{StaticResource TblHdr}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="5" Text="{loc:Tr Analytics_Col_PnlTotal}" Style="{StaticResource TblHdr}" HorizontalAlignment="Right" />
                                 </Grid>
                             </Border>
                             <Border Padding="14,6">
-                                <TextBlock Text="RENDIMIENTO MENSUAL" FontSize="9" FontWeight="SemiBold"
+                                <TextBlock Text="{loc:Tr Analytics_Section_Monthly}" FontSize="9" FontWeight="SemiBold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
                             </Border>
                             <ItemsControl ItemsSource="{Binding ByMonth}">
@@ -1284,7 +1283,7 @@
                              Foreground="{DynamicResource CyanGlowBrush}"
                              Background="{DynamicResource BorderBrush}"
                              BorderThickness="0" />
-                <TextBlock Text="Calculando análisis..."
+                <TextBlock Text="{loc:Tr Analytics_Loading}"
                            FontSize="14" Foreground="{DynamicResource TextSecondaryBrush}"
                            HorizontalAlignment="Center" Margin="0,14,0,0" />
             </StackPanel>

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+        xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
         mc:Ignorable="d"
         Width="1280" Height="760"
         MinWidth="900" MinHeight="560"
@@ -94,7 +95,7 @@
                     <StackPanel Grid.Column="1" Orientation="Horizontal"
                                 HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Button x:Name="BtnZoomOut" Style="{StaticResource ZoomBtn}"
-                                Click="OnZoomOut" ToolTip="Reducir (-)">
+                                Click="OnZoomOut" ToolTip="{loc:Tr Playbook_ZoomOut}">
                             <TextBlock Text="−" FontSize="16" FontWeight="Bold" />
                         </Button>
                         <Border Background="#15FFFFFF" CornerRadius="4"
@@ -106,18 +107,18 @@
                                        VerticalAlignment="Center" />
                         </Border>
                         <Button x:Name="BtnZoomIn" Style="{StaticResource ZoomBtn}"
-                                Click="OnZoomIn" ToolTip="Ampliar (+)">
+                                Click="OnZoomIn" ToolTip="{loc:Tr Playbook_ZoomIn}">
                             <TextBlock Text="+" FontSize="16" FontWeight="Bold" />
                         </Button>
                         <Button Style="{StaticResource ZoomBtn}" Margin="4,0,0,0"
-                                Click="OnZoomReset" ToolTip="Restablecer (doble clic)">
+                                Click="OnZoomReset" ToolTip="{loc:Tr Playbook_ResetZoom}">
                             <TextBlock Text="⊙" FontSize="14" />
                         </Button>
                     </StackPanel>
 
                     <!-- Hint ESC -->
                     <TextBlock Grid.Column="2"
-                               Text="ESC para cerrar"
+                               Text="{loc:Tr Playbook_EscHint}"
                                FontSize="11"
                                Foreground="{DynamicResource TextMutedBrush}"
                                VerticalAlignment="Center" Margin="0,0,16,0" />
@@ -161,7 +162,7 @@
                                     HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="🖼️" FontSize="64"
                                        HorizontalAlignment="Center" Margin="0,0,0,16" />
-                            <TextBlock Text="Sin imagen en este registro"
+                            <TextBlock Text="{loc:Tr Playbook_NoImageViewer}"
                                        FontSize="15" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        HorizontalAlignment="Center" />

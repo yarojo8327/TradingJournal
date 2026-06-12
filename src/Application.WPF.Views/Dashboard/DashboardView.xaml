@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Application.WPF.ViewModels;assembly=Application.WPF.ViewModels"
              xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+             xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel}"
              Background="{DynamicResource BackgroundBrush}"
@@ -88,7 +89,7 @@
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
                         <Border Width="3" Height="22" CornerRadius="2"
                                 Background="{DynamicResource CyanGlowBrush}" Margin="0,0,10,0" />
-                        <TextBlock Text="Panel de Trading"
+                        <TextBlock Text="{loc:Tr Dashboard_Title}"
                                    Style="{DynamicResource H1}" FontSize="21"
                                    VerticalAlignment="Center" />
                     </StackPanel>
@@ -101,7 +102,7 @@
                             VerticalAlignment="Center" Margin="0,0,0,0">
 
                     <!-- Account filter label -->
-                    <TextBlock Text="💼  Cuenta:"
+                    <TextBlock Text="{loc:Tr Dashboard_AccountLabel}"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextMutedBrush}"
                                FontSize="12" Margin="0,0,8,0" />
@@ -115,7 +116,7 @@
                               DisplayMemberPath="DisplayName"
                               Margin="0,0,12,0" />
 
-                    <Button Content="🔄  Actualizar"
+                    <Button Content="{loc:Tr Dashboard_Refresh}"
                             Style="{DynamicResource SecondaryButton}"
                             Command="{Binding RefreshCommand}" />
                 </StackPanel>
@@ -142,7 +143,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                             <TextBlock Text="📊" FontSize="13" Margin="0,0,6,0" />
-                            <TextBlock Text="OPERACIONES" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Text="{loc:Tr Dashboard_Kpi_Trades}" Style="{StaticResource SectionLabel}" Margin="0" />
                         </StackPanel>
                         <TextBlock Text="{Binding TotalTrades}" Style="{StaticResource NeutValue}" Margin="0,4,0,6"/>
                         <StackPanel Orientation="Horizontal">
@@ -165,7 +166,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                             <TextBlock Text="🎯" FontSize="13" Margin="0,0,6,0" />
-                            <TextBlock Text="WIN RATE" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Text="{loc:Tr Dashboard_Kpi_WinRate}" Style="{StaticResource SectionLabel}" Margin="0" />
                         </StackPanel>
                         <TextBlock Text="{Binding WinRateLabel}" Style="{StaticResource NeutValue}" Margin="0,4,0,6" />
                         <!-- mini bar -->
@@ -181,7 +182,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                             <TextBlock Text="📅" FontSize="13" Margin="0,0,6,0" />
-                            <TextBlock Text="P&amp;L ESTE MES" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Text="{loc:Tr Dashboard_Kpi_PnlMonth}" Style="{StaticResource SectionLabel}" Margin="0" />
                         </StackPanel>
                         <TextBlock Text="{Binding NetPnlMonthLabel}"
                                    Margin="0,4,0,6"
@@ -197,7 +198,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBlock Text="vs. mes corriente" Style="{StaticResource Caption}" />
+                        <TextBlock Text="{loc:Tr Dashboard_Kpi_VsMes}" Style="{StaticResource Caption}" />
                     </StackPanel>
                 </Border>
 
@@ -206,7 +207,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                             <TextBlock Text="💰" FontSize="13" Margin="0,0,6,0" />
-                            <TextBlock Text="P&amp;L TOTAL" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Text="{loc:Tr Dashboard_Kpi_PnlTotal}" Style="{StaticResource SectionLabel}" Margin="0" />
                         </StackPanel>
                         <TextBlock Text="{Binding NetPnlTotalLabel}"
                                    Margin="0,4,0,6"
@@ -222,7 +223,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBlock Text="acumulado histórico" Style="{StaticResource Caption}" />
+                        <TextBlock Text="{loc:Tr Dashboard_Kpi_Accumulated}" Style="{StaticResource Caption}" />
                     </StackPanel>
                 </Border>
 
@@ -231,10 +232,10 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                             <TextBlock Text="⚖️" FontSize="13" Margin="0,0,6,0" />
-                            <TextBlock Text="RIESGO/REWARD" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Text="{loc:Tr Dashboard_Kpi_RR}" Style="{StaticResource SectionLabel}" Margin="0" />
                         </StackPanel>
                         <TextBlock Text="{Binding AvgRRLabel}" Style="{StaticResource NeutValue}" Margin="0,4,0,6" />
-                        <TextBlock Text="promedio" Style="{StaticResource Caption}" />
+                        <TextBlock Text="{loc:Tr Dashboard_Kpi_Average}" Style="{StaticResource Caption}" />
                     </StackPanel>
                 </Border>
 
@@ -243,10 +244,10 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                             <TextBlock Text="⚡" FontSize="13" Margin="0,0,6,0" />
-                            <TextBlock Text="PROFIT FACTOR" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Text="{loc:Tr Dashboard_Kpi_ProfitFactor}" Style="{StaticResource SectionLabel}" Margin="0" />
                         </StackPanel>
                         <TextBlock Text="{Binding ProfitFactorLabel}" Style="{StaticResource NeutValue}" Margin="0,4,0,6" />
-                        <TextBlock Text="ratio ganancia/pérdida" Style="{StaticResource Caption}" />
+                        <TextBlock Text="{loc:Tr Dashboard_Kpi_GainLossRatio}" Style="{StaticResource Caption}" />
                     </StackPanel>
                 </Border>
             </Grid>
@@ -272,9 +273,9 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="📓" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="BITÁCORA" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Journal}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
-                                <TextBlock Text="Ver operaciones" FontSize="10"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Journal_Sub}" FontSize="10"
                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
@@ -288,9 +289,9 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="📈" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="ANÁLISIS" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Analytics}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
-                                <TextBlock Text="Estadísticas" FontSize="10"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Analytics_Sub}" FontSize="10"
                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
@@ -304,9 +305,9 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="⚡" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="ESTRATEGIAS" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Strategies}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
-                                <TextBlock Text="Gestionar playbook" FontSize="10"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Strategies_Sub}" FontSize="10"
                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
@@ -320,9 +321,9 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="🏆" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="PLAYBOOK" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Playbook}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
-                                <TextBlock Text="Trades destacados" FontSize="10"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Playbook_Sub}" FontSize="10"
                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
@@ -336,9 +337,9 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="💼" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="CUENTAS" FontSize="9" FontWeight="Bold"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Accounts}" FontSize="9" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
-                                <TextBlock Text="Gestionar cuentas" FontSize="10"
+                                <TextBlock Text="{loc:Tr Dashboard_Nav_Accounts_Sub}" FontSize="10"
                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
@@ -360,8 +361,8 @@
                 <Border Grid.Column="0" Style="{DynamicResource AccentCard}" Padding="16,14,16,14">
                     <StackPanel>
                         <Grid Margin="0,0,0,10">
-                            <TextBlock Text="CURVA DE EQUITY" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
-                            <TextBlock Text="Ver análisis →" FontSize="10" FontWeight="Bold"
+                            <TextBlock Text="{loc:Tr Dashboard_Section_Equity}" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Dashboard_ViewAnalytics}" FontSize="10" FontWeight="Bold"
                                        Foreground="{DynamicResource CyanGlowBrush}"
                                        HorizontalAlignment="Right" VerticalAlignment="Center"
                                        Cursor="Hand">
@@ -378,7 +379,7 @@
                         </Border>
                         <!-- no-data placeholder -->
                         <TextBlock x:Name="EquityNoData"
-                                   Text="Sin operaciones cerradas aún"
+                                   Text="{loc:Tr Dashboard_NoTrades}"
                                    Style="{StaticResource Caption}"
                                    HorizontalAlignment="Center"
                                    Margin="0,8,0,0"
@@ -389,7 +390,7 @@
                 <!-- Win/Loss/Open distribution -->
                 <Border Grid.Column="2" Style="{DynamicResource Card}" Padding="16,14">
                     <StackPanel>
-                        <TextBlock Text="DISTRIBUCIÓN" Style="{StaticResource SectionLabel}" />
+                        <TextBlock Text="{loc:Tr Dashboard_Section_Distribution}" Style="{StaticResource SectionLabel}" />
 
                         <!-- Win -->
                         <Grid Margin="0,0,0,8">
@@ -490,18 +491,18 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="MEJOR RACHA" Style="{StaticResource SectionLabel}" Margin="0,0,0,4" />
+                                <TextBlock Text="{loc:Tr Dashboard_Streak}" Style="{StaticResource SectionLabel}" Margin="0,0,0,4" />
                                 <TextBlock Text="{Binding BestStreakLabel}"
                                            FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource CyanGlowBrush}" />
-                                <TextBlock Text="wins seguidos" Style="{StaticResource Caption}" />
+                                <TextBlock Text="{loc:Tr Dashboard_WinStreak}" Style="{StaticResource Caption}" />
                             </StackPanel>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="EN ABIERTO" Style="{StaticResource SectionLabel}" Margin="0,0,0,4" />
+                                <TextBlock Text="{loc:Tr Dashboard_OpenPos}" Style="{StaticResource SectionLabel}" Margin="0,0,0,4" />
                                 <TextBlock Text="{Binding OpenCount}"
                                            FontSize="20" FontWeight="Bold"
                                            Foreground="#FFD600" />
-                                <TextBlock Text="posiciones" Style="{StaticResource Caption}" />
+                                <TextBlock Text="{loc:Tr Dashboard_Positions}" Style="{StaticResource Caption}" />
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -511,8 +512,8 @@
                 <Border Grid.Column="4" Style="{DynamicResource Card}" Padding="16,14">
                     <StackPanel>
                         <Grid Margin="0,0,0,10">
-                            <TextBlock Text="RESUMEN DE CAPITAL" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
-                            <TextBlock Text="Cuentas →" FontSize="10" FontWeight="Bold"
+                            <TextBlock Text="{loc:Tr Dashboard_Section_Capital}" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Dashboard_ViewAccounts}" FontSize="10" FontWeight="Bold"
                                        Foreground="{DynamicResource CyanGlowBrush}"
                                        HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
                                 <TextBlock.InputBindings>
@@ -522,14 +523,14 @@
                         </Grid>
 
                         <StackPanel Margin="0,0,0,10">
-                            <TextBlock Text="Capital inicial" Style="{StaticResource Caption}" Margin="0,0,0,2" />
+                            <TextBlock Text="{loc:Tr Dashboard_InitialCapital}" Style="{StaticResource Caption}" Margin="0,0,0,2" />
                             <TextBlock Text="{Binding TotalInitialCapital}"
                                        FontSize="16" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}" />
                         </StackPanel>
 
                         <StackPanel Margin="0,0,0,10">
-                            <TextBlock Text="Capital actual" Style="{StaticResource Caption}" Margin="0,0,0,2" />
+                            <TextBlock Text="{loc:Tr Dashboard_CurrentCapital}" Style="{StaticResource Caption}" Margin="0,0,0,2" />
                             <TextBlock Text="{Binding TotalCurrentCapital}"
                                        FontSize="16" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}" />
@@ -537,7 +538,7 @@
 
                         <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,10" />
 
-                        <TextBlock Text="Ganancia / Pérdida" Style="{StaticResource Caption}" Margin="0,0,0,4" />
+                        <TextBlock Text="{loc:Tr Dashboard_GainLoss}" Style="{StaticResource Caption}" Margin="0,0,0,4" />
                         <TextBlock Text="{Binding TotalGainLoss}"
                                    FontSize="20" FontWeight="Bold">
                             <TextBlock.Style>
@@ -569,8 +570,8 @@
 
                         <!-- Playbook summary -->
                         <Grid Margin="0,0,0,0">
-                            <TextBlock Text="PLAYBOOK" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
-                            <TextBlock Text="Ver →" FontSize="10" FontWeight="Bold"
+                            <TextBlock Text="{loc:Tr Dashboard_Section_Playbook}" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Dashboard_ViewPlaybook}" FontSize="10" FontWeight="Bold"
                                        Foreground="{DynamicResource CyanGlowBrush}"
                                        HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
                                 <TextBlock.InputBindings>
@@ -607,8 +608,8 @@
                 <Border Grid.Column="0" Style="{DynamicResource AccentCard}" Padding="16,14">
                     <StackPanel>
                         <Grid Margin="0,0,0,10">
-                            <TextBlock Text="ÚLTIMAS OPERACIONES" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
-                            <TextBlock Text="Ver bitácora →" FontSize="10" FontWeight="Bold"
+                            <TextBlock Text="{loc:Tr Dashboard_Section_RecentTrades}" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Dashboard_ViewJournal}" FontSize="10" FontWeight="Bold"
                                        Foreground="{DynamicResource CyanGlowBrush}"
                                        HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
                                 <TextBlock.InputBindings>
@@ -626,11 +627,11 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="50" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="SÍMBOLO"  Style="{StaticResource SectionLabel}" Margin="0" />
-                            <TextBlock Grid.Column="1" Text="DIR"      Style="{StaticResource SectionLabel}" Margin="0" />
-                            <TextBlock Grid.Column="2" Text="RESULTADO" Style="{StaticResource SectionLabel}" Margin="0" />
-                            <TextBlock Grid.Column="3" Text="P&amp;L"  Style="{StaticResource SectionLabel}" Margin="0" HorizontalAlignment="Right" />
-                            <TextBlock Grid.Column="4" Text="FECHA"    Style="{StaticResource SectionLabel}" Margin="8,0,0,0" HorizontalAlignment="Right" />
+                            <TextBlock Grid.Column="0" Text="{loc:Tr Dashboard_Col_Symbol}"  Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Grid.Column="1" Text="{loc:Tr Dashboard_Col_Dir}"      Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Grid.Column="2" Text="{loc:Tr Dashboard_Col_Result}" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <TextBlock Grid.Column="3" Text="{loc:Tr Dashboard_Col_PnL}"  Style="{StaticResource SectionLabel}" Margin="0" HorizontalAlignment="Right" />
+                            <TextBlock Grid.Column="4" Text="{loc:Tr Dashboard_Col_Date}"    Style="{StaticResource SectionLabel}" Margin="8,0,0,0" HorizontalAlignment="Right" />
                         </Grid>
                         <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,8" />
 
@@ -732,7 +733,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
-                            <TextBlock Text="Aún no hay operaciones registradas"
+                            <TextBlock Text="{loc:Tr Dashboard_NoTrades_Table}"
                                        FontSize="12"
                                        Foreground="{DynamicResource TextMutedBrush}"
                                        HorizontalAlignment="Center" />
@@ -744,8 +745,8 @@
                 <Border Grid.Column="2" Style="{DynamicResource Card}" Padding="16,14">
                     <StackPanel>
                         <Grid Margin="0,0,0,10">
-                            <TextBlock Text="RENDIMIENTO POR ESTRATEGIA" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
-                            <TextBlock Text="Ver →" FontSize="10" FontWeight="Bold"
+                            <TextBlock Text="{loc:Tr Dashboard_Section_Strategies}" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Dashboard_ViewStrategies}" FontSize="10" FontWeight="Bold"
                                        Foreground="{DynamicResource CyanGlowBrush}"
                                        HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand">
                                 <TextBlock.InputBindings>
@@ -803,7 +804,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <TextBlock Text="Sin datos de estrategias"
+                        <TextBlock Text="{loc:Tr Dashboard_NoStrategyData}"
                                    HorizontalAlignment="Center" Margin="0,12">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
@@ -824,7 +825,7 @@
                     <!-- Top símbolos -->
                     <Border Style="{DynamicResource Card}" Padding="16,14" Margin="0,0,0,12">
                         <StackPanel>
-                            <TextBlock Text="TOP SÍMBOLOS" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{loc:Tr Dashboard_Section_TopSymbols}" Style="{StaticResource SectionLabel}" />
                             <ItemsControl ItemsSource="{Binding SymbolStats}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -859,7 +860,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <TextBlock Text="Sin datos"
+                            <TextBlock Text="{loc:Tr Dashboard_NoData}"
                                        HorizontalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
@@ -878,7 +879,7 @@
                     <!-- Sesión -->
                     <Border Style="{DynamicResource Card}" Padding="16,14">
                         <StackPanel>
-                            <TextBlock Text="POR SESIÓN" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{loc:Tr Dashboard_Section_Session}" Style="{StaticResource SectionLabel}" />
                             <ItemsControl ItemsSource="{Binding SessionStats}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -910,7 +911,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <TextBlock Text="Sin datos de sesión"
+                            <TextBlock Text="{loc:Tr Dashboard_NoSessionData}"
                                        HorizontalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">

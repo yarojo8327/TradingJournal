@@ -83,7 +83,7 @@
                         <Border.Background>
                             <SolidColorBrush Color="#FF9800" Opacity="0.15" />
                         </Border.Background>
-                        <TextBlock Text="EDICIÓN" FontSize="9" FontWeight="Bold"
+                        <TextBlock Text="{loc:Tr Journal_EditBadge}" FontSize="9" FontWeight="Bold"
                                    Foreground="#FF9800" />
                     </Border>
 
@@ -91,7 +91,7 @@
                     <Button Grid.Column="2" Width="32" Height="32"
                             VerticalAlignment="Center"
                             Command="{Binding CancelCommand}"
-                            ToolTip="Cerrar">
+                            ToolTip="{loc:Tr Common_Close}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="Bg" CornerRadius="6" Background="Transparent">
@@ -129,7 +129,7 @@
                     </Border>
 
                     <!-- ── SECCIÓN 1: DATOS DEL TRADE ── -->
-                    <TextBlock Text="DATOS DEL TRADE" Style="{StaticResource SectionLabel}" />
+                    <TextBlock Text="{loc:Tr Journal_Section_TradeData}" Style="{StaticResource SectionLabel}" />
                     <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -203,7 +203,7 @@
                     <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,2,0,16" />
 
                     <!-- ── SECCIÓN 2: EJECUCIÓN ── -->
-                    <TextBlock Text="EJECUCIÓN" Style="{StaticResource SectionLabel}" />
+                    <TextBlock Text="{loc:Tr Journal_Section_Execution}" Style="{StaticResource SectionLabel}" />
                     <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -247,7 +247,7 @@
                     <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,2,0,16" />
 
                     <!-- ── SECCIÓN 3: RESULTADO ── -->
-                    <TextBlock Text="RESULTADO" Style="{StaticResource SectionLabel}" />
+                    <TextBlock Text="{loc:Tr Journal_Section_Result}" Style="{StaticResource SectionLabel}" />
                     <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -268,7 +268,7 @@
                                            Style="{StaticResource FieldLabel}" Margin="0" />
                                 <Border Background="#0F00D4FF" CornerRadius="3"
                                         Padding="5,1" Margin="6,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock Text="auto" FontSize="9" FontWeight="SemiBold"
+                                    <TextBlock Text="{loc:Tr Journal_AutoBadge}" FontSize="9" FontWeight="SemiBold"
                                                Foreground="{DynamicResource CyanGlowBrush}" />
                                 </Border>
                             </StackPanel>
@@ -329,7 +329,7 @@
                     <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,2,0,16" />
 
                     <!-- ── SECCIÓN 4: CONTEXTO ── -->
-                    <TextBlock Text="CONTEXTO DE MERCADO" Style="{StaticResource SectionLabel}" />
+                    <TextBlock Text="{loc:Tr Journal_Section_Context}" Style="{StaticResource SectionLabel}" />
                     <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" MaxWidth="300" />
@@ -355,7 +355,7 @@
                     <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,2,0,16" />
 
                     <!-- ── SECCIÓN 5: PSICOLOGÍA, GRÁFICO Y NOTAS ── -->
-                    <TextBlock Text="PSICOLOGÍA, GRÁFICO Y NOTAS" Style="{StaticResource SectionLabel}" />
+                    <TextBlock Text="{loc:Tr Journal_Section_Psychology}" Style="{StaticResource SectionLabel}" />
                     <Grid Margin="0,0,0,4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -400,7 +400,7 @@
                                             CommandParameter="{Binding ScreenshotUrl}">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="📊" FontSize="12" Margin="0,0,5,0" VerticalAlignment="Center" />
-                                            <TextBlock Text="Abrir gráfico" VerticalAlignment="Center" />
+                                            <TextBlock Text="{loc:Tr Journal_OpenChart}" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </Button>
                                     <Border Grid.Column="2"
@@ -447,7 +447,7 @@
 
                     <!-- Indicador de carga -->
                     <TextBlock Grid.Column="0"
-                               Text="Guardando…"
+                               Text="{loc:Tr Journal_Saving}"
                                FontSize="12" FontStyle="Italic"
                                Foreground="{DynamicResource TextMutedBrush}"
                                VerticalAlignment="Center"

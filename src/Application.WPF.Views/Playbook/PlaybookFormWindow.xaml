@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Application.WPF.ViewModels.Playbook;assembly=Application.WPF.ViewModels"
         xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+        xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:PlaybookViewModel}"
         Title="{Binding FormTitle}"
@@ -140,14 +141,14 @@
                         <StackPanel>
 
                             <!-- SÍMBOLO -->
-                            <TextBlock Text="SÍMBOLO" Style="{StaticResource SectionLabel}" Margin="0,0,0,6" />
+                            <TextBlock Text="{loc:Tr Playbook_Section_Symbol}" Style="{StaticResource SectionLabel}" Margin="0,0,0,6" />
                             <ComboBox ItemsSource="{Binding Symbols}"
                                       Text="{Binding Symbol, UpdateSourceTrigger=PropertyChanged}"
                                       IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"
                                       Style="{DynamicResource FormComboBox}" />
 
                             <!-- ESTRATEGIA -->
-                            <TextBlock Text="ESTRATEGIA" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{loc:Tr Playbook_Section_Strategy}" Style="{StaticResource SectionLabel}" />
                             <ComboBox ItemsSource="{Binding FilterStrategies}"
                                       SelectedItem="{Binding SelectedStrategy}"
                                       Style="{DynamicResource FormComboBox}">
@@ -160,7 +161,7 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                            <Setter Property="Text"       Value="— Sin estrategia —" />
+                                                            <Setter Property="Text"       Value="{loc:Tr Playbook_NoStrategyItem}" />
                                                             <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -172,10 +173,10 @@
                             </ComboBox>
 
                             <!-- CONFLUENCIAS -->
-                            <TextBlock Text="CONFLUENCIAS" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{loc:Tr Playbook_Section_Confluences}" Style="{StaticResource SectionLabel}" />
                             <Border Padding="0,2,0,8"
                                     Visibility="{Binding HasNoConfluences, Converter={StaticResource BoolToVisibility}}">
-                                <TextBlock Text="Selecciona una estrategia con confluencias definidas."
+                                <TextBlock Text="{loc:Tr Playbook_NoConfluencesHint}"
                                            FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
                                            TextWrapping="Wrap" />
                             </Border>
@@ -227,7 +228,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
-                                        <TextBlock Text="PROMEDIO CONFLUENCIAS"
+                                        <TextBlock Text="{loc:Tr Playbook_Section_AvgConfl}"
                                                    FontSize="9" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,3" />
                                         <TextBlock Text="{Binding AverageRatingDisplay}"
@@ -272,7 +273,7 @@
                             </Border>
 
                             <!-- CALIFICACIÓN PERSONAL (estrellas) -->
-                            <TextBlock Text="CALIFICACIÓN PERSONAL" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{loc:Tr Playbook_Section_PersonalRating}" Style="{StaticResource SectionLabel}" />
                             <Border Background="{DynamicResource SurfaceElevatedBrush}"
                                     BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="8" Padding="14,12">
@@ -282,7 +283,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Calificación manual"
+                                        <TextBlock Text="{loc:Tr Playbook_ManualRating}"
                                                    FontSize="12"
                                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                                    VerticalAlignment="Center" />
@@ -335,7 +336,7 @@
                             </Border>
 
                             <!-- NOTAS -->
-                            <TextBlock Text="NOTAS" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{loc:Tr Playbook_Section_Notes}" Style="{StaticResource SectionLabel}" />
                             <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}"
                                      TextWrapping="Wrap" AcceptsReturn="True"
@@ -349,10 +350,10 @@
                                     HorizontalAlignment="Stretch" Height="44" Margin="0,16,0,0">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
-                                        <Setter Property="Content" Value="Guardar registro" />
+                                        <Setter Property="Content" Value="{loc:Tr Playbook_SaveEntry}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsBusy}" Value="True">
-                                                <Setter Property="Content" Value="Guardando…" />
+                                                <Setter Property="Content" Value="{loc:Tr Playbook_SavingEntry}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -391,7 +392,7 @@
                                     Height="32" Padding="12,0" FontSize="12">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="📁 " VerticalAlignment="Center" FontSize="13" />
-                                    <TextBlock Text="Seleccionar imagen" VerticalAlignment="Center" />
+                                    <TextBlock Text="{loc:Tr Playbook_SelectImage}" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
@@ -401,14 +402,14 @@
                                     Style="{DynamicResource GhostButton}"
                                     Height="32" Padding="10,0" FontSize="12" Margin="8,0,0,0"
                                     Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
-                                <TextBlock Text="✕ Eliminar" VerticalAlignment="Center" />
+                                <TextBlock Text="{loc:Tr Playbook_RemoveImage}" VerticalAlignment="Center" />
                             </Button>
 
                             <!-- Controles de zoom (visibles solo con imagen cargada) -->
                             <StackPanel Grid.Column="3" Orientation="Horizontal"
                                         Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
                                 <Button x:Name="BtnZoomOut" Style="{StaticResource ZoomBtn}"
-                                        Click="OnZoomOut" ToolTip="Reducir (-)">
+                                        Click="OnZoomOut" ToolTip="{loc:Tr Playbook_ZoomOut}">
                                     <TextBlock Text="−" FontSize="16" FontWeight="Bold" />
                                 </Button>
                                 <Border Background="#15FFFFFF" CornerRadius="4"
@@ -420,11 +421,11 @@
                                                VerticalAlignment="Center" />
                                 </Border>
                                 <Button x:Name="BtnZoomIn" Style="{StaticResource ZoomBtn}"
-                                        Click="OnZoomIn" ToolTip="Ampliar (+)">
+                                        Click="OnZoomIn" ToolTip="{loc:Tr Playbook_ZoomIn}">
                                     <TextBlock Text="+" FontSize="16" FontWeight="Bold" />
                                 </Button>
                                 <Button Style="{StaticResource ZoomBtn}" Margin="4,0,0,0"
-                                        Click="OnZoomReset" ToolTip="Restablecer zoom (doble clic en imagen)">
+                                        Click="OnZoomReset" ToolTip="{loc:Tr Playbook_ResetZoom}">
                                     <TextBlock Text="⊙" FontSize="14" />
                                 </Button>
                             </StackPanel>
@@ -449,11 +450,11 @@
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock Text="🖼️" FontSize="56"
                                            HorizontalAlignment="Center" Margin="0,0,0,16" />
-                                <TextBlock Text="Sin imagen cargada"
+                                <TextBlock Text="{loc:Tr Playbook_NoImage}"
                                            FontSize="16" FontWeight="SemiBold"
                                            Foreground="{DynamicResource TextSecondaryBrush}"
                                            HorizontalAlignment="Center" />
-                                <TextBlock Text="Haz clic en &quot;Seleccionar imagen&quot; para cargar un gráfico"
+                                <TextBlock Text="{loc:Tr Playbook_NoImageHint}"
                                            FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center" Margin="0,6,0,0" />
                                 <TextBlock Text="PNG · JPG · BMP · GIF · WEBP"
@@ -510,7 +511,7 @@
                     <ProgressBar IsIndeterminate="True" Width="240" Height="3"
                                  Foreground="{DynamicResource CyanGlowBrush}"
                                  Background="{DynamicResource BorderBrush}" BorderThickness="0" />
-                    <TextBlock Text="Guardando…"
+                    <TextBlock Text="{loc:Tr Playbook_Saving}"
                                FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"
                                HorizontalAlignment="Center" Margin="0,12,0,0" />
                 </StackPanel>

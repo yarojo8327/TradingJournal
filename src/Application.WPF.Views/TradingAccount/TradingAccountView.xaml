@@ -234,14 +234,14 @@
                                             <Button Style="{StaticResource TableEditButton}"
                                                     Foreground="{DynamicResource AccentRedBrush}"
                                                     BorderBrush="{DynamicResource AccentRedBrush}"
-                                                    ToolTip="Eliminar cuenta (solo si no tiene operaciones)"
+                                                    ToolTip="{loc:Tr Account_DeleteTooltip}"
                                                     Command="{Binding DataContext.DeleteAccountCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"
                                                                FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
-                                                    <TextBlock Text="Eliminar" FontSize="11" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{loc:Tr Account_DeleteButton}" FontSize="11" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Button>
                                         </StackPanel>
