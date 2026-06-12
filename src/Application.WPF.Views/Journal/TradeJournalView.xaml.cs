@@ -33,22 +33,36 @@ public partial class TradeJournalView : UserControl
 
     private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(TradeJournalViewModel.IsFormVisible)) return;
         if (DataContext is not TradeJournalViewModel vm) return;
 
-        if (vm.IsFormVisible)
+        if (e.PropertyName == nameof(TradeJournalViewModel.IsFormVisible))
+        {
+            if (vm.IsFormVisible)
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    var owner = Window.GetWindow(this);
+                    _formWindow = new TradeFormWindow(vm) { Owner = owner };
+                    _formWindow.ShowDialog();
+                    _formWindow = null;
+                });
+            }
+            else
+            {
+                _formWindow?.Close();
+            }
+        }
+        else if (e.PropertyName == nameof(TradeJournalViewModel.TradeToView) && vm.TradeToView is not null)
         {
             Dispatcher.InvokeAsync(() =>
             {
+                var trade = vm.TradeToView;
+                vm.TradeToView = null;
+                if (trade is null) return;
                 var owner = Window.GetWindow(this);
-                _formWindow = new TradeFormWindow(vm) { Owner = owner };
-                _formWindow.ShowDialog();
-                _formWindow = null;
+                var detail = new TradeDetailWindow(trade) { Owner = owner };
+                detail.ShowDialog();
             });
-        }
-        else
-        {
-            _formWindow?.Close();
         }
     }
 

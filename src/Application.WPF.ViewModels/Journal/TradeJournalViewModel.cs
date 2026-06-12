@@ -176,6 +176,15 @@ public partial class TradeJournalViewModel : BaseViewModel
         new(TradingSession.LondonNewYork,  "Londres / NY (overlap)")
     };
 
+    public IReadOnlyList<TradingTypeOption> TradingTypes { get; } = new List<TradingTypeOption>
+    {
+        new(null,                      "— Ninguno —"),
+        new(TradingType.Scalping,      "Scalping"),
+        new(TradingType.Intraday,      "Intradía"),
+        new(TradingType.Swing,         "Swing Trading"),
+        new(TradingType.Position,      "Trading de posición")
+    };
+
     public IReadOnlyList<EmotionalStateOption> EmotionalStates { get; } = new List<EmotionalStateOption>
     {
         new(null,                          "— Sin registro —"),
@@ -271,6 +280,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     private TradeResultOption? _selectedResult;
 
     [ObservableProperty] private int?                  _selectedRating;
+    [ObservableProperty] private TradingTypeOption?    _selectedTradingType;
     [ObservableProperty] private SessionOption?        _selectedSession;
     [ObservableProperty] private string?               _selectedTimeframe;
     [ObservableProperty] private EmotionalStateOption? _selectedEmotionalState;
@@ -546,6 +556,7 @@ public partial class TradeJournalViewModel : BaseViewModel
         RrText               = FormatDecimal(trade.RiskRewardRatio);
         SelectedResult       = Results.FirstOrDefault(r => r.Value == trade.Result);
         SelectedRating       = trade.Rating;
+        SelectedTradingType  = TradingTypes.FirstOrDefault(t => t.Value == trade.TradingType);
         SelectedSession      = Sessions.FirstOrDefault(s => s.Value == trade.Session);
         SelectedTimeframe    = trade.Timeframe;
         SelectedEmotionalState = EmotionalStates.FirstOrDefault(e => e.Value == trade.EmotionalState);
@@ -553,6 +564,14 @@ public partial class TradeJournalViewModel : BaseViewModel
         Notes                = trade.Notes ?? string.Empty;
         ScreenshotUrl        = trade.ScreenshotUrl ?? string.Empty;
     }
+
+    [RelayCommand]
+    private void ViewTrade(TradeEntry trade)
+    {
+        TradeToView = trade;
+    }
+
+    [ObservableProperty] private TradeEntry? _tradeToView;
 
     [RelayCommand]
     private void Cancel()
@@ -872,6 +891,7 @@ public partial class TradeJournalViewModel : BaseViewModel
             Result:           SelectedResult!.Value,
             Session:          SelectedSession?.Value,
             Timeframe:        SelectedTimeframe,
+            TradingType:      SelectedTradingType?.Value,
             SetupQuality:     null,
             ConfluencesCount: null,
             IsFalseBreakout:  false,
@@ -976,6 +996,7 @@ public partial class TradeJournalViewModel : BaseViewModel
         RrText                 = string.Empty;
         SelectedResult         = Results.FirstOrDefault(r => r.Value == TradeResult.Open);
         SelectedRating         = null;
+        SelectedTradingType    = null;
         SelectedSession        = null;
         SelectedTimeframe      = null;
         SelectedEmotionalState = null;
@@ -1033,6 +1054,11 @@ public record SessionOption(TradingSession? Value, string Display)
 }
 
 public record EmotionalStateOption(EmotionalState? Value, string Display)
+{
+    public override string ToString() => Display;
+}
+
+public record TradingTypeOption(TradingType? Value, string Display)
 {
     public override string ToString() => Display;
 }

@@ -370,6 +370,19 @@
   <data name="Journal_Prev"                 xml:space="preserve"><value>← Anterior</value></data>
   <data name="Journal_Next"                 xml:space="preserve"><value>Siguiente →</value></data>
 
+  <!-- Journal — TradingType -->
+  <data name="Journal_TradingType"          xml:space="preserve"><value>Tipo de trading</value></data>
+  <data name="Journal_TradingType_None"     xml:space="preserve"><value>— Ninguno —</value></data>
+  <data name="Journal_TradingType_Scalping" xml:space="preserve"><value>Scalping</value></data>
+  <data name="Journal_TradingType_Intraday" xml:space="preserve"><value>Intradía</value></data>
+  <data name="Journal_TradingType_Swing"    xml:space="preserve"><value>Swing Trading</value></data>
+  <data name="Journal_TradingType_Position" xml:space="preserve"><value>Trading de posición</value></data>
+
+  <!-- Journal — Ver detalle -->
+  <data name="Journal_View"                 xml:space="preserve"><value>Ver</value></data>
+  <data name="Journal_Detail_Image"         xml:space="preserve"><value>GRÁFICO / IMAGEN</value></data>
+  <data name="Journal_NoImage"              xml:space="preserve"><value>Sin imagen disponible</value></data>
+
   <!-- Navigation extras -->
   <data name="Nav_Playbook"                 xml:space="preserve"><value>Playbook</value></data>
 

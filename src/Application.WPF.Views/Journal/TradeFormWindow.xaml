@@ -334,7 +334,9 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" MaxWidth="300" />
                             <ColumnDefinition Width="14" />
-                            <ColumnDefinition Width="*" MaxWidth="150" />
+                            <ColumnDefinition Width="*" MaxWidth="200" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="*" MaxWidth="200" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
@@ -348,6 +350,12 @@
                             <ComboBox ItemsSource="{Binding Timeframes}"
                                       Text="{Binding SelectedTimeframe, UpdateSourceTrigger=PropertyChanged}"
                                       IsEditable="True"
+                                      Style="{DynamicResource FormComboBox}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="{loc:Tr Journal_TradingType}" Style="{StaticResource FieldLabel}" />
+                            <ComboBox ItemsSource="{Binding TradingTypes}"
+                                      SelectedItem="{Binding SelectedTradingType}"
                                       Style="{DynamicResource FormComboBox}" />
                         </StackPanel>
                     </Grid>

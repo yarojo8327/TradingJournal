@@ -223,6 +223,7 @@ public partial class App : System.Windows.Application
         // Columnas agregadas después de la creación inicial — idempotentes vía try/catch
         // (SQLite no soporta ADD COLUMN IF NOT EXISTS)
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""Rating"" INTEGER;");
+        await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""TradingType"" TEXT;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ManualRating"" INTEGER;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageData"" BLOB;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageMimeType"" TEXT;");

@@ -32,6 +32,7 @@ public record TradeEntryData(
     TradeResult    Result,
     TradingSession? Session,
     string?        Timeframe,
+    TradingType?   TradingType,
     int?           SetupQuality,
     int?           ConfluencesCount,
     bool           IsFalseBreakout,

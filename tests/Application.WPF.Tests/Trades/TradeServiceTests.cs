@@ -77,6 +77,7 @@ public class TradeServiceTests : IDisposable
         Result:           TradeResult.Open,
         Session:          TradingSession.London,
         Timeframe:        "1H",
+        TradingType:      null,
         SetupQuality:     7,
         ConfluencesCount: 3,
         IsFalseBreakout:  false,

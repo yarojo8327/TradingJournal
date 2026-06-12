@@ -122,6 +122,7 @@ public class TradingJournalDbContext : DbContext
             e.Property(t => t.Direction).IsRequired().HasConversion<string>();
             e.Property(t => t.Result).IsRequired().HasConversion<string>();
             e.Property(t => t.Session).HasConversion<string>();
+            e.Property(t => t.TradingType).HasConversion<string>();
             e.Property(t => t.EmotionalState).HasConversion<string>();
             e.Property(t => t.EntryPrice).HasColumnType("decimal(18,8)");
             e.Property(t => t.ExitPrice).HasColumnType("decimal(18,8)");

@@ -88,6 +88,7 @@ public class TradeService : ITradeService
         e.Result           = d.Result;
         e.Session          = d.Session;
         e.Timeframe        = d.Timeframe;
+        e.TradingType      = d.TradingType;
         e.SetupQuality     = d.SetupQuality;
         e.ConfluencesCount = d.ConfluencesCount;
         e.IsFalseBreakout  = d.IsFalseBreakout;

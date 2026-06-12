@@ -969,6 +969,22 @@
                                                            FontSize="12" VerticalAlignment="Center" />
                                             </Button>
 
+                                            <!-- Ver detalle -->
+                                            <Button Style="{StaticResource SmallActionBtn}"
+                                                    BorderBrush="{DynamicResource TextMutedBrush}"
+                                                    Foreground="{DynamicResource TextSecondaryBrush}"
+                                                    ToolTip="{loc:Tr Journal_View}"
+                                                    Margin="0,0,5,0" Padding="7,3"
+                                                    Command="{Binding DataContext.ViewTradeCommand,
+                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE8FF;" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
+                                                    <TextBlock Text="{loc:Tr Journal_View}" FontSize="11" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
+
                                             <!-- Editar -->
                                             <Button Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource CyanGlowBrush}"
