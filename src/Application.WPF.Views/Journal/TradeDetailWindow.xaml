@@ -308,48 +308,37 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <!-- Columna derecha: imagen -->
+                    <!-- Columna derecha: gráfico -->
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="{loc:Tr Journal_Detail_Image}" Style="{StaticResource SectionLabel}" />
 
-                        <!-- Preview de imagen si es URL local o de trading view embebida -->
-                        <Border x:Name="ImageContainer"
-                                Background="{DynamicResource SurfaceElevatedBrush}"
-                                BorderBrush="{DynamicResource BorderBrush}"
-                                BorderThickness="1" CornerRadius="8"
-                                MinHeight="180" Visibility="Collapsed">
-                            <Image x:Name="TradeImage" Stretch="Uniform"
-                                   MaxHeight="400" Margin="4" />
-                        </Border>
+                        <!-- Botón abrir URL (solo si hay URL) -->
+                        <Button x:Name="OpenUrlBtn"
+                                Style="{DynamicResource PrimaryButton}"
+                                Height="36" Padding="14,0" FontSize="13"
+                                Visibility="Collapsed"
+                                Click="OnOpenUrl">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📊" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center" />
+                                <TextBlock Text="{loc:Tr Journal_OpenChart}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
 
-                        <!-- Placeholder sin imagen -->
+                        <!-- Sin URL -->
                         <Border x:Name="NoImageBorder"
                                 Background="{DynamicResource SurfaceElevatedBrush}"
                                 BorderBrush="{DynamicResource BorderBrush}"
                                 BorderThickness="1" CornerRadius="8"
-                                Height="180">
+                                Padding="16,20">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets"
-                                           FontSize="32" Foreground="{DynamicResource TextMutedBrush}"
+                                           FontSize="28" Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center" />
                                 <TextBlock Text="{loc:Tr Journal_NoImage}" FontSize="11"
                                            Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center" Margin="0,8,0,0" />
                             </StackPanel>
                         </Border>
-
-                        <!-- Botón abrir URL -->
-                        <Button x:Name="OpenUrlBtn"
-                                Style="{DynamicResource PrimaryButton}"
-                                Height="34" Margin="0,10,0,0"
-                                Padding="12,0" FontSize="12"
-                                Visibility="Collapsed"
-                                Click="OnOpenUrl">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="📊" FontSize="12" Margin="0,0,5,0" VerticalAlignment="Center" />
-                                <TextBlock Text="{loc:Tr Journal_OpenChart}" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Button>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

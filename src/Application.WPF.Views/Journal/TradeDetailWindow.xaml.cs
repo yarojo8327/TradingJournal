@@ -1,10 +1,8 @@
 using Application.WPF.Models.Entities;
 using Application.WPF.Models.Enums;
 using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace Application.WPF.Views.Journal;
 
@@ -108,50 +106,10 @@ public partial class TradeDetailWindow : Window
 
         if (!string.IsNullOrWhiteSpace(_trade.ScreenshotUrl))
         {
-            UrlText.Text       = _trade.ScreenshotUrl;
-            UrlPanel.Visibility = Visibility.Visible;
-            OpenUrlBtn.Visibility = Visibility.Visible;
-
-            // Intentar cargar imagen si es archivo local
-            TryLoadImage(_trade.ScreenshotUrl);
-        }
-    }
-
-    private void TryLoadImage(string url)
-    {
-        try
-        {
-            BitmapImage? bmp = null;
-
-            if (File.Exists(url))
-            {
-                bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.UriSource        = new Uri(url, UriKind.Absolute);
-                bmp.CacheOption      = BitmapCacheOption.OnLoad;
-                bmp.EndInit();
-            }
-            else if (Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
-                     (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
-            {
-                // Solo intentar cargar imágenes directas (no páginas web)
-                var ext = Path.GetExtension(uri.AbsolutePath).ToLowerInvariant();
-                if (ext is ".png" or ".jpg" or ".jpeg" or ".gif" or ".webp" or ".bmp")
-                {
-                    bmp = new BitmapImage(uri);
-                }
-            }
-
-            if (bmp is not null)
-            {
-                TradeImage.Source       = bmp;
-                ImageContainer.Visibility = Visibility.Visible;
-                NoImageBorder.Visibility  = Visibility.Collapsed;
-            }
-        }
-        catch
-        {
-            // Si falla la carga, mantiene el placeholder
+            UrlText.Text          = _trade.ScreenshotUrl;
+            UrlPanel.Visibility   = Visibility.Visible;
+            OpenUrlBtn.Visibility  = Visibility.Visible;
+            NoImageBorder.Visibility = Visibility.Collapsed;
         }
     }
 
