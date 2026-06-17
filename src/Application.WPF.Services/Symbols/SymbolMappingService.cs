@@ -14,6 +14,13 @@ public class SymbolMappingService : ISymbolMappingService
     public async Task<IReadOnlyList<SymbolMapping>> GetAllAsync() =>
         await _db.SymbolMappings.OrderBy(s => s.Category).ThenBy(s => s.CanonicalName).ThenBy(s => s.BrokerSymbol).ToListAsync();
 
+    public async Task<IReadOnlyList<string>> GetCanonicalNamesAsync() =>
+        await _db.SymbolMappings
+                 .Select(s => s.CanonicalName)
+                 .Distinct()
+                 .OrderBy(n => n)
+                 .ToListAsync();
+
     public async Task<Dictionary<string, string>> GetMappingDictionaryAsync()
     {
         var all = await _db.SymbolMappings.ToListAsync();

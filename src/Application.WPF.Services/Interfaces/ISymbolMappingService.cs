@@ -5,6 +5,7 @@ namespace Application.WPF.Services.Interfaces;
 public interface ISymbolMappingService
 {
     Task<IReadOnlyList<SymbolMapping>> GetAllAsync();
+    Task<IReadOnlyList<string>>        GetCanonicalNamesAsync();
     Task<Dictionary<string, string>>  GetMappingDictionaryAsync();
     Task<SymbolMapping>               CreateAsync(string brokerSymbol, string canonicalName, string category);
     Task                              UpdateAsync(int id, string brokerSymbol, string canonicalName, string category);

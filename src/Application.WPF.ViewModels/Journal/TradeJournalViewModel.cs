@@ -125,32 +125,12 @@ public partial class TradeJournalViewModel : BaseViewModel
     public IReadOnlyList<int?> RatingOptions { get; } =
         new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-    public IReadOnlyList<string> FilterSymbols { get; } = new List<string>
-    {
-        string.Empty,
-        "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP",
-        "EURJPY","EURCAD","EURAUD","EURNZD","EURCHF",
-        "GBPJPY","GBPCHF","GBPCAD","GBPAUD","GBPNZD",
-        "AUDJPY","CADJPY","NZDJPY","CHFJPY",
-        "AUDCAD","AUDCHF","AUDNZD","CADCHF","NZDCAD","NZDCHF",
-        "USDMXN","USDZAR","USDSGD","USDNOK","USDSEK","USDTRY",
-        "XAUUSD","XAGUSD","USOIL","UKOIL",
-        "BTCUSD","ETHUSD","BNBUSD","SOLUSD","XRPUSD","ADAUSD","AVAXUSD","DOTUSD","LINKUSD","MATICUSD",
-        "US30","US500","NAS100","GER40","UK100","JP225","AUS200","HK50","FRA40","EU50"
-    };
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FilterSymbols))]
+    private ObservableCollection<string> _symbols = new();
 
-    public IReadOnlyList<string> Symbols { get; } = new List<string>
-    {
-        "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP",
-        "EURJPY","EURCAD","EURAUD","EURNZD","EURCHF",
-        "GBPJPY","GBPCHF","GBPCAD","GBPAUD","GBPNZD",
-        "AUDJPY","CADJPY","NZDJPY","CHFJPY",
-        "AUDCAD","AUDCHF","AUDNZD","CADCHF","NZDCAD","NZDCHF",
-        "USDMXN","USDZAR","USDSGD","USDNOK","USDSEK","USDTRY",
-        "XAUUSD","XAGUSD","USOIL","UKOIL",
-        "BTCUSD","ETHUSD","BNBUSD","SOLUSD","XRPUSD","ADAUSD","AVAXUSD","DOTUSD","LINKUSD","MATICUSD",
-        "US30","US500","NAS100","GER40","UK100","JP225","AUS200","HK50","FRA40","EU50"
-    };
+    public IReadOnlyList<string> FilterSymbols =>
+        new[] { string.Empty }.Concat(Symbols).ToList();
 
     public IReadOnlyList<TradeDirectionOption> Directions { get; } = new List<TradeDirectionOption>
     {
@@ -383,6 +363,10 @@ public partial class TradeJournalViewModel : BaseViewModel
 
         await _journalListService.EnsureDefaultsAsync(userId);
         await ReloadJournalListsAsync(userId);
+
+        await _symbolMappingService.EnsureDefaultsAsync();
+        var canonicalNames = await _symbolMappingService.GetCanonicalNamesAsync();
+        Symbols = new ObservableCollection<string>(canonicalNames);
     }
 
     public async Task ReloadJournalListsAsync(int userId)

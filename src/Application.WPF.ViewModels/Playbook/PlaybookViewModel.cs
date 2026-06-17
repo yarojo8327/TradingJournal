@@ -15,6 +15,7 @@ public partial class PlaybookViewModel : BaseViewModel
     private readonly IPlaybookService           _playbookService;
     private readonly ITradingStrategyService    _strategyService;
     private readonly ISessionService            _sessionService;
+    private readonly ISymbolMappingService      _symbolMappingService;
     private readonly ILogger<PlaybookViewModel> _logger;
 
     private int _editingId;
@@ -70,18 +71,9 @@ public partial class PlaybookViewModel : BaseViewModel
 
     // ── Catálogo de símbolos ──────────────────────────────────────────────
 
-    public IReadOnlyList<string> Symbols { get; } = new List<string>
-    {
-        "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP",
-        "EURJPY","EURCAD","EURAUD","EURNZD","EURCHF",
-        "GBPJPY","GBPCHF","GBPCAD","GBPAUD","GBPNZD",
-        "AUDJPY","CADJPY","NZDJPY","CHFJPY",
-        "AUDCAD","AUDCHF","AUDNZD","CADCHF","NZDCAD","NZDCHF",
-        "USDMXN","USDZAR","USDSGD","USDNOK","USDSEK","USDTRY",
-        "XAUUSD","XAGUSD","USOIL","UKOIL",
-        "BTCUSD","ETHUSD","BNBUSD","SOLUSD","XRPUSD","ADAUSD","AVAXUSD","DOTUSD","LINKUSD","MATICUSD",
-        "US30","US500","NAS100","GER40","UK100","JP225","AUS200","HK50","FRA40","EU50"
-    };
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FilterSymbolOptions))]
+    private ObservableCollection<string> _symbols = new();
 
     // ── Paginación ────────────────────────────────────────────────────────
 
@@ -203,12 +195,14 @@ public partial class PlaybookViewModel : BaseViewModel
         IPlaybookService           playbookService,
         ITradingStrategyService    strategyService,
         ISessionService            sessionService,
+        ISymbolMappingService      symbolMappingService,
         ILogger<PlaybookViewModel> logger)
     {
-        _playbookService = playbookService;
-        _strategyService = strategyService;
-        _sessionService  = sessionService;
-        _logger          = logger;
+        _playbookService      = playbookService;
+        _strategyService      = strategyService;
+        _sessionService       = sessionService;
+        _symbolMappingService = symbolMappingService;
+        _logger               = logger;
         Title = "Playbook";
     }
 
@@ -222,6 +216,11 @@ public partial class PlaybookViewModel : BaseViewModel
         {
             var strats = await _strategyService.GetAllByUserIdAsync(user.Id);
             Strategies = new ObservableCollection<TradingStrategy>(strats);
+
+            await _symbolMappingService.EnsureDefaultsAsync();
+            var names = await _symbolMappingService.GetCanonicalNamesAsync();
+            Symbols = new ObservableCollection<string>(names);
+
             await LoadEntriesAsync(user.Id);
         }
         finally { IsBusy = false; }
