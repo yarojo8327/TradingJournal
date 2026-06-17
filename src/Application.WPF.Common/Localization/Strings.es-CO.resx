@@ -595,4 +595,15 @@
   <data name="Strategy_RaterSaving"         xml:space="preserve"><value>Guardando…</value></data>
   <data name="Strategy_NoConfluences"       xml:space="preserve"><value>⚠ Sin confluencias configuradas</value></data>
   <data name="Strategy_NoConfluencesHint"   xml:space="preserve"><value>Agrega confluencias al editar la estrategia (S/R, Fibonacci, Medias, etc.)</value></data>
+
+  <!-- Settings — Journal Lists -->
+  <data name="Settings_JournalTitle"          xml:space="preserve"><value>Configuración — Bitácora</value></data>
+  <data name="Settings_JournalSubtitle"       xml:space="preserve"><value>Configura las listas de estados emocionales y tipos de error que aparecen al registrar operaciones.</value></data>
+  <data name="Settings_EmotionalStates"       xml:space="preserve"><value>Estados emocionales</value></data>
+  <data name="Settings_EmotionalStatesDesc"   xml:space="preserve"><value>Estados que puedes seleccionar al registrar una operación.</value></data>
+  <data name="Settings_MistakeTypes"          xml:space="preserve"><value>Tipos de error</value></data>
+  <data name="Settings_MistakeTypesDesc"      xml:space="preserve"><value>Tipos de error que puedes asociar a una operación.</value></data>
+  <data name="Settings_Add"                   xml:space="preserve"><value>Agregar</value></data>
+  <data name="Settings_NewItemPlaceholder"    xml:space="preserve"><value>Nuevo elemento...</value></data>
+
 </root>

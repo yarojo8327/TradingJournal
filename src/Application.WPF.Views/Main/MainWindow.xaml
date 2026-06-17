@@ -118,7 +118,8 @@
                             Style="{DynamicResource GhostButton}"
                             Command="{Binding GoToPlaybookCommand}" />
 
-                    <Button Content="{loc:Tr Nav_Settings}" Style="{DynamicResource GhostButton}" />
+                    <Button Content="{loc:Tr Nav_Settings}" Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToJournalSettingsCommand}" />
 
                 </StackPanel>
 

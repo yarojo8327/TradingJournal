@@ -186,8 +186,11 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="{loc:Tr Journal_EntryTime}" Style="{StaticResource FieldLabel}" />
-                            <TextBox Text="{Binding EntryTime, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{DynamicResource FormTextBox}" Tag="HH:mm" />
+                            <TextBox x:Name="EntryTimeBox"
+                                     Text="{Binding EntryTime, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{DynamicResource FormTextBox}" Tag="HH:mm"
+                                     PreviewTextInput="OnTimePreviewTextInput"
+                                     TextChanged="OnEntryTimeTextChanged" />
                         </StackPanel>
                         <StackPanel Grid.Column="4">
                             <TextBlock Text="{loc:Tr Journal_ExitDate}" Style="{StaticResource FieldLabel}" />
@@ -195,8 +198,11 @@
                         </StackPanel>
                         <StackPanel Grid.Column="6">
                             <TextBlock Text="{loc:Tr Journal_ExitTime}" Style="{StaticResource FieldLabel}" />
-                            <TextBox Text="{Binding ExitTime, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{DynamicResource FormTextBox}" Tag="HH:mm" />
+                            <TextBox x:Name="ExitTimeBox"
+                                     Text="{Binding ExitTime, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{DynamicResource FormTextBox}" Tag="HH:mm"
+                                     PreviewTextInput="OnTimePreviewTextInput"
+                                     TextChanged="OnExitTimeTextChanged" />
                         </StackPanel>
                     </Grid>
 
@@ -287,7 +293,13 @@
                                      Style="{DynamicResource FormTextBox}" Tag="100.00" />
                         </StackPanel>
                         <StackPanel Grid.Column="6">
-                            <TextBlock Text="{loc:Tr Journal_RR}" Style="{StaticResource FieldLabel}" />
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="{loc:Tr Journal_RR}" Style="{StaticResource FieldLabel}" Margin="0" />
+                                <Border Background="#0F00D4FF" CornerRadius="3" Padding="5,1" Margin="6,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{loc:Tr Journal_AutoBadge}" FontSize="9" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource CyanGlowBrush}" />
+                                </Border>
+                            </StackPanel>
                             <TextBox Text="{Binding RrText, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource FormTextBox}" Tag="2.5" />
                         </StackPanel>
@@ -347,10 +359,20 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="{loc:Tr Journal_Timeframe}" Style="{StaticResource FieldLabel}" />
-                            <ComboBox ItemsSource="{Binding Timeframes}"
-                                      Text="{Binding SelectedTimeframe, UpdateSourceTrigger=PropertyChanged}"
-                                      IsEditable="True"
-                                      Style="{DynamicResource FormComboBox}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="6" />
+                                    <ColumnDefinition Width="70" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding TimeframeValue, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{DynamicResource FormTextBox}" Tag="1" />
+                                <ComboBox Grid.Column="2"
+                                          ItemsSource="{Binding TimeframeUnits}"
+                                          SelectedItem="{Binding TimeframeUnit}"
+                                          Style="{DynamicResource FormComboBox}" />
+                            </Grid>
                         </StackPanel>
                         <StackPanel Grid.Column="4">
                             <TextBlock Text="{loc:Tr Journal_TradingType}" Style="{StaticResource FieldLabel}" />
@@ -376,13 +398,13 @@
                         <StackPanel Grid.Column="0">
                             <StackPanel Margin="0,0,0,12">
                                 <TextBlock Text="{loc:Tr Journal_EmotionalState}" Style="{StaticResource FieldLabel}" />
-                                <ComboBox ItemsSource="{Binding EmotionalStates}"
+                                <ComboBox ItemsSource="{Binding EmotionalStateOptions}"
                                           SelectedItem="{Binding SelectedEmotionalState}"
                                           Style="{DynamicResource FormComboBox}" />
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock Text="{loc:Tr Journal_MistakeType}" Style="{StaticResource FieldLabel}" />
-                                <ComboBox ItemsSource="{Binding MistakeTypes}"
+                                <ComboBox ItemsSource="{Binding MistakeTypeOptions}"
                                           SelectedItem="{Binding SelectedMistakeType}"
                                           Style="{DynamicResource FormComboBox}" />
                             </StackPanel>

@@ -48,7 +48,7 @@ public class TradeEntry
     public TradingType?    TradingType      { get; set; }
 
     // Psicología
-    public EmotionalState? EmotionalState   { get; set; }
+    public string?         EmotionalState   { get; set; }
     public string?         MistakeType      { get; set; }
 
     // Notas y evidencia

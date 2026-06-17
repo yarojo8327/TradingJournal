@@ -21,6 +21,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     private readonly ITradingStrategyService  _strategyService;
     private readonly ISessionService          _sessionService;
     private readonly IDialogService           _dialogService;
+    private readonly IJournalListService      _journalListService;
     private readonly ILogger<TradeJournalViewModel> _logger;
 
     private int _tradeId;
@@ -185,36 +186,10 @@ public partial class TradeJournalViewModel : BaseViewModel
         new(TradingType.Position,      "Trading de posición")
     };
 
-    public IReadOnlyList<EmotionalStateOption> EmotionalStates { get; } = new List<EmotionalStateOption>
-    {
-        new(null,                          "— Sin registro —"),
-        new(EmotionalState.Calm,           "Calmado"),
-        new(EmotionalState.Disciplined,    "Disciplinado"),
-        new(EmotionalState.Confident,      "Confiado"),
-        new(EmotionalState.Excited,        "Emocionado"),
-        new(EmotionalState.Anxious,        "Ansioso"),
-        new(EmotionalState.Fearful,        "Temeroso"),
-        new(EmotionalState.FOMO,           "FOMO"),
-        new(EmotionalState.Revenge,        "Venganza")
-    };
+    [ObservableProperty] private ObservableCollection<string> _emotionalStateOptions = new();
+    [ObservableProperty] private ObservableCollection<string> _mistakeTypeOptions    = new();
 
-    public IReadOnlyList<string> Timeframes { get; } = new List<string>
-        { "1M","5M","15M","30M","1H","4H","D1","W1" };
-
-    public IReadOnlyList<string?> MistakeTypes { get; } = new List<string?>
-    {
-        null,
-        "FOMO — Entré tarde",
-        "Revenge trading",
-        "Tamaño excesivo de posición",
-        "Ignoré la invalidación",
-        "Salí demasiado pronto",
-        "No respeté el SL",
-        "Operé contra la tendencia",
-        "Setup de baja calidad",
-        "Gestión de riesgo incorrecta",
-        "Otro"
-    };
+    public IReadOnlyList<string> TimeframeUnits { get; } = new[] { "s", "M", "H", "D", "W", "MN" };
 
     // ── Campos del formulario ─────────────────────────────────────────────
 
@@ -279,12 +254,14 @@ public partial class TradeJournalViewModel : BaseViewModel
     [Required(ErrorMessage = "El resultado es requerido.")]
     private TradeResultOption? _selectedResult;
 
-    [ObservableProperty] private int?                  _selectedRating;
-    [ObservableProperty] private TradingTypeOption?    _selectedTradingType;
-    [ObservableProperty] private SessionOption?        _selectedSession;
-    [ObservableProperty] private string?               _selectedTimeframe;
-    [ObservableProperty] private EmotionalStateOption? _selectedEmotionalState;
-    [ObservableProperty] private string?               _selectedMistakeType;
+    [ObservableProperty] private int?               _selectedRating;
+    [ObservableProperty] private TradingTypeOption? _selectedTradingType;
+    [ObservableProperty] private SessionOption?     _selectedSession;
+    [ObservableProperty] private string?            _selectedTimeframe;
+    [ObservableProperty] private string             _timeframeValue = string.Empty;
+    [ObservableProperty] private string?            _timeframeUnit  = "H";
+    [ObservableProperty] private string?            _selectedEmotionalState;
+    [ObservableProperty] private string?            _selectedMistakeType;
     [ObservableProperty] private string                _notes         = string.Empty;
     [ObservableProperty] private string                _screenshotUrl = string.Empty;
 
@@ -296,14 +273,16 @@ public partial class TradeJournalViewModel : BaseViewModel
         ITradingStrategyService        strategyService,
         ISessionService                sessionService,
         IDialogService                 dialogService,
+        IJournalListService            journalListService,
         ILogger<TradeJournalViewModel> logger)
     {
-        _tradeService    = tradeService;
-        _accountService  = accountService;
-        _strategyService = strategyService;
-        _sessionService  = sessionService;
-        _dialogService   = dialogService;
-        _logger          = logger;
+        _tradeService       = tradeService;
+        _accountService     = accountService;
+        _strategyService    = strategyService;
+        _sessionService     = sessionService;
+        _dialogService      = dialogService;
+        _journalListService = journalListService;
+        _logger             = logger;
         Title            = "Bitácora de Trading";
 
         FilterResults = new List<TradeResultOption?> { null }
@@ -324,9 +303,21 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     // ── Auto-cálculo del resultado ────────────────────────────────────────
 
-    partial void OnExitPriceTextChanged(string value) => AutoCalculateResult();
-    partial void OnEntryPriceTextChanged(string value) => AutoCalculateResult();
+    partial void OnExitPriceTextChanged(string value)    { AutoCalculateResult(); AutoCalculateRR(); }
+    partial void OnEntryPriceTextChanged(string value)   { AutoCalculateResult(); AutoCalculateRR(); }
+    partial void OnStopLossTextChanged(string value)     => AutoCalculateRR();
+    partial void OnTakeProfitTextChanged(string value)   => AutoCalculateRR();
     partial void OnSelectedDirectionChanged(TradeDirectionOption? value) => AutoCalculateResult();
+    partial void OnTimeframeValueChanged(string value)   => UpdateTimeframe();
+    partial void OnTimeframeUnitChanged(string? value)   => UpdateTimeframe();
+
+    private void UpdateTimeframe()
+    {
+        if (string.IsNullOrWhiteSpace(TimeframeValue))
+            SelectedTimeframe = null;
+        else
+            SelectedTimeframe = $"{TimeframeValue.Trim()}{TimeframeUnit}";
+    }
 
     private void AutoCalculateResult()
     {
@@ -359,6 +350,21 @@ public partial class TradeJournalViewModel : BaseViewModel
         SelectedResult = Results.FirstOrDefault(r => r.Value == result);
     }
 
+    private void AutoCalculateRR()
+    {
+        var entry = ParseDecimal(EntryPriceText);
+        var sl    = ParseDecimal(StopLossText);
+        var tp    = ParseDecimal(TakeProfitText);
+
+        if (entry is null || sl is null || tp is null) return;
+        var risk   = Math.Abs(entry.Value - sl.Value);
+        var reward = Math.Abs(tp.Value - entry.Value);
+        if (risk == 0m) return;
+
+        var rr = Math.Round(reward / risk, 2);
+        RrText = rr.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    }
+
     // ── Carga de datos ────────────────────────────────────────────────────
 
     private async Task LoadCatalogsAsync(int userId)
@@ -366,12 +372,23 @@ public partial class TradeJournalViewModel : BaseViewModel
         var accs = await _accountService.GetAllByUserIdAsync(userId);
         Accounts = new ObservableCollection<TradingAccountEntity>(accs);
 
-        // Pre-select first account so the journal opens filtered by default
         if (FilterAccount is null && Accounts.Count > 0)
             FilterAccount = Accounts[0];
 
         var strats = await _strategyService.GetAllByUserIdAsync(userId);
         Strategies = new ObservableCollection<TradingStrategy>(strats);
+
+        await _journalListService.EnsureDefaultsAsync(userId);
+        await ReloadJournalListsAsync(userId);
+    }
+
+    public async Task ReloadJournalListsAsync(int userId)
+    {
+        var emotional = await _journalListService.GetNamesAsync(userId, JournalListCategory.EmotionalState);
+        EmotionalStateOptions = new ObservableCollection<string>(emotional);
+
+        var mistakes = await _journalListService.GetNamesAsync(userId, JournalListCategory.MistakeType);
+        MistakeTypeOptions = new ObservableCollection<string>(mistakes);
     }
 
     private async Task LoadTradesAsync(int userId)
@@ -556,11 +573,11 @@ public partial class TradeJournalViewModel : BaseViewModel
         RrText               = FormatDecimal(trade.RiskRewardRatio);
         SelectedResult       = Results.FirstOrDefault(r => r.Value == trade.Result);
         SelectedRating       = trade.Rating;
-        SelectedTradingType  = TradingTypes.FirstOrDefault(t => t.Value == trade.TradingType);
-        SelectedSession      = Sessions.FirstOrDefault(s => s.Value == trade.Session);
-        SelectedTimeframe    = trade.Timeframe;
-        SelectedEmotionalState = EmotionalStates.FirstOrDefault(e => e.Value == trade.EmotionalState);
-        SelectedMistakeType  = trade.MistakeType;
+        SelectedTradingType    = TradingTypes.FirstOrDefault(t => t.Value == trade.TradingType);
+        SelectedSession        = Sessions.FirstOrDefault(s => s.Value == trade.Session);
+        ParseTimeframe(trade.Timeframe);
+        SelectedEmotionalState = trade.EmotionalState;
+        SelectedMistakeType    = trade.MistakeType;
         Notes                = trade.Notes ?? string.Empty;
         ScreenshotUrl        = trade.ScreenshotUrl ?? string.Empty;
     }
@@ -718,18 +735,7 @@ public partial class TradeJournalViewModel : BaseViewModel
                     _                            => string.Empty
                 };
                 if (t.Rating.HasValue) ws.Cell(row, 15).Value = t.Rating.Value;
-                ws.Cell(row, 16).Value = t.EmotionalState switch
-                {
-                    EmotionalState.Calm        => "Calmado",
-                    EmotionalState.Disciplined => "Disciplinado",
-                    EmotionalState.Confident   => "Confiado",
-                    EmotionalState.Excited     => "Emocionado",
-                    EmotionalState.Anxious     => "Ansioso",
-                    EmotionalState.Fearful     => "Temeroso",
-                    EmotionalState.FOMO        => "FOMO",
-                    EmotionalState.Revenge     => "Venganza",
-                    _                          => string.Empty
-                };
+                ws.Cell(row, 16).Value = t.EmotionalState ?? string.Empty;
                 ws.Cell(row, 17).Value = t.MistakeType ?? string.Empty;
                 ws.Cell(row, 18).Value = t.Notes ?? string.Empty;
                 ws.Cell(row, 19).Value = t.ScreenshotUrl ?? string.Empty;
@@ -896,7 +902,7 @@ public partial class TradeJournalViewModel : BaseViewModel
             ConfluencesCount: null,
             IsFalseBreakout:  false,
             Rating:           SelectedRating,
-            EmotionalState:   SelectedEmotionalState?.Value,
+            EmotionalState:   SelectedEmotionalState,
             MistakeType:      SelectedMistakeType,
             Notes:            Notes,
             ScreenshotUrl:    ScreenshotUrl
@@ -932,6 +938,23 @@ public partial class TradeJournalViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    private void ParseTimeframe(string? tf)
+    {
+        if (string.IsNullOrWhiteSpace(tf)) { TimeframeValue = string.Empty; TimeframeUnit = "H"; return; }
+        var match = System.Text.RegularExpressions.Regex.Match(tf.Trim(), @"^(\d+)([a-zA-Z]+)$");
+        if (match.Success)
+        {
+            TimeframeValue = match.Groups[1].Value;
+            TimeframeUnit  = TimeframeUnits.Contains(match.Groups[2].Value) ? match.Groups[2].Value : "H";
+        }
+        else
+        {
+            TimeframeValue = tf;
+            TimeframeUnit  = "H";
+        }
+        SelectedTimeframe = tf;
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
@@ -998,6 +1021,8 @@ public partial class TradeJournalViewModel : BaseViewModel
         SelectedRating         = null;
         SelectedTradingType    = null;
         SelectedSession        = null;
+        TimeframeValue         = string.Empty;
+        TimeframeUnit          = "H";
         SelectedTimeframe      = null;
         SelectedEmotionalState = null;
         SelectedMistakeType    = null;
@@ -1049,11 +1074,6 @@ public record TradeResultOption(TradeResult Value, string Display)
 }
 
 public record SessionOption(TradingSession? Value, string Display)
-{
-    public override string ToString() => Display;
-}
-
-public record EmotionalStateOption(EmotionalState? Value, string Display)
 {
     public override string ToString() => Display;
 }

@@ -93,7 +93,7 @@ public class TradeService : ITradeService
         e.ConfluencesCount = d.ConfluencesCount;
         e.IsFalseBreakout  = d.IsFalseBreakout;
         e.Rating           = d.Rating is >= 1 and <= 10 ? d.Rating : null;
-        e.EmotionalState   = d.EmotionalState;
+        e.EmotionalState   = string.IsNullOrWhiteSpace(d.EmotionalState) ? null : d.EmotionalState.Trim();
         e.MistakeType      = string.IsNullOrWhiteSpace(d.MistakeType) ? null : d.MistakeType.Trim();
         e.Notes            = string.IsNullOrWhiteSpace(d.Notes) ? null : d.Notes.Trim();
         e.ScreenshotUrl    = string.IsNullOrWhiteSpace(d.ScreenshotUrl) ? null : d.ScreenshotUrl.Trim();

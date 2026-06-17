@@ -220,6 +220,19 @@ public partial class App : System.Windows.Application
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE INDEX IF NOT EXISTS ""IX_PlaybookConfluenceRatings_PlaybookEntryId"" ON ""PlaybookConfluenceRatings"" (""PlaybookEntryId"");");
 
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""JournalListItems"" (
+                ""Id""        INTEGER NOT NULL CONSTRAINT ""PK_JournalListItems"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""    INTEGER NOT NULL,
+                ""Category""  TEXT    NOT NULL,
+                ""Name""      TEXT    NOT NULL,
+                ""SortOrder"" INTEGER NOT NULL DEFAULT 0,
+                CONSTRAINT ""FK_JournalListItems_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_JournalListItems_UserId_Category"" ON ""JournalListItems"" (""UserId"", ""Category"");");
+
         // Columnas agregadas después de la creación inicial — idempotentes vía try/catch
         // (SQLite no soporta ADD COLUMN IF NOT EXISTS)
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""Rating"" INTEGER;");

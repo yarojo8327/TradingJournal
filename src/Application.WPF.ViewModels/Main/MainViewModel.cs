@@ -6,6 +6,7 @@ using Application.WPF.ViewModels.Login;
 using Application.WPF.ViewModels.Playbook;
 using Application.WPF.ViewModels.Profile;
 using Application.WPF.ViewModels.Register;
+using Application.WPF.ViewModels.Settings;
 using Application.WPF.ViewModels.Strategies;
 using Application.WPF.ViewModels.TradingAccount;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -93,6 +94,10 @@ public partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private void GoToSettings() =>
         _navigationService.NavigateTo<ProfileViewModel>();
+
+    [RelayCommand]
+    private void GoToJournalSettings() =>
+        _navigationService.NavigateTo<JournalSettingsViewModel>();
 
     [RelayCommand]
     private void GoToTradingAccount() =>

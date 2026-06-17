@@ -1,6 +1,7 @@
 using Application.WPF.Models.Entities;
 using Application.WPF.Models.Enums;
 using System;
+
 using System.Windows;
 using System.Windows.Input;
 
@@ -82,18 +83,7 @@ public partial class TradeDetailWindow : Window
             _                    => "—"
         };
 
-        EmotionalStateText.Text = _trade.EmotionalState switch
-        {
-            EmotionalState.Calm        => "Calmado",
-            EmotionalState.Disciplined => "Disciplinado",
-            EmotionalState.Confident   => "Confiado",
-            EmotionalState.Excited     => "Emocionado",
-            EmotionalState.Anxious     => "Ansioso",
-            EmotionalState.Fearful     => "Temeroso",
-            EmotionalState.FOMO        => "FOMO",
-            EmotionalState.Revenge     => "Venganza",
-            _                          => "—"
-        };
+        EmotionalStateText.Text = string.IsNullOrWhiteSpace(_trade.EmotionalState) ? "—" : _trade.EmotionalState;
 
         MistakeTypeText.Text = string.IsNullOrWhiteSpace(_trade.MistakeType) ? "—" : _trade.MistakeType;
         RatingText.Text      = _trade.Rating.HasValue ? $"{_trade.Rating.Value} / 10" : "—";

@@ -82,7 +82,7 @@ public class TradeServiceTests : IDisposable
         ConfluencesCount: 3,
         IsFalseBreakout:  false,
         Rating:           8,
-        EmotionalState:   EmotionalState.Calm,
+        EmotionalState:   "Calmado",
         MistakeType:      null,
         Notes:            "Test trade",
         ScreenshotUrl:    null

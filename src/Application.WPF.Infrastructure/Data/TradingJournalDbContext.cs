@@ -16,6 +16,7 @@ public class TradingJournalDbContext : DbContext
     public DbSet<TradeEntry>               TradeEntries             => Set<TradeEntry>();
     public DbSet<PlaybookEntry>            PlaybookEntries          => Set<PlaybookEntry>();
     public DbSet<PlaybookConfluenceRating> PlaybookConfluenceRatings => Set<PlaybookConfluenceRating>();
+    public DbSet<JournalListItem>          JournalListItems          => Set<JournalListItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -113,6 +114,16 @@ public class TradingJournalDbContext : DbContext
             e.Property(r => r.ConfluenceName).IsRequired().HasMaxLength(200);
         });
 
+        modelBuilder.Entity<JournalListItem>(e =>
+        {
+            e.HasKey(j => j.Id);
+            e.HasIndex(j => new { j.UserId, j.Category });
+            e.Property(j => j.Category).IsRequired().HasMaxLength(50);
+            e.Property(j => j.Name).IsRequired().HasMaxLength(100);
+            e.HasOne(j => j.User).WithMany().HasForeignKey(j => j.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
         modelBuilder.Entity<TradeEntry>(e =>
         {
             e.HasKey(t => t.Id);
@@ -123,7 +134,7 @@ public class TradingJournalDbContext : DbContext
             e.Property(t => t.Result).IsRequired().HasConversion<string>();
             e.Property(t => t.Session).HasConversion<string>();
             e.Property(t => t.TradingType).HasConversion<string>();
-            e.Property(t => t.EmotionalState).HasConversion<string>();
+            e.Property(t => t.EmotionalState).HasMaxLength(100);
             e.Property(t => t.EntryPrice).HasColumnType("decimal(18,8)");
             e.Property(t => t.ExitPrice).HasColumnType("decimal(18,8)");
             e.Property(t => t.StopLoss).HasColumnType("decimal(18,8)");

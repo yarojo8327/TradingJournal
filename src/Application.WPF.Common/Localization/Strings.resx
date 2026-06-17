@@ -595,4 +595,15 @@
   <data name="Strategy_RaterSaving"         xml:space="preserve"><value>Saving…</value></data>
   <data name="Strategy_NoConfluences"       xml:space="preserve"><value>⚠ No confluences configured</value></data>
   <data name="Strategy_NoConfluencesHint"   xml:space="preserve"><value>Add confluences when editing the strategy (S/R, Fibonacci, MAs, etc.)</value></data>
+
+  <!-- Settings — Journal Lists -->
+  <data name="Settings_JournalTitle"          xml:space="preserve"><value>Journal Settings</value></data>
+  <data name="Settings_JournalSubtitle"       xml:space="preserve"><value>Configure the lists of emotional states and mistake types that appear when registering trades.</value></data>
+  <data name="Settings_EmotionalStates"       xml:space="preserve"><value>Emotional States</value></data>
+  <data name="Settings_EmotionalStatesDesc"   xml:space="preserve"><value>States you can select when logging a trade.</value></data>
+  <data name="Settings_MistakeTypes"          xml:space="preserve"><value>Mistake Types</value></data>
+  <data name="Settings_MistakeTypesDesc"      xml:space="preserve"><value>Types of mistakes you can associate with a trade.</value></data>
+  <data name="Settings_Add"                   xml:space="preserve"><value>Add</value></data>
+  <data name="Settings_NewItemPlaceholder"    xml:space="preserve"><value>New item...</value></data>
+
 </root>
