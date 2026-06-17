@@ -675,8 +675,8 @@
                                 <ColumnDefinition Width="68" />   <!-- 13 Resultado -->
                                 <ColumnDefinition Width="65" />   <!-- 14 Sesión -->
                                 <ColumnDefinition Width="40" />   <!-- 15 Cal -->
-                                <ColumnDefinition Width="*" />    <!-- 16 flex -->
-                                <ColumnDefinition Width="172" />  <!-- 17 Acciones -->
+                                <ColumnDefinition Width="16" />   <!-- 16 separador -->
+                                <ColumnDefinition Width="Auto" /> <!-- 17 Acciones -->
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"  Text="{loc:Tr Journal_Col_Date}"      Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="1"  Text="{loc:Tr Journal_Col_Symbol}"    Style="{StaticResource ColHeader}" />
