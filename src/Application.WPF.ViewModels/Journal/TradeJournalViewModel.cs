@@ -570,7 +570,7 @@ public partial class TradeJournalViewModel : BaseViewModel
         PositionSizeText     = FormatDecimal(trade.PositionSizeLots);
         RiskAmountText       = FormatDecimal(trade.RiskAmount);
         ProfitLossText       = FormatDecimal(trade.ProfitLoss);
-        RrText               = FormatDecimal(trade.RiskRewardRatio);
+        RrText               = string.Empty;
         SelectedResult       = Results.FirstOrDefault(r => r.Value == trade.Result);
         SelectedRating       = trade.Rating;
         SelectedTradingType    = TradingTypes.FirstOrDefault(t => t.Value == trade.TradingType);
@@ -580,6 +580,12 @@ public partial class TradeJournalViewModel : BaseViewModel
         SelectedMistakeType    = trade.MistakeType;
         Notes                = trade.Notes ?? string.Empty;
         ScreenshotUrl        = trade.ScreenshotUrl ?? string.Empty;
+
+        // Si los tres precios están presentes, recalcula R:R desde los valores reales
+        AutoCalculateRR();
+        // Si no se pudo calcular (falta SL o TP), restaurar el valor guardado
+        if (string.IsNullOrEmpty(RrText))
+            RrText = FormatDecimal(trade.RiskRewardRatio);
     }
 
     [RelayCommand]
