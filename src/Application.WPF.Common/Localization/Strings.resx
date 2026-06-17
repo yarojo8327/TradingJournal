@@ -596,6 +596,9 @@
   <data name="Strategy_NoConfluences"       xml:space="preserve"><value>⚠ No confluences configured</value></data>
   <data name="Strategy_NoConfluencesHint"   xml:space="preserve"><value>Add confluences when editing the strategy (S/R, Fibonacci, MAs, etc.)</value></data>
 
+  <!-- Nav — Settings menu descriptions -->
+  <data name="Nav_AccountDesc"                xml:space="preserve"><value>Manage trading accounts</value></data>
+
   <!-- Settings — Journal Lists -->
   <data name="Settings_JournalTitle"          xml:space="preserve"><value>Journal Settings</value></data>
   <data name="Settings_JournalSubtitle"       xml:space="preserve"><value>Configure the lists of emotional states and mistake types that appear when registering trades.</value></data>

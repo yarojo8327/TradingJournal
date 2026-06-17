@@ -596,6 +596,9 @@
   <data name="Strategy_NoConfluences"       xml:space="preserve"><value>⚠ Sin confluencias configuradas</value></data>
   <data name="Strategy_NoConfluencesHint"   xml:space="preserve"><value>Agrega confluencias al editar la estrategia (S/R, Fibonacci, Medias, etc.)</value></data>
 
+  <!-- Nav — Settings menu descriptions -->
+  <data name="Nav_AccountDesc"                xml:space="preserve"><value>Gestionar cuentas de trading</value></data>
+
   <!-- Settings — Journal Lists -->
   <data name="Settings_JournalTitle"          xml:space="preserve"><value>Configuración — Bitácora</value></data>
   <data name="Settings_JournalSubtitle"       xml:space="preserve"><value>Configura las listas de estados emocionales y tipos de error que aparecen al registrar operaciones.</value></data>

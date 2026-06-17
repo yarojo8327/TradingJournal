@@ -100,6 +100,14 @@ public partial class MainViewModel : BaseViewModel
         _navigationService.NavigateTo<JournalSettingsViewModel>();
 
     [RelayCommand]
+    private void GoToEmotionalStates() =>
+        _navigationService.NavigateTo<EmotionalStatesViewModel>();
+
+    [RelayCommand]
+    private void GoToMistakeTypes() =>
+        _navigationService.NavigateTo<MistakeTypesViewModel>();
+
+    [RelayCommand]
     private void GoToTradingAccount() =>
         _navigationService.NavigateTo<TradingAccountViewModel>();
 
