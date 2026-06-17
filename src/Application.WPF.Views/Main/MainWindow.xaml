@@ -210,6 +210,30 @@
                                         </StackPanel>
                                     </Button>
 
+                                    <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="8,2" />
+
+                                    <!-- Símbolos -->
+                                    <Button Style="{DynamicResource GhostButton}"
+                                            HorizontalContentAlignment="Left"
+                                            HorizontalAlignment="Stretch"
+                                            Padding="12,10"
+                                            Command="{Binding GoToSymbolMappingsCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE8EC;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       Foreground="{DynamicResource CyanGlowBrush}"
+                                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                                            <StackPanel>
+                                                <TextBlock Text="{loc:Tr Settings_Symbols}"
+                                                           FontSize="13" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                <TextBlock Text="{loc:Tr Settings_SymbolsDesc}"
+                                                           FontSize="11" MaxWidth="180"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource TextMutedBrush}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Button>
+
                                 </StackPanel>
                             </Border>
                         </Popup>

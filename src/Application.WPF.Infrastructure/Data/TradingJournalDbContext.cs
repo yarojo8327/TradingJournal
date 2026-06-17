@@ -17,6 +17,7 @@ public class TradingJournalDbContext : DbContext
     public DbSet<PlaybookEntry>            PlaybookEntries          => Set<PlaybookEntry>();
     public DbSet<PlaybookConfluenceRating> PlaybookConfluenceRatings => Set<PlaybookConfluenceRating>();
     public DbSet<JournalListItem>          JournalListItems          => Set<JournalListItem>();
+    public DbSet<SymbolMapping>            SymbolMappings            => Set<SymbolMapping>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,6 +123,15 @@ public class TradingJournalDbContext : DbContext
             e.Property(j => j.Name).IsRequired().HasMaxLength(100);
             e.HasOne(j => j.User).WithMany().HasForeignKey(j => j.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<SymbolMapping>(e =>
+        {
+            e.HasKey(s => s.Id);
+            e.HasIndex(s => s.BrokerSymbol).IsUnique();
+            e.Property(s => s.BrokerSymbol).IsRequired().HasMaxLength(30);
+            e.Property(s => s.CanonicalName).IsRequired().HasMaxLength(20);
+            e.Property(s => s.Category).IsRequired().HasMaxLength(20);
         });
 
         modelBuilder.Entity<TradeEntry>(e =>

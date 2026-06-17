@@ -608,5 +608,19 @@
   <data name="Settings_MistakeTypesDesc"      xml:space="preserve"><value>Tipos de error que puedes asociar a una operación.</value></data>
   <data name="Settings_Add"                   xml:space="preserve"><value>Agregar</value></data>
   <data name="Settings_NewItemPlaceholder"    xml:space="preserve"><value>Nuevo elemento...</value></data>
+  <data name="Settings_Symbols"              xml:space="preserve"><value>Símbolos</value></data>
+  <data name="Settings_SymbolsDesc"          xml:space="preserve"><value>Gestiona el mapeo de símbolos del bróker para importación MT5.</value></data>
+  <data name="Settings_SymbolsTitle"         xml:space="preserve"><value>Mapeo de Símbolos</value></data>
+  <data name="Settings_SymbolsSubtitle"      xml:space="preserve"><value>Mapea nombres de símbolos del bróker (ej. EURUSD.sc) a símbolos canónicos (ej. EURUSD).</value></data>
+  <data name="Settings_SymBroker"            xml:space="preserve"><value>Símbolo Bróker</value></data>
+  <data name="Settings_SymCanonical"         xml:space="preserve"><value>Nombre Canónico</value></data>
+  <data name="Settings_SymCategory"          xml:space="preserve"><value>Categoría</value></data>
+  <data name="Settings_SymSearch"            xml:space="preserve"><value>Buscar símbolos...</value></data>
+  <data name="Settings_SymAdd"               xml:space="preserve"><value>Agregar mapeo</value></data>
+  <data name="Settings_SymSave"              xml:space="preserve"><value>Guardar</value></data>
+  <data name="Settings_SymCancel"            xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Settings_SymEdit"              xml:space="preserve"><value>Editar</value></data>
+  <data name="Settings_SymDelete"            xml:space="preserve"><value>Eliminar</value></data>
+  <data name="Settings_SymEmpty"             xml:space="preserve"><value>No se encontraron mapeos de símbolos</value></data>
 
 </root>

@@ -108,6 +108,10 @@ public partial class MainViewModel : BaseViewModel
         _navigationService.NavigateTo<MistakeTypesViewModel>();
 
     [RelayCommand]
+    private void GoToSymbolMappings() =>
+        _navigationService.NavigateTo<SymbolMappingsViewModel>();
+
+    [RelayCommand]
     private void GoToTradingAccount() =>
         _navigationService.NavigateTo<TradingAccountViewModel>();
 

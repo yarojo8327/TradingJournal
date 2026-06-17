@@ -235,6 +235,16 @@ public partial class App : System.Windows.Application
 
         // Columnas agregadas después de la creación inicial — idempotentes vía try/catch
         // (SQLite no soporta ADD COLUMN IF NOT EXISTS)
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""SymbolMappings"" (
+                ""Id""            INTEGER NOT NULL CONSTRAINT ""PK_SymbolMappings"" PRIMARY KEY AUTOINCREMENT,
+                ""BrokerSymbol""  TEXT    NOT NULL,
+                ""CanonicalName"" TEXT    NOT NULL,
+                ""Category""      TEXT    NOT NULL DEFAULT 'Other'
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE UNIQUE INDEX IF NOT EXISTS ""IX_SymbolMappings_BrokerSymbol"" ON ""SymbolMappings"" (""BrokerSymbol"");");
+
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""Rating"" INTEGER;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""TradingType"" TEXT;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ManualRating"" INTEGER;");

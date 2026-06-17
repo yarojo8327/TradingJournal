@@ -608,5 +608,19 @@
   <data name="Settings_MistakeTypesDesc"      xml:space="preserve"><value>Types of mistakes you can associate with a trade.</value></data>
   <data name="Settings_Add"                   xml:space="preserve"><value>Add</value></data>
   <data name="Settings_NewItemPlaceholder"    xml:space="preserve"><value>New item...</value></data>
+  <data name="Settings_Symbols"              xml:space="preserve"><value>Symbols</value></data>
+  <data name="Settings_SymbolsDesc"          xml:space="preserve"><value>Manage broker symbol mappings for MT5 import.</value></data>
+  <data name="Settings_SymbolsTitle"         xml:space="preserve"><value>Symbol Mappings</value></data>
+  <data name="Settings_SymbolsSubtitle"      xml:space="preserve"><value>Map broker symbol names (e.g. EURUSD.sc) to canonical symbols (e.g. EURUSD).</value></data>
+  <data name="Settings_SymBroker"            xml:space="preserve"><value>Broker Symbol</value></data>
+  <data name="Settings_SymCanonical"         xml:space="preserve"><value>Canonical Name</value></data>
+  <data name="Settings_SymCategory"          xml:space="preserve"><value>Category</value></data>
+  <data name="Settings_SymSearch"            xml:space="preserve"><value>Search symbols...</value></data>
+  <data name="Settings_SymAdd"               xml:space="preserve"><value>Add mapping</value></data>
+  <data name="Settings_SymSave"              xml:space="preserve"><value>Save</value></data>
+  <data name="Settings_SymCancel"            xml:space="preserve"><value>Cancel</value></data>
+  <data name="Settings_SymEdit"              xml:space="preserve"><value>Edit</value></data>
+  <data name="Settings_SymDelete"            xml:space="preserve"><value>Delete</value></data>
+  <data name="Settings_SymEmpty"             xml:space="preserve"><value>No symbol mappings found</value></data>
 
 </root>

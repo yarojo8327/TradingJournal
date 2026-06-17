@@ -22,6 +22,7 @@ public partial class TradeJournalViewModel : BaseViewModel
     private readonly ISessionService          _sessionService;
     private readonly IDialogService           _dialogService;
     private readonly IJournalListService      _journalListService;
+    private readonly ISymbolMappingService          _symbolMappingService;
     private readonly ILogger<TradeJournalViewModel> _logger;
 
     private int _tradeId;
@@ -274,15 +275,17 @@ public partial class TradeJournalViewModel : BaseViewModel
         ISessionService                sessionService,
         IDialogService                 dialogService,
         IJournalListService            journalListService,
+        ISymbolMappingService          symbolMappingService,
         ILogger<TradeJournalViewModel> logger)
     {
-        _tradeService       = tradeService;
-        _accountService     = accountService;
-        _strategyService    = strategyService;
-        _sessionService     = sessionService;
-        _dialogService      = dialogService;
-        _journalListService = journalListService;
-        _logger             = logger;
+        _tradeService         = tradeService;
+        _accountService       = accountService;
+        _strategyService      = strategyService;
+        _sessionService       = sessionService;
+        _dialogService        = dialogService;
+        _journalListService   = journalListService;
+        _symbolMappingService = symbolMappingService;
+        _logger               = logger;
         Title            = "Bitácora de Trading";
 
         FilterResults = new List<TradeResultOption?> { null }
@@ -805,8 +808,9 @@ public partial class TradeJournalViewModel : BaseViewModel
 
         try
         {
-            // Parse in background thread (file I/O)
-            var parsed = await Task.Run(() => Mt5ReportParser.Parse(dlg.FileName, FilterAccount.Id));
+            // Load user-defined symbol map and parse in background thread
+            var symbolMap = await _symbolMappingService.GetMappingDictionaryAsync();
+            var parsed = await Task.Run(() => Mt5ReportParser.Parse(dlg.FileName, FilterAccount.Id, symbolMap));
 
             if (parsed.Count == 0)
             {
