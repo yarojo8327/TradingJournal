@@ -60,7 +60,8 @@ internal static class Mt5ReportParser
     public static List<TradeEntryData> Parse(
         string filePath,
         int accountId,
-        Dictionary<string, string>? externalMap = null)
+        Dictionary<string, string>? externalMap = null,
+        bool isCentAccount = false)
     {
         var result = new List<TradeEntryData>();
 
@@ -93,8 +94,8 @@ internal static class Mt5ReportParser
             // ── Parse trade row ──────────────────────────────────────────
             var trade = section switch
             {
-                ParseSection.Closed => ParseClosedRow(row, accountId, externalMap),
-                ParseSection.Open   => ParseOpenRow(row, accountId, externalMap),
+                ParseSection.Closed => ParseClosedRow(row, accountId, externalMap, isCentAccount),
+                ParseSection.Open   => ParseOpenRow(row, accountId, externalMap, isCentAccount),
                 _                   => null
             };
 
@@ -108,7 +109,7 @@ internal static class Mt5ReportParser
     // Cols: 1=EntryDT 2=PosID 3=Symbol 4=Type 5=Volume 6=EntryPx
     //       7=SL 8=TP 9=ExitDT 10=ExitPx 11=Comm 12=Swap 13=PnL
 
-    private static TradeEntryData? ParseClosedRow(IXLRow row, int accountId, Dictionary<string, string>? externalMap)
+    private static TradeEntryData? ParseClosedRow(IXLRow row, int accountId, Dictionary<string, string>? externalMap, bool isCentAccount)
     {
         var entryDate = ParseDate(row.Cell(1).GetString());
         if (entryDate is null) return null;
@@ -122,7 +123,9 @@ internal static class Mt5ReportParser
         var tp         = GetDecimal(row.Cell(8));
         var exitDate   = ParseDate(row.Cell(9).GetString());
         var exitPrice  = GetDecimal(row.Cell(10));
-        var pnl        = GetDecimalKeepZero(row.Cell(13));
+        var rawPnl     = GetDecimalKeepZero(row.Cell(13));
+        // Cent accounts report PnL in cents (100× larger); scale to standard units
+        var pnl        = isCentAccount && rawPnl.HasValue ? rawPnl.Value / 100m : rawPnl;
 
         if (entryPrice is null || string.IsNullOrEmpty(symbol)) return null;
 
@@ -170,7 +173,7 @@ internal static class Mt5ReportParser
     // Cols: 1=EntryDT 2=PosID 3=Symbol 4=Type 5=Volume 6=EntryPx
     //       7=SL 8=TP  (9=MarketPx 10=Swap 12=FloatPnL — all ignored)
 
-    private static TradeEntryData? ParseOpenRow(IXLRow row, int accountId, Dictionary<string, string>? externalMap)
+    private static TradeEntryData? ParseOpenRow(IXLRow row, int accountId, Dictionary<string, string>? externalMap, bool isCentAccount)
     {
         var entryDate = ParseDate(row.Cell(1).GetString());
         if (entryDate is null) return null;

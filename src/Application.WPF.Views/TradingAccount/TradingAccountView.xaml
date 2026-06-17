@@ -213,8 +213,28 @@
                                         <TextBlock Grid.Column="3"
                                                    Text="{Binding InitialCapital, StringFormat={}{0:N2}}"
                                                    Style="{StaticResource DataGridCellText}" />
-                                        <TextBlock Grid.Column="4" Text="{Binding BaseCurrency}"
-                                                   Style="{StaticResource DataGridCellText}" />
+                                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding BaseCurrency}"
+                                                       Style="{StaticResource DataGridCellText}" />
+                                            <Border CornerRadius="3" Background="#33FFAA00"
+                                                    BorderBrush="#FFAA00" BorderThickness="1"
+                                                    Padding="5,2" Margin="6,0,0,0"
+                                                    VerticalAlignment="Center">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsCentAccount}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{loc:Tr Account_CentBadge}"
+                                                           FontSize="10" FontWeight="Bold"
+                                                           Foreground="#FFAA00" />
+                                            </Border>
+                                        </StackPanel>
                                         <TextBlock Grid.Column="5" Text="{Binding Leverage}"
                                                    Style="{StaticResource DataGridCellText}" />
                                         <TextBlock Grid.Column="6"
@@ -407,6 +427,24 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </StackPanel>
+
+                            <!-- Cuenta en centavos -->
+                            <Border Background="#1AFFAA00" BorderBrush="#33FFAA00"
+                                    BorderThickness="1" CornerRadius="8"
+                                    Padding="14,12" Margin="0,0,0,16">
+                                <StackPanel>
+                                    <CheckBox IsChecked="{Binding IsCentAccount}"
+                                              Foreground="{DynamicResource TextPrimaryBrush}"
+                                              FontSize="13" FontWeight="SemiBold">
+                                        <TextBlock Text="{loc:Tr Account_CentLabel}"
+                                                   FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                    </CheckBox>
+                                    <TextBlock Text="{loc:Tr Account_CentHint}"
+                                               FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
+                                               TextWrapping="Wrap" Margin="22,6,0,0" />
+                                </StackPanel>
+                            </Border>
 
                             <Button Command="{Binding SaveCommand}"
                                     IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"

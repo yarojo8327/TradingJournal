@@ -238,6 +238,9 @@
   <data name="Account_DeleteConfirm"        xml:space="preserve"><value>Delete this account? This action cannot be undone.</value></data>
   <data name="Account_Deleted"              xml:space="preserve"><value>Account deleted successfully.</value></data>
   <data name="Account_DeleteError"          xml:space="preserve"><value>Error deleting the account.</value></data>
+  <data name="Account_CentLabel"            xml:space="preserve"><value>Cent account (USDc / EURc)</value></data>
+  <data name="Account_CentHint"             xml:space="preserve"><value>MT5 reports P&amp;L in cents. The import will divide all P&amp;L values by 100 to convert to standard units. Enter your initial capital in the standard currency (e.g., USD), not in cents.</value></data>
+  <data name="Account_CentBadge"            xml:space="preserve"><value>¢ CENT</value></data>
 
   <!-- Trade Journal -->
   <data name="Journal_Header"               xml:space="preserve"><value>Trade Journal</value></data>

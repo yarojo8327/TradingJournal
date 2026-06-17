@@ -245,6 +245,7 @@ public partial class App : System.Windows.Application
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE UNIQUE INDEX IF NOT EXISTS ""IX_SymbolMappings_BrokerSymbol"" ON ""SymbolMappings"" (""BrokerSymbol"");");
 
+        await TryAddColumnAsync(db, @"ALTER TABLE ""TradingAccounts"" ADD COLUMN ""IsCentAccount"" INTEGER NOT NULL DEFAULT 0;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""Rating"" INTEGER;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""TradingType"" TEXT;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ManualRating"" INTEGER;");

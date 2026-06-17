@@ -793,8 +793,9 @@ public partial class TradeJournalViewModel : BaseViewModel
         try
         {
             // Load user-defined symbol map and parse in background thread
-            var symbolMap = await _symbolMappingService.GetMappingDictionaryAsync();
-            var parsed = await Task.Run(() => Mt5ReportParser.Parse(dlg.FileName, FilterAccount.Id, symbolMap));
+            var symbolMap     = await _symbolMappingService.GetMappingDictionaryAsync();
+            var isCentAccount = FilterAccount.IsCentAccount;
+            var parsed = await Task.Run(() => Mt5ReportParser.Parse(dlg.FileName, FilterAccount.Id, symbolMap, isCentAccount));
 
             if (parsed.Count == 0)
             {

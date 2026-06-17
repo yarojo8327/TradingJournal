@@ -80,6 +80,7 @@ public class TradingJournalDbContext : DbContext
                 .HasColumnType("decimal(18,2)");
             e.Property(a => a.BaseCurrency).IsRequired().HasMaxLength(10);
             e.Property(a => a.Leverage).IsRequired().HasMaxLength(20);
+            e.Property(a => a.IsCentAccount).HasDefaultValue(false);
             e.Property(a => a.StartDate).IsRequired();
             e.Property(a => a.CreatedAt).IsRequired();
             e.HasOne(a => a.User)

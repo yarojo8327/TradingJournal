@@ -238,6 +238,9 @@
   <data name="Account_DeleteConfirm"        xml:space="preserve"><value>¿Eliminar esta cuenta? Esta acción no se puede deshacer.</value></data>
   <data name="Account_Deleted"              xml:space="preserve"><value>Cuenta eliminada correctamente.</value></data>
   <data name="Account_DeleteError"          xml:space="preserve"><value>Error al eliminar la cuenta.</value></data>
+  <data name="Account_CentLabel"            xml:space="preserve"><value>Cuenta en centavos (USDc / EURc)</value></data>
+  <data name="Account_CentHint"             xml:space="preserve"><value>MT5 reporta el P&amp;L en centavos. Al importar, todos los valores de P&amp;L se dividirán entre 100 para convertirlos a la unidad estándar. Ingresa el capital inicial en la moneda estándar (ej. USD), no en centavos.</value></data>
+  <data name="Account_CentBadge"            xml:space="preserve"><value>¢ CENT</value></data>
 
   <!-- Bitácora de Trading -->
   <data name="Journal_Header"               xml:space="preserve"><value>Bitácora de Trading</value></data>
