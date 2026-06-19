@@ -359,8 +359,13 @@
 
                 <!-- Equity curve card -->
                 <Border Grid.Column="0" Style="{DynamicResource AccentCard}" Padding="16,14,16,14">
-                    <StackPanel>
-                        <Grid Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
                             <TextBlock Text="{loc:Tr Dashboard_Section_Equity}" Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center" />
                             <TextBlock Text="{loc:Tr Dashboard_ViewAnalytics}" FontSize="10" FontWeight="Bold"
                                        Foreground="{DynamicResource CyanGlowBrush}"
@@ -371,20 +376,23 @@
                                 </TextBlock.InputBindings>
                             </TextBlock>
                         </Grid>
-                        <!-- Canvas container — code-behind draws here -->
-                        <Border Height="130" Background="#08FFFFFF" CornerRadius="6"
+
+                        <!-- Canvas container — code-behind draws here. Fills remaining card height. -->
+                        <Border Grid.Row="1" MinHeight="130" Background="#08FFFFFF" CornerRadius="6"
                                 ClipToBounds="True">
                             <Canvas x:Name="EquityCanvas"
                                     SizeChanged="OnEquityCanvasSizeChanged" />
                         </Border>
+
                         <!-- no-data placeholder -->
                         <TextBlock x:Name="EquityNoData"
+                                   Grid.Row="1"
                                    Text="{loc:Tr Dashboard_NoTrades}"
                                    Style="{StaticResource Caption}"
                                    HorizontalAlignment="Center"
-                                   Margin="0,8,0,0"
+                                   VerticalAlignment="Center"
                                    Visibility="Collapsed" />
-                    </StackPanel>
+                    </Grid>
                 </Border>
 
                 <!-- Win/Loss/Open distribution -->

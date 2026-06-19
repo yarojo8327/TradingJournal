@@ -92,7 +92,8 @@ public partial class TradeJournalView : UserControl
         var canvas = StatsEquityCanvas;
         canvas.Children.Clear();
 
-        var pts = vm.EquityPoints;
+        var pts   = vm.EquityPoints;
+        var dates = vm.EquityDates;
         if (pts.Count < 2) { DrawNoDataLabel(canvas, "Sin datos"); return; }
 
         const double padL = 52, padR = 8, padT = 8, padB = 22;
@@ -187,6 +188,77 @@ public partial class TradeJournalView : UserControl
         Canvas.SetLeft(endLbl, ex + 6);
         Canvas.SetTop(endLbl, ey - 7);
         canvas.Children.Add(endLbl);
+
+        // ── Important points: highest peak and lowest trough ───────────────
+        if (dates.Count == pts.Count)
+        {
+            int maxIdx = 0, minIdx = 0;
+            for (int i = 1; i < pts.Count; i++)
+            {
+                if (pts[i] > pts[maxIdx]) maxIdx = i;
+                if (pts[i] < pts[minIdx]) minIdx = i;
+            }
+
+            if (maxIdx != pts.Count - 1 && maxIdx != 0)
+                AddMarker(canvas, ToX(maxIdx), ToY(pts[maxIdx]), pts[maxIdx], dates[maxIdx],
+                    Color.FromRgb(0, 230, 118), w, h, padL, padR, padT, padB);
+
+            if (minIdx != pts.Count - 1 && minIdx != 0)
+                AddMarker(canvas, ToX(minIdx), ToY(pts[minIdx]), pts[minIdx], dates[minIdx],
+                    Color.FromRgb(255, 80, 80), w, h, padL, padR, padT, padB);
+
+            // ── X-axis date labels (start / mid / end) ──────────────────────
+            AddDateLabel(canvas, dates[0],             ToX(0),                 h, padB, padL, true);
+            AddDateLabel(canvas, dates[dates.Count/2],  ToX(dates.Count / 2),   h, padB, padL, false);
+            AddDateLabel(canvas, dates[^1],             ToX(dates.Count - 1),   h, padB, padL, false);
+        }
+    }
+
+    private static void AddMarker(Canvas canvas, double x, double y, double value, DateTime date, Color color,
+        double canvasW, double canvasH, double padL, double padR, double padT, double padB)
+    {
+        canvas.Children.Add(new Ellipse
+        {
+            Width = 6, Height = 6,
+            Fill  = new SolidColorBrush(color)
+        });
+        Canvas.SetLeft(canvas.Children[^1], x - 3);
+        Canvas.SetTop(canvas.Children[^1],  y - 3);
+
+        const double lblW = 42, lblH = 24;
+        bool placeAbove = (y - padT) > (canvasH - padB - y);
+
+        var lbl = new TextBlock
+        {
+            Text          = $"{FormatVal(value)}\n{date:dd/MM/yy}",
+            FontSize      = 8,
+            TextAlignment = TextAlignment.Center,
+            Foreground    = new SolidColorBrush(color),
+            Width         = lblW
+        };
+
+        double left = Math.Clamp(x - lblW / 2, padL, canvasW - padR - lblW);
+        double top  = placeAbove
+            ? Math.Max(padT, y - lblH - 4)
+            : Math.Min(canvasH - padB - lblH, y + 6);
+
+        Canvas.SetLeft(lbl, left);
+        Canvas.SetTop(lbl,  top);
+        canvas.Children.Add(lbl);
+    }
+
+    private static void AddDateLabel(Canvas canvas, DateTime date, double cx, double h, double padB, double padL, bool isFirst)
+    {
+        var lbl = new TextBlock
+        {
+            Text       = date.ToString("dd/MM/yy"),
+            FontSize   = 9,
+            Foreground = new SolidColorBrush(Color.FromArgb(110, 200, 200, 220))
+        };
+        double left = isFirst ? cx : cx - 28;
+        Canvas.SetLeft(lbl, Math.Max(padL, left));
+        Canvas.SetTop(lbl,  h - padB + 4);
+        canvas.Children.Add(lbl);
     }
 
     // ═════════════════════════════════════════════════════════════════════
