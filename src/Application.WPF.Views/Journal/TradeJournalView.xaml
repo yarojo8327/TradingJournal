@@ -152,12 +152,12 @@
                     <Button Style="{DynamicResource GhostButton}"
                             Command="{Binding ImportFromExcelCommand}"
                             Height="36" Padding="12,0" FontSize="12" Margin="0,0,8,0"
-                            ToolTip="Importar historial de operaciones desde reporte MT5 (.xlsx)">
+                            ToolTip="{loc:Tr Journal_ImportMt5Tooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"
                                        Foreground="{DynamicResource CyanGlowBrush}" />
-                            <TextBlock Text="Importar MT5" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Journal_ImportMt5_Label}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
 
@@ -169,7 +169,7 @@
                             <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}" />
-                            <TextBlock Text="Exportar Excel" VerticalAlignment="Center" />
+                            <TextBlock Text="{loc:Tr Journal_ExportExcel}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
 
@@ -229,7 +229,7 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                            <Setter Property="Text"       Value="— Todas las cuentas —" />
+                                                            <Setter Property="Text"       Value="{loc:Tr Common_AllAccounts}" />
                                                             <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -267,7 +267,7 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                            <Setter Property="Text"       Value="— Todos —" />
+                                                            <Setter Property="Text"       Value="{loc:Tr Common_All}" />
                                                             <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -294,7 +294,7 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                            <Setter Property="Text"       Value="— Todas las estrategias —" />
+                                                            <Setter Property="Text"       Value="{loc:Tr Common_AllStrategies}" />
                                                             <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -333,7 +333,7 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                            <Setter Property="Text"       Value="— Mín —" />
+                                                            <Setter Property="Text"       Value="{loc:Tr Common_NoMin}" />
                                                             <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -359,7 +359,7 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                            <Setter Property="Text"       Value="— Máx —" />
+                                                            <Setter Property="Text"       Value="{loc:Tr Common_NoMax}" />
                                                             <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -390,7 +390,7 @@
             <Border Style="{DynamicResource Card}" Margin="0,6,0,0" Padding="16,14,16,12"
                     Visibility="{Binding HasAccountSummaries, Converter={StaticResource BoolToVisibility}}">
                 <StackPanel>
-                    <TextBlock Text="RESUMEN DE CUENTA(S)"
+                    <TextBlock Text="{loc:Tr Journal_Section_AccountSummary}"
                                FontSize="9" FontWeight="Bold"
                                Foreground="{DynamicResource CyanGlowBrush}"
                                Margin="0,0,0,12" />
@@ -411,7 +411,7 @@
 
                                     <!-- Nombre de la cuenta -->
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="CUENTA"
+                                        <TextBlock Text="{loc:Tr Journal_Col_AccountName}"
                                                    FontSize="9" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource TextMutedBrush}"
                                                    Margin="0,0,0,3" />
@@ -422,7 +422,7 @@
 
                                     <!-- Capital inicial -->
                                     <StackPanel Grid.Column="2">
-                                        <TextBlock Text="CAPITAL INICIAL"
+                                        <TextBlock Text="{loc:Tr Journal_Col_InitialCapital}"
                                                    FontSize="9" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource TextMutedBrush}"
                                                    Margin="0,0,0,3" />
@@ -433,7 +433,7 @@
 
                                     <!-- Ganancia / Pérdida -->
                                     <StackPanel Grid.Column="4">
-                                        <TextBlock Text="GANANCIA / PÉRDIDA"
+                                        <TextBlock Text="{loc:Tr Journal_Col_GainLoss}"
                                                    FontSize="9" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource TextMutedBrush}"
                                                    Margin="0,0,0,3" />
@@ -482,7 +482,7 @@
 
                                     <!-- Capital actual -->
                                     <StackPanel Grid.Column="6">
-                                        <TextBlock Text="CAPITAL ACTUAL"
+                                        <TextBlock Text="{loc:Tr Journal_Col_CurrentCapital}"
                                                    FontSize="9" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource TextMutedBrush}"
                                                    Margin="0,0,0,3" />
@@ -526,13 +526,13 @@
                     </Grid.RowDefinitions>
 
                     <!-- Título -->
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="ESTADÍSTICAS"
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Tr Journal_Section_Stats}"
                                FontSize="9" FontWeight="Bold"
                                Foreground="{DynamicResource CyanGlowBrush}" />
-                    <TextBlock Grid.Row="0" Grid.Column="2" Text="EQUITY CURVE"
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Tr Journal_Section_EquityCurve}"
                                FontSize="9" FontWeight="Bold"
                                Foreground="{DynamicResource TextMutedBrush}" />
-                    <TextBlock Grid.Row="0" Grid.Column="4" Text="RENDIMIENTO POR OPERACIÓN"
+                    <TextBlock Grid.Row="0" Grid.Column="4" Text="{loc:Tr Journal_Section_PnlPerTrade}"
                                FontSize="9" FontWeight="Bold"
                                Foreground="{DynamicResource TextMutedBrush}" />
 
@@ -565,22 +565,22 @@
                             </Grid.RowDefinitions>
 
                             <!-- Row styles defined inline via style triggers -->
-                            <TextBlock Grid.Row="0" Grid.Column="0"  Text="Capital Inicial"        Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="0" Grid.Column="0"  Text="{loc:Tr Journal_Stats_InitialCapital}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="0" Grid.Column="1"  Text="{Binding StatsInitialCapital}" Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0"  Text="Total Operaciones"      Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="1" Grid.Column="0"  Text="{loc:Tr Journal_Stats_TotalOps}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding StatsTotalOps}" Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0"  Text="Ganadas"                Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0"  Text="{loc:Tr Journal_Stats_Won}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="2" Grid.Column="1"  Text="{Binding StatsWon}"      Foreground="#00E676" Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="3" Grid.Column="0"  Text="Pérdidas"               Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="3" Grid.Column="0"  Text="{loc:Tr Journal_Stats_Lost}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="3" Grid.Column="1"  Text="{Binding StatsLost}"     Foreground="{DynamicResource AccentRedBrush}" Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="4" Grid.Column="0"  Text="Win Rate"               Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="4" Grid.Column="0"  Text="{loc:Tr Journal_Stats_WinRate}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="4" Grid.Column="1"  Text="{Binding StatsWinRate}"  Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="5" Grid.Column="0"  Text="Balance P&amp;L"        Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="5" Grid.Column="0"  Text="{loc:Tr Journal_Stats_NetPnl}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="5" Grid.Column="1"  Text="{Binding StatsNetPnl}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
@@ -594,16 +594,16 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <TextBlock Grid.Row="6" Grid.Column="0"  Text="Mejor Operación"        Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="6" Grid.Column="0"  Text="{loc:Tr Journal_Stats_BestTrade}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="6" Grid.Column="1"  Text="{Binding StatsBestTrade}"  Foreground="#00E676" Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="7" Grid.Column="0"  Text="Peor Operación"         Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="7" Grid.Column="0"  Text="{loc:Tr Journal_Stats_WorstTrade}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="7" Grid.Column="1"  Text="{Binding StatsWorstTrade}" Foreground="{DynamicResource AccentRedBrush}" Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="8" Grid.Column="0"  Text="Prom. x Operación"      Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="8" Grid.Column="0"  Text="{loc:Tr Journal_Stats_AvgPnl}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="8" Grid.Column="1"  Text="{Binding StatsAvgPnl}"   Style="{StaticResource KpiValue}" />
 
-                            <TextBlock Grid.Row="9" Grid.Column="0"  Text="Capital Total"           Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="9" Grid.Column="0"  Text="{loc:Tr Journal_Stats_TotalCapital}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="9" Grid.Column="1"  Text="{Binding StatsTotal}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
@@ -617,7 +617,7 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <TextBlock Grid.Row="10" Grid.Column="0" Text="% Ganancia"              Style="{StaticResource KpiLabel}" />
+                            <TextBlock Grid.Row="10" Grid.Column="0" Text="{loc:Tr Journal_Stats_GainPct}" Style="{StaticResource KpiLabel}" />
                             <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding StatsGainPct}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
@@ -675,8 +675,8 @@
                                 <ColumnDefinition Width="68" />   <!-- 13 Resultado -->
                                 <ColumnDefinition Width="65" />   <!-- 14 Sesión -->
                                 <ColumnDefinition Width="40" />   <!-- 15 Cal -->
-                                <ColumnDefinition Width="*" />    <!-- 16 flex -->
-                                <ColumnDefinition Width="172" />  <!-- 17 Acciones -->
+                                <ColumnDefinition Width="16" />   <!-- 16 separador -->
+                                <ColumnDefinition Width="Auto" /> <!-- 17 Acciones -->
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"  Text="{loc:Tr Journal_Col_Date}"      Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="1"  Text="{loc:Tr Journal_Col_Symbol}"    Style="{StaticResource ColHeader}" />
@@ -689,7 +689,7 @@
                             <TextBlock Grid.Column="8"  Text="{loc:Tr Journal_Col_TP}"        Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="9"  Text="{loc:Tr Journal_Col_Lots}"      Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="10" Text="{loc:Tr Journal_Col_PL}"        Style="{StaticResource ColHeader}" />
-                            <TextBlock Grid.Column="11" Text="% Cap."                          Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="11" Text="{loc:Tr Journal_Col_CapPct}"    Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="12" Text="{loc:Tr Journal_Col_RR}"        Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="13" Text="{loc:Tr Journal_Col_Result}"    Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="14" Text="{loc:Tr Journal_Col_Session}"   Style="{StaticResource ColHeader}" />
@@ -945,7 +945,7 @@
                                                     VerticalAlignment="Center" Margin="4,0,0,0">
 
                                             <!-- Abrir gráfico (solo si hay URL) -->
-                                            <Button ToolTip="Abrir gráfico"
+                                            <Button ToolTip="{loc:Tr Journal_OpenChart}"
                                                     Command="{Binding DataContext.OpenScreenshotCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding ScreenshotUrl}">
@@ -969,11 +969,27 @@
                                                            FontSize="12" VerticalAlignment="Center" />
                                             </Button>
 
+                                            <!-- Ver detalle -->
+                                            <Button Style="{StaticResource SmallActionBtn}"
+                                                    BorderBrush="{DynamicResource TextMutedBrush}"
+                                                    Foreground="{DynamicResource TextSecondaryBrush}"
+                                                    ToolTip="{loc:Tr Journal_View}"
+                                                    Margin="0,0,5,0" Padding="7,3"
+                                                    Command="{Binding DataContext.ViewTradeCommand,
+                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE8FF;" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
+                                                    <TextBlock Text="{loc:Tr Journal_View}" FontSize="11" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
+
                                             <!-- Editar -->
                                             <Button Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource CyanGlowBrush}"
                                                     Foreground="{DynamicResource CyanGlowBrush}"
-                                                    ToolTip="Editar operación"
+                                                    ToolTip="{loc:Tr Journal_Edit}"
                                                     Margin="0,0,5,0" Padding="7,3"
                                                     Command="{Binding DataContext.EditTradeCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -981,7 +997,7 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets"
                                                                FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
-                                                    <TextBlock Text="Editar" FontSize="11" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{loc:Tr Journal_Edit}" FontSize="11" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Button>
 
@@ -989,7 +1005,7 @@
                                             <Button Style="{StaticResource SmallActionBtn}"
                                                     BorderBrush="{DynamicResource AccentRedBrush}"
                                                     Foreground="{DynamicResource AccentRedBrush}"
-                                                    ToolTip="Eliminar operación"
+                                                    ToolTip="{loc:Tr Journal_Delete}"
                                                     Padding="7,3"
                                                     Command="{Binding DataContext.DeleteTradeCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -997,7 +1013,7 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"
                                                                FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0" />
-                                                    <TextBlock Text="Eliminar" FontSize="11" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{loc:Tr Journal_Delete}" FontSize="11" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Button>
                                         </StackPanel>
@@ -1043,7 +1059,7 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Anterior -->
-                            <Button Grid.Column="0" Content="← Anterior"
+                            <Button Grid.Column="0" Content="{loc:Tr Journal_Prev}"
                                     Command="{Binding PreviousPageCommand}"
                                     Height="30" Padding="12,0" FontSize="12">
                                 <Button.Style>
@@ -1066,7 +1082,7 @@
                                        FontSize="12" Foreground="{DynamicResource TextMutedBrush}" />
 
                             <!-- Siguiente -->
-                            <Button Grid.Column="2" Content="Siguiente →"
+                            <Button Grid.Column="2" Content="{loc:Tr Journal_Next}"
                                     Command="{Binding NextPageCommand}"
                                     Height="30" Padding="12,0" FontSize="12">
                                 <Button.Style>
@@ -1105,7 +1121,7 @@
                                          Foreground="{DynamicResource CyanGlowBrush}"
                                          Background="{DynamicResource BorderBrush}"
                                          BorderThickness="0" />
-                            <TextBlock Text="Cargando trades..."
+                            <TextBlock Text="{loc:Tr Journal_Loading}"
                                        FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"
                                        HorizontalAlignment="Center" Margin="0,12,0,0" />
                         </StackPanel>

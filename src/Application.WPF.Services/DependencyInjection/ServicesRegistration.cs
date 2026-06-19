@@ -3,6 +3,8 @@ using Application.WPF.Services.Dialog;
 using Application.WPF.Services.Interfaces;
 using Application.WPF.Services.Localization;
 using Application.WPF.Services.Navigation;
+using Application.WPF.Services.Journal;
+using Application.WPF.Services.Symbols;
 using Application.WPF.Services.Playbook;
 using Application.WPF.Services.Session;
 using Application.WPF.Services.Strategies;
@@ -28,6 +30,8 @@ public static class ServicesRegistration
         services.AddTransient<ITradingAccountService, TradingAccountService>();
         services.AddTransient<ITradingStrategyService, TradingStrategyService>();
         services.AddTransient<ITradeService, TradeService>();
+        services.AddTransient<IJournalListService, JournalListService>();
+        services.AddTransient<ISymbolMappingService, SymbolMappingService>();
         services.AddTransient<IPlaybookService, PlaybookService>();
         services.AddSingleton<ISessionPersistenceService, SessionPersistenceService>();
         services.AddSingleton<ISessionService, SessionService>();

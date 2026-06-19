@@ -28,7 +28,8 @@ public static class InfrastructureServiceRegistration
 
         services.AddDbContext<TradingJournalDbContext>(
             options => options.UseSqlite(connectionString),
-            ServiceLifetime.Transient);
+            contextLifetime: ServiceLifetime.Transient,
+            optionsLifetime: ServiceLifetime.Transient);
 
         return services;
     }

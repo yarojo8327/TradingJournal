@@ -11,38 +11,57 @@ namespace Application.WPF.ViewModels.Journal;
 /// </summary>
 internal static class Mt5ReportParser
 {
-    // ── Symbol normalization: broker suffixes → standard symbols ──────────
-    private static readonly Dictionary<string, string> SymbolMap =
+    // ── Built-in symbol normalization map (broker alias → canonical) ──────
+    private static readonly Dictionary<string, string> BuiltInSymbolMap =
         new(StringComparer.OrdinalIgnoreCase)
         {
-            ["SP500.r"]  = "US500",  ["SP500"]   = "US500",
-            ["NAS100.r"] = "NAS100", ["NASDAQ"]  = "NAS100",
-            ["US30.r"]   = "US30",   ["DJIA"]    = "US30",
-            ["UK100.r"]  = "UK100",  ["FTSE"]    = "UK100",
-            ["GER40.r"]  = "GER40",  ["DAX"]     = "GER40",
-            ["JP225.r"]  = "JP225",
-            ["AUS200.r"] = "AUS200",
-            ["HK50.r"]   = "HK50",
-            ["FRA40.r"]  = "FRA40",
-            ["EU50.r"]   = "EU50",
-            ["USOIL.r"]  = "USOIL",  ["USOIL.m"] = "USOIL",
-            ["UKOIL.r"]  = "UKOIL",  ["UKOIL.m"] = "UKOIL",
-            ["XAUUSD.r"] = "XAUUSD",
-            ["XAGUSD.r"] = "XAGUSD",
-            ["BTCUSD.r"] = "BTCUSD", ["BTCUSD.m"] = "BTCUSD",
-            ["ETHUSD.r"] = "ETHUSD", ["ETHUSD.m"] = "ETHUSD",
+            // Indices — common aliases
+            ["SP500"]     = "US500",  ["SPX500"]   = "US500",  ["SPX"]     = "US500",
+            ["DOW30"]     = "US30",   ["DJIA"]     = "US30",   ["DJI"]     = "US30",   ["WALLST"]  = "US30",
+            ["NASDAQ"]    = "NAS100", ["NDX"]      = "NAS100", ["USTEC"]   = "NAS100", ["US100"]   = "NAS100",
+            ["DAX"]       = "GER40",  ["GDAXI"]    = "GER40",  ["DE40"]    = "GER40",  ["GER30"]   = "GER40",
+            ["FTSE"]      = "UK100",  ["FTSE100"]  = "UK100",  ["GB100"]   = "UK100",
+            ["CAC40"]     = "FRA40",  ["CAC"]      = "FRA40",  ["FR40"]    = "FRA40",
+            ["STOXX50"]   = "EU50",   ["EUSTX50"]  = "EU50",   ["SX5E"]    = "EU50",
+            ["JPN225"]    = "JP225",  ["NIKKEI"]   = "JP225",  ["N225"]    = "JP225",  ["JAPAN225"] = "JP225",
+            ["ASX200"]    = "AUS200", ["AU200"]    = "AUS200", ["SPASX200"] = "AUS200",
+            ["HANGSENG"]  = "HK50",   ["HSI"]      = "HK50",   ["HKG33"]   = "HK50",
+            ["IBEX35"]    = "SPA35",  ["IBEX"]     = "SPA35",  ["ES35"]    = "SPA35",
+            ["FTSEMIB"]   = "ITA40",  ["IT40"]     = "ITA40",
+            ["SMI"]       = "CH20",   ["SWISS20"]  = "CH20",
+            ["DXY"]       = "USDX",   ["DOLLARINDEX"] = "USDX",
+            // Commodities — common aliases
+            ["GOLD"]      = "XAUUSD", ["GOLDUSD"]  = "XAUUSD", ["XAU"]     = "XAUUSD",
+            ["SILVER"]    = "XAGUSD", ["SILVERUSD"] = "XAGUSD", ["XAG"]    = "XAGUSD",
+            ["PLATINUM"]  = "XPTUSD", ["XPT"]      = "XPTUSD",
+            ["PALLADIUM"] = "XPDUSD", ["XPD"]      = "XPDUSD",
+            ["WTICRUDE"]  = "USOIL",  ["CRUDEOIL"] = "USOIL",  ["OIL"]     = "USOIL",
+            ["OILUSD"]    = "USOIL",  ["CL"]       = "USOIL",  ["WTI"]     = "USOIL",  ["USCRUDE"] = "USOIL",
+            ["BRENT"]     = "UKOIL",  ["BRENTUSD"] = "UKOIL",  ["UKCRUDE"] = "UKOIL",  ["BRENTCRUDE"] = "UKOIL",
+            ["NATURALGAS"]= "NATGAS", ["NGAS"]      = "NATGAS", ["NG"]      = "NATGAS",
+            ["XUCUSD"]    = "COPPER", ["CU"]        = "COPPER",
         };
 
-    // ── MT5 section markers (Spanish report) ─────────────────────────────
-    private const string SectionClosed  = "Posiciones";
-    private const string SectionOpen    = "Posiciones abiertas";
-    private const string SectionOrders  = "Órdenes";
-    private const string SectionDeals   = "Transacciones";
-    private const string SectionResults = "Resultados";
+    // ── MT5 section markers — bilingual (ES + EN) ─────────────────────────
+    private static readonly HashSet<string> ClosedSections =
+        new(StringComparer.OrdinalIgnoreCase)
+        { "Posiciones", "Positions" };
+
+    private static readonly HashSet<string> OpenSections =
+        new(StringComparer.OrdinalIgnoreCase)
+        { "Posiciones abiertas", "Open Positions" };
+
+    private static readonly HashSet<string> TerminalSections =
+        new(StringComparer.OrdinalIgnoreCase)
+        { "Órdenes", "Orders", "Transacciones", "Deals", "Resultados", "Results", "Summary" };
 
     // ─────────────────────────────────────────────────────────────────────
 
-    public static List<TradeEntryData> Parse(string filePath, int accountId)
+    public static List<TradeEntryData> Parse(
+        string filePath,
+        int accountId,
+        Dictionary<string, string>? externalMap = null,
+        bool isCentAccount = false)
     {
         var result = new List<TradeEntryData>();
 
@@ -56,21 +75,17 @@ internal static class Mt5ReportParser
             var label = row.Cell(1).GetString().Trim();
 
             // ── Section transitions ──────────────────────────────────────
-            if (label.Equals(SectionClosed,  StringComparison.OrdinalIgnoreCase)) { section = ParseSection.Closed;  continue; }
-            if (label.Equals(SectionOpen,    StringComparison.OrdinalIgnoreCase)) { section = ParseSection.Open;    continue; }
-            if (label.Equals(SectionOrders,  StringComparison.OrdinalIgnoreCase) ||
-                label.Equals(SectionDeals,   StringComparison.OrdinalIgnoreCase) ||
-                label.Equals(SectionResults, StringComparison.OrdinalIgnoreCase))
-            {
-                section = ParseSection.None;
-                continue;
-            }
+            if (ClosedSections.Contains(label))   { section = ParseSection.Closed; continue; }
+            if (OpenSections.Contains(label))     { section = ParseSection.Open;   continue; }
+            if (TerminalSections.Contains(label)) { section = ParseSection.None;   continue; }
 
             if (section == ParseSection.None) continue;
 
-            // ── Skip header row (starts with "Fecha" / "Hora") ───────────
-            if (label.StartsWith("Fecha", StringComparison.OrdinalIgnoreCase) ||
-                label.StartsWith("Hora",  StringComparison.OrdinalIgnoreCase))
+            // ── Skip header row (ES: "Fecha"/"Hora" | EN: "Time"/"Open Time") ──
+            if (label.StartsWith("Fecha",     StringComparison.OrdinalIgnoreCase) ||
+                label.StartsWith("Hora",      StringComparison.OrdinalIgnoreCase) ||
+                label.StartsWith("Time",      StringComparison.OrdinalIgnoreCase) ||
+                label.StartsWith("Open Time", StringComparison.OrdinalIgnoreCase))
                 continue;
 
             // ── Skip empty / totals rows ─────────────────────────────────
@@ -79,8 +94,8 @@ internal static class Mt5ReportParser
             // ── Parse trade row ──────────────────────────────────────────
             var trade = section switch
             {
-                ParseSection.Closed => ParseClosedRow(row, accountId),
-                ParseSection.Open   => ParseOpenRow(row, accountId),
+                ParseSection.Closed => ParseClosedRow(row, accountId, externalMap, isCentAccount),
+                ParseSection.Open   => ParseOpenRow(row, accountId, externalMap, isCentAccount),
                 _                   => null
             };
 
@@ -94,13 +109,13 @@ internal static class Mt5ReportParser
     // Cols: 1=EntryDT 2=PosID 3=Symbol 4=Type 5=Volume 6=EntryPx
     //       7=SL 8=TP 9=ExitDT 10=ExitPx 11=Comm 12=Swap 13=PnL
 
-    private static TradeEntryData? ParseClosedRow(IXLRow row, int accountId)
+    private static TradeEntryData? ParseClosedRow(IXLRow row, int accountId, Dictionary<string, string>? externalMap, bool isCentAccount)
     {
         var entryDate = ParseDate(row.Cell(1).GetString());
         if (entryDate is null) return null;
 
         var posId      = row.Cell(2).GetString().Trim();
-        var symbol     = NormalizeSymbol(row.Cell(3).GetString());
+        var symbol     = NormalizeSymbol(row.Cell(3).GetString(), externalMap);
         var direction  = ParseDirection(row.Cell(4).GetString());
         var volume     = GetDecimal(row.Cell(5));
         var entryPrice = GetDecimal(row.Cell(6));
@@ -108,7 +123,9 @@ internal static class Mt5ReportParser
         var tp         = GetDecimal(row.Cell(8));
         var exitDate   = ParseDate(row.Cell(9).GetString());
         var exitPrice  = GetDecimal(row.Cell(10));
-        var pnl        = GetDecimalKeepZero(row.Cell(13));
+        var rawPnl     = GetDecimalKeepZero(row.Cell(13));
+        // Cent accounts report PnL in cents (100× larger); scale to standard units
+        var pnl        = isCentAccount && rawPnl.HasValue ? rawPnl.Value / 100m : rawPnl;
 
         if (entryPrice is null || string.IsNullOrEmpty(symbol)) return null;
 
@@ -141,6 +158,7 @@ internal static class Mt5ReportParser
             Result:           result,
             Session:          null,
             Timeframe:        null,
+            TradingType:      null,
             SetupQuality:     null,
             ConfluencesCount: null,
             IsFalseBreakout:  false,
@@ -155,13 +173,13 @@ internal static class Mt5ReportParser
     // Cols: 1=EntryDT 2=PosID 3=Symbol 4=Type 5=Volume 6=EntryPx
     //       7=SL 8=TP  (9=MarketPx 10=Swap 12=FloatPnL — all ignored)
 
-    private static TradeEntryData? ParseOpenRow(IXLRow row, int accountId)
+    private static TradeEntryData? ParseOpenRow(IXLRow row, int accountId, Dictionary<string, string>? externalMap, bool isCentAccount)
     {
         var entryDate = ParseDate(row.Cell(1).GetString());
         if (entryDate is null) return null;
 
         var posId      = row.Cell(2).GetString().Trim();
-        var symbol     = NormalizeSymbol(row.Cell(3).GetString());
+        var symbol     = NormalizeSymbol(row.Cell(3).GetString(), externalMap);
         var direction  = ParseDirection(row.Cell(4).GetString());
         var volume     = GetDecimal(row.Cell(5));
         var entryPrice = GetDecimal(row.Cell(6));
@@ -191,6 +209,7 @@ internal static class Mt5ReportParser
             Result:           TradeResult.Open,
             Session:          null,
             Timeframe:        null,
+            TradingType:      null,
             SetupQuality:     null,
             ConfluencesCount: null,
             IsFalseBreakout:  false,
@@ -203,10 +222,27 @@ internal static class Mt5ReportParser
 
     // ── Helpers ───────────────────────────────────────────────────────────
 
-    private static string NormalizeSymbol(string raw)
+    private static string NormalizeSymbol(string raw, Dictionary<string, string>? externalMap)
     {
         var s = raw.Trim();
-        return SymbolMap.TryGetValue(s, out var mapped) ? mapped : s.ToUpper();
+
+        // 1. User-defined mappings (DB) take priority
+        if (externalMap is not null && externalMap.TryGetValue(s, out var ext)) return ext;
+
+        // 2. Built-in alias map
+        if (BuiltInSymbolMap.TryGetValue(s, out var builtin)) return builtin;
+
+        // 3. Dot-suffix fallback: strip the suffix and retry (e.g. EURUSD.sc → EURUSD)
+        var dot = s.LastIndexOf('.');
+        if (dot > 0)
+        {
+            var baseSym = s[..dot];
+            if (externalMap is not null && externalMap.TryGetValue(baseSym, out var extBase)) return extBase;
+            if (BuiltInSymbolMap.TryGetValue(baseSym, out var builtinBase)) return builtinBase;
+            return baseSym.ToUpper();
+        }
+
+        return s.ToUpper();
     }
 
     private static TradeDirection ParseDirection(string raw) =>

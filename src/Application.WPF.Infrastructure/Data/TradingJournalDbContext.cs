@@ -16,6 +16,8 @@ public class TradingJournalDbContext : DbContext
     public DbSet<TradeEntry>               TradeEntries             => Set<TradeEntry>();
     public DbSet<PlaybookEntry>            PlaybookEntries          => Set<PlaybookEntry>();
     public DbSet<PlaybookConfluenceRating> PlaybookConfluenceRatings => Set<PlaybookConfluenceRating>();
+    public DbSet<JournalListItem>          JournalListItems          => Set<JournalListItem>();
+    public DbSet<SymbolMapping>            SymbolMappings            => Set<SymbolMapping>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,6 +80,7 @@ public class TradingJournalDbContext : DbContext
                 .HasColumnType("decimal(18,2)");
             e.Property(a => a.BaseCurrency).IsRequired().HasMaxLength(10);
             e.Property(a => a.Leverage).IsRequired().HasMaxLength(20);
+            e.Property(a => a.IsCentAccount).HasDefaultValue(false);
             e.Property(a => a.StartDate).IsRequired();
             e.Property(a => a.CreatedAt).IsRequired();
             e.HasOne(a => a.User)
@@ -113,6 +116,25 @@ public class TradingJournalDbContext : DbContext
             e.Property(r => r.ConfluenceName).IsRequired().HasMaxLength(200);
         });
 
+        modelBuilder.Entity<JournalListItem>(e =>
+        {
+            e.HasKey(j => j.Id);
+            e.HasIndex(j => new { j.UserId, j.Category });
+            e.Property(j => j.Category).IsRequired().HasMaxLength(50);
+            e.Property(j => j.Name).IsRequired().HasMaxLength(100);
+            e.HasOne(j => j.User).WithMany().HasForeignKey(j => j.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<SymbolMapping>(e =>
+        {
+            e.HasKey(s => s.Id);
+            e.HasIndex(s => s.BrokerSymbol).IsUnique();
+            e.Property(s => s.BrokerSymbol).IsRequired().HasMaxLength(30);
+            e.Property(s => s.CanonicalName).IsRequired().HasMaxLength(20);
+            e.Property(s => s.Category).IsRequired().HasMaxLength(20);
+        });
+
         modelBuilder.Entity<TradeEntry>(e =>
         {
             e.HasKey(t => t.Id);
@@ -122,7 +144,8 @@ public class TradingJournalDbContext : DbContext
             e.Property(t => t.Direction).IsRequired().HasConversion<string>();
             e.Property(t => t.Result).IsRequired().HasConversion<string>();
             e.Property(t => t.Session).HasConversion<string>();
-            e.Property(t => t.EmotionalState).HasConversion<string>();
+            e.Property(t => t.TradingType).HasConversion<string>();
+            e.Property(t => t.EmotionalState).HasMaxLength(100);
             e.Property(t => t.EntryPrice).HasColumnType("decimal(18,8)");
             e.Property(t => t.ExitPrice).HasColumnType("decimal(18,8)");
             e.Property(t => t.StopLoss).HasColumnType("decimal(18,8)");

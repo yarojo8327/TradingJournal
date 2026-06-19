@@ -66,7 +66,8 @@ public partial class TradingAccountViewModel : BaseViewModel
     [RegularExpression(@"^1:[0-9]{1,4}$", ErrorMessage = "Formato requerido: 1:100  (ej: 1:50, 1:200, 1:500)")]
     private string _leverage = string.Empty;
 
-    [ObservableProperty] private DateTime _startDate = DateTime.Today;
+    [ObservableProperty] private DateTime _startDate    = DateTime.Today;
+    [ObservableProperty] private bool     _isCentAccount;
 
     // ── Estado ────────────────────────────────────────────────────────────
 
@@ -154,6 +155,7 @@ public partial class TradingAccountViewModel : BaseViewModel
         BaseCurrency        = account.BaseCurrency;
         Leverage            = account.Leverage;
         StartDate           = account.StartDate;
+        IsCentAccount       = account.IsCentAccount;
         IsEditMode          = true;
         IsFormVisible       = true;
         FormTitle           = "Editar cuenta de trading";
@@ -252,7 +254,7 @@ public partial class TradingAccountViewModel : BaseViewModel
                 await _accountService.UpdateAsync(
                     _accountId, Broker, AccountNumber,
                     SelectedAccountType!.Value, capital,
-                    BaseCurrency, Leverage, StartDate);
+                    BaseCurrency, Leverage, StartDate, IsCentAccount);
                 GeneralSuccess = "Cuenta actualizada correctamente.";
             }
             else
@@ -260,7 +262,7 @@ public partial class TradingAccountViewModel : BaseViewModel
                 await _accountService.CreateAsync(
                     user.Id, Broker, AccountNumber,
                     SelectedAccountType!.Value, capital,
-                    BaseCurrency, Leverage, StartDate);
+                    BaseCurrency, Leverage, StartDate, IsCentAccount);
                 GeneralSuccess = "Cuenta registrada correctamente.";
             }
 
@@ -313,6 +315,7 @@ public partial class TradingAccountViewModel : BaseViewModel
         BaseCurrency        = string.Empty;
         Leverage            = string.Empty;
         StartDate           = DateTime.Today;
+        IsCentAccount       = false;
         ClearErrors();
     }
 }

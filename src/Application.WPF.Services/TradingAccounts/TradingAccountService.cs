@@ -33,7 +33,8 @@ public class TradingAccountService : ITradingAccountService
     public async Task<TradingAccount> CreateAsync(
         int userId, string broker, string accountNumber,
         AccountType accountType, decimal initialCapital,
-        string baseCurrency, string leverage, DateTime startDate)
+        string baseCurrency, string leverage, DateTime startDate,
+        bool isCentAccount = false)
     {
         var account = new TradingAccount
         {
@@ -44,6 +45,7 @@ public class TradingAccountService : ITradingAccountService
             InitialCapital = initialCapital,
             BaseCurrency   = baseCurrency.Trim().ToUpper(),
             Leverage       = leverage.Trim(),
+            IsCentAccount  = isCentAccount,
             StartDate      = startDate.Date,
             CreatedAt      = DateTime.UtcNow
         };
@@ -72,7 +74,8 @@ public class TradingAccountService : ITradingAccountService
     public async Task<TradingAccount> UpdateAsync(
         int accountId, string broker, string accountNumber,
         AccountType accountType, decimal initialCapital,
-        string baseCurrency, string leverage, DateTime startDate)
+        string baseCurrency, string leverage, DateTime startDate,
+        bool isCentAccount = false)
     {
         var account = await _db.TradingAccounts.FindAsync(accountId)
             ?? throw new InvalidOperationException("Cuenta de trading no encontrada.");
@@ -83,6 +86,7 @@ public class TradingAccountService : ITradingAccountService
         account.InitialCapital = initialCapital;
         account.BaseCurrency   = baseCurrency.Trim().ToUpper();
         account.Leverage       = leverage.Trim();
+        account.IsCentAccount  = isCentAccount;
         account.StartDate      = startDate.Date;
         account.UpdatedAt      = DateTime.UtcNow;
 

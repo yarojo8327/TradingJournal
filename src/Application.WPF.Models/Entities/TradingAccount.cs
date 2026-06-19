@@ -12,6 +12,7 @@ public class TradingAccount
     public decimal     InitialCapital { get; set; }
     public string      BaseCurrency   { get; set; } = string.Empty;
     public string      Leverage       { get; set; } = string.Empty;
+    public bool        IsCentAccount  { get; set; }
     public DateTime    StartDate      { get; set; }
     public DateTime    CreatedAt      { get; set; }
     public DateTime?   UpdatedAt      { get; set; }

@@ -44,8 +44,11 @@ public class TradeEntry
     // Calificación del trade (1-10)
     public int?            Rating           { get; set; }
 
+    // Tipo de trading
+    public TradingType?    TradingType      { get; set; }
+
     // Psicología
-    public EmotionalState? EmotionalState   { get; set; }
+    public string?         EmotionalState   { get; set; }
     public string?         MistakeType      { get; set; }
 
     // Notas y evidencia

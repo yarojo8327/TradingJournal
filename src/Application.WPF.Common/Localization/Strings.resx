@@ -238,6 +238,9 @@
   <data name="Account_DeleteConfirm"        xml:space="preserve"><value>Delete this account? This action cannot be undone.</value></data>
   <data name="Account_Deleted"              xml:space="preserve"><value>Account deleted successfully.</value></data>
   <data name="Account_DeleteError"          xml:space="preserve"><value>Error deleting the account.</value></data>
+  <data name="Account_CentLabel"            xml:space="preserve"><value>Cent account (USDc / EURc)</value></data>
+  <data name="Account_CentHint"             xml:space="preserve"><value>MT5 reports P&amp;L in cents. The import will divide all P&amp;L values by 100 to convert to standard units. Enter your initial capital in the standard currency (e.g., USD), not in cents.</value></data>
+  <data name="Account_CentBadge"            xml:space="preserve"><value>¢ CENT</value></data>
 
   <!-- Trade Journal -->
   <data name="Journal_Header"               xml:space="preserve"><value>Trade Journal</value></data>
@@ -351,4 +354,276 @@
   <data name="Strategy_Saving"              xml:space="preserve"><value>Saving…</value></data>
   <data name="Strategy_Cancel"              xml:space="preserve"><value>✕ Cancel</value></data>
   <data name="Strategy_TooltipExpand"       xml:space="preserve"><value>Click to expand</value></data>
+  <data name="Strategy_DeleteRule"          xml:space="preserve"><value>Delete rule</value></data>
+  <data name="Strategy_DeleteConfluence"    xml:space="preserve"><value>Delete confluence</value></data>
+
+  <!-- Common -->
+  <data name="Common_Close"                 xml:space="preserve"><value>Close</value></data>
+
+  <!-- Image viewer -->
+  <data name="ImageViewer_Title"            xml:space="preserve"><value>Strategy image</value></data>
+  <data name="ImageViewer_ZoomIn"           xml:space="preserve"><value>Zoom in (mouse wheel)</value></data>
+  <data name="ImageViewer_ZoomOut"          xml:space="preserve"><value>Zoom out (mouse wheel)</value></data>
+  <data name="ImageViewer_Close"            xml:space="preserve"><value>Close (Esc)</value></data>
+  <data name="ImageViewer_HelpText"         xml:space="preserve"><value>Mouse wheel: zoom  ·  Double-click: reset  ·  Esc: close</value></data>
+
+  <!-- Journal extras -->
+  <data name="Journal_ImportMt5Tooltip"     xml:space="preserve"><value>Import trading history from MT5 report (.xlsx)</value></data>
+  <data name="Journal_OpenChart"            xml:space="preserve"><value>Open chart</value></data>
+  <data name="Journal_Prev"                 xml:space="preserve"><value>← Previous</value></data>
+  <data name="Journal_Next"                 xml:space="preserve"><value>Next →</value></data>
+
+  <!-- Journal — TradingType -->
+  <data name="Journal_TradingType"          xml:space="preserve"><value>Trading Type</value></data>
+  <data name="Journal_TradingType_None"     xml:space="preserve"><value>— None —</value></data>
+  <data name="Journal_TradingType_Scalping" xml:space="preserve"><value>Scalping</value></data>
+  <data name="Journal_TradingType_Intraday" xml:space="preserve"><value>Intraday</value></data>
+  <data name="Journal_TradingType_Swing"    xml:space="preserve"><value>Swing Trading</value></data>
+  <data name="Journal_TradingType_Position" xml:space="preserve"><value>Position Trading</value></data>
+
+  <!-- Journal — Ver detalle -->
+  <data name="Journal_View"                 xml:space="preserve"><value>View</value></data>
+  <data name="Journal_Detail_Image"         xml:space="preserve"><value>CHART / IMAGE</value></data>
+  <data name="Journal_NoImage"              xml:space="preserve"><value>No image available</value></data>
+
+  <!-- Navigation extras -->
+  <data name="Nav_Playbook"                 xml:space="preserve"><value>Playbook</value></data>
+
+  <!-- Playbook zoom controls -->
+  <data name="Playbook_ZoomOut"             xml:space="preserve"><value>Zoom out (-)</value></data>
+  <data name="Playbook_ZoomIn"              xml:space="preserve"><value>Zoom in (+)</value></data>
+  <data name="Playbook_ResetZoom"           xml:space="preserve"><value>Reset zoom (double-click)</value></data>
+  <data name="Playbook_View"                xml:space="preserve"><value>View</value></data>
+
+  <!-- Account extras -->
+  <data name="Account_DeleteTooltip"        xml:space="preserve"><value>Delete account (only if it has no trades)</value></data>
+  <data name="Account_DeleteButton"         xml:space="preserve"><value>Delete</value></data>
+
+  <!-- Common shared placeholders -->
+  <data name="Common_AllAccounts"           xml:space="preserve"><value>— All accounts —</value></data>
+  <data name="Common_AllStrategies"         xml:space="preserve"><value>— All strategies —</value></data>
+  <data name="Common_All"                   xml:space="preserve"><value>— All —</value></data>
+  <data name="Common_NoMin"                 xml:space="preserve"><value>— No minimum —</value></data>
+  <data name="Common_NoMax"                 xml:space="preserve"><value>— No maximum —</value></data>
+  <data name="Common_NoRating"              xml:space="preserve"><value>— Unrated —</value></data>
+
+  <!-- Dashboard -->
+  <data name="Dashboard_Title"              xml:space="preserve"><value>Trading Dashboard</value></data>
+  <data name="Dashboard_AccountLabel"       xml:space="preserve"><value>💼  Account:</value></data>
+  <data name="Dashboard_Refresh"            xml:space="preserve"><value>🔄  Refresh</value></data>
+  <data name="Dashboard_Kpi_Trades"         xml:space="preserve"><value>TRADES</value></data>
+  <data name="Dashboard_Kpi_WinRate"        xml:space="preserve"><value>WIN RATE</value></data>
+  <data name="Dashboard_Kpi_PnlMonth"       xml:space="preserve"><value>P&amp;L THIS MONTH</value></data>
+  <data name="Dashboard_Kpi_VsMes"          xml:space="preserve"><value>vs. current month</value></data>
+  <data name="Dashboard_Kpi_PnlTotal"       xml:space="preserve"><value>P&amp;L TOTAL</value></data>
+  <data name="Dashboard_Kpi_Accumulated"    xml:space="preserve"><value>historical cumulative</value></data>
+  <data name="Dashboard_Kpi_RR"             xml:space="preserve"><value>RISK/REWARD</value></data>
+  <data name="Dashboard_Kpi_Average"        xml:space="preserve"><value>average</value></data>
+  <data name="Dashboard_Kpi_ProfitFactor"   xml:space="preserve"><value>PROFIT FACTOR</value></data>
+  <data name="Dashboard_Kpi_GainLossRatio"  xml:space="preserve"><value>gain/loss ratio</value></data>
+  <data name="Dashboard_Nav_Journal"        xml:space="preserve"><value>JOURNAL</value></data>
+  <data name="Dashboard_Nav_Journal_Sub"    xml:space="preserve"><value>View trades</value></data>
+  <data name="Dashboard_Nav_Analytics"      xml:space="preserve"><value>ANALYTICS</value></data>
+  <data name="Dashboard_Nav_Analytics_Sub"  xml:space="preserve"><value>Statistics</value></data>
+  <data name="Dashboard_Nav_Strategies"     xml:space="preserve"><value>STRATEGIES</value></data>
+  <data name="Dashboard_Nav_Strategies_Sub" xml:space="preserve"><value>Manage playbook</value></data>
+  <data name="Dashboard_Nav_Playbook"       xml:space="preserve"><value>PLAYBOOK</value></data>
+  <data name="Dashboard_Nav_Playbook_Sub"   xml:space="preserve"><value>Featured trades</value></data>
+  <data name="Dashboard_Nav_Accounts"       xml:space="preserve"><value>ACCOUNTS</value></data>
+  <data name="Dashboard_Nav_Accounts_Sub"   xml:space="preserve"><value>Manage accounts</value></data>
+  <data name="Dashboard_Section_Equity"     xml:space="preserve"><value>EQUITY CURVE</value></data>
+  <data name="Dashboard_ViewAnalytics"      xml:space="preserve"><value>View analysis →</value></data>
+  <data name="Dashboard_NoTrades"           xml:space="preserve"><value>No closed trades yet</value></data>
+  <data name="Dashboard_Section_Distribution" xml:space="preserve"><value>DISTRIBUTION</value></data>
+  <data name="Dashboard_Streak"             xml:space="preserve"><value>BEST STREAK</value></data>
+  <data name="Dashboard_WinStreak"          xml:space="preserve"><value>consecutive wins</value></data>
+  <data name="Dashboard_OpenPos"            xml:space="preserve"><value>OPEN</value></data>
+  <data name="Dashboard_Positions"          xml:space="preserve"><value>positions</value></data>
+  <data name="Dashboard_Section_Capital"    xml:space="preserve"><value>CAPITAL SUMMARY</value></data>
+  <data name="Dashboard_ViewAccounts"       xml:space="preserve"><value>Accounts →</value></data>
+  <data name="Dashboard_InitialCapital"     xml:space="preserve"><value>Initial capital</value></data>
+  <data name="Dashboard_CurrentCapital"     xml:space="preserve"><value>Current capital</value></data>
+  <data name="Dashboard_GainLoss"           xml:space="preserve"><value>Gain / Loss</value></data>
+  <data name="Dashboard_Section_Playbook"   xml:space="preserve"><value>PLAYBOOK</value></data>
+  <data name="Dashboard_ViewPlaybook"       xml:space="preserve"><value>View →</value></data>
+  <data name="Dashboard_Section_RecentTrades" xml:space="preserve"><value>RECENT TRADES</value></data>
+  <data name="Dashboard_ViewJournal"        xml:space="preserve"><value>View journal →</value></data>
+  <data name="Dashboard_Col_Symbol"         xml:space="preserve"><value>SYMBOL</value></data>
+  <data name="Dashboard_Col_Dir"            xml:space="preserve"><value>DIR</value></data>
+  <data name="Dashboard_Col_Result"         xml:space="preserve"><value>RESULT</value></data>
+  <data name="Dashboard_Col_Date"           xml:space="preserve"><value>DATE</value></data>
+  <data name="Dashboard_Col_PnL"            xml:space="preserve"><value>P&amp;L</value></data>
+  <data name="Dashboard_NoTrades_Table"     xml:space="preserve"><value>No trades registered yet</value></data>
+  <data name="Dashboard_Section_Strategies" xml:space="preserve"><value>STRATEGY PERFORMANCE</value></data>
+  <data name="Dashboard_ViewStrategies"     xml:space="preserve"><value>View →</value></data>
+  <data name="Dashboard_NoStrategyData"     xml:space="preserve"><value>No strategy data</value></data>
+  <data name="Dashboard_Section_TopSymbols" xml:space="preserve"><value>TOP SYMBOLS</value></data>
+  <data name="Dashboard_NoData"             xml:space="preserve"><value>No data</value></data>
+  <data name="Dashboard_Section_Session"    xml:space="preserve"><value>BY SESSION</value></data>
+  <data name="Dashboard_NoSessionData"      xml:space="preserve"><value>No session data</value></data>
+
+  <!-- Journal — form section labels -->
+  <data name="Journal_Section_TradeData"    xml:space="preserve"><value>TRADE DATA</value></data>
+  <data name="Journal_Section_Execution"    xml:space="preserve"><value>EXECUTION</value></data>
+  <data name="Journal_Section_Result"       xml:space="preserve"><value>RESULT</value></data>
+  <data name="Journal_Section_Context"      xml:space="preserve"><value>MARKET CONTEXT</value></data>
+  <data name="Journal_Section_Psychology"   xml:space="preserve"><value>PSYCHOLOGY, CHART &amp; NOTES</value></data>
+  <data name="Journal_EditBadge"            xml:space="preserve"><value>EDIT</value></data>
+  <data name="Journal_AutoBadge"            xml:space="preserve"><value>auto</value></data>
+  <data name="Journal_ImportMt5_Label"      xml:space="preserve"><value>Import MT5</value></data>
+  <data name="Journal_ExportExcel"          xml:space="preserve"><value>Export Excel</value></data>
+  <!-- Journal — account summary section -->
+  <data name="Journal_Section_AccountSummary" xml:space="preserve"><value>ACCOUNT SUMMARY</value></data>
+  <data name="Journal_Col_AccountName"      xml:space="preserve"><value>ACCOUNT</value></data>
+  <data name="Journal_Col_InitialCapital"   xml:space="preserve"><value>INITIAL CAPITAL</value></data>
+  <data name="Journal_Col_GainLoss"         xml:space="preserve"><value>GAIN / LOSS</value></data>
+  <data name="Journal_Col_CurrentCapital"   xml:space="preserve"><value>CURRENT CAPITAL</value></data>
+  <data name="Journal_Col_CapPct"           xml:space="preserve"><value>% Cap.</value></data>
+  <!-- Journal — stats panel labels -->
+  <data name="Journal_Section_Stats"        xml:space="preserve"><value>STATISTICS</value></data>
+  <data name="Journal_Section_EquityCurve"  xml:space="preserve"><value>EQUITY CURVE</value></data>
+  <data name="Journal_Section_PnlPerTrade"  xml:space="preserve"><value>P&amp;L PER TRADE</value></data>
+  <data name="Journal_Stats_InitialCapital" xml:space="preserve"><value>Initial Capital</value></data>
+  <data name="Journal_Stats_TotalOps"       xml:space="preserve"><value>Total Trades</value></data>
+  <data name="Journal_Stats_Won"            xml:space="preserve"><value>Won</value></data>
+  <data name="Journal_Stats_Lost"           xml:space="preserve"><value>Losses</value></data>
+  <data name="Journal_Stats_WinRate"        xml:space="preserve"><value>Win Rate</value></data>
+  <data name="Journal_Stats_NetPnl"         xml:space="preserve"><value>P&amp;L Balance</value></data>
+  <data name="Journal_Stats_BestTrade"      xml:space="preserve"><value>Best Trade</value></data>
+  <data name="Journal_Stats_WorstTrade"     xml:space="preserve"><value>Worst Trade</value></data>
+  <data name="Journal_Stats_AvgPnl"         xml:space="preserve"><value>Avg. per Trade</value></data>
+  <data name="Journal_Stats_TotalCapital"   xml:space="preserve"><value>Total Capital</value></data>
+  <data name="Journal_Stats_GainPct"        xml:space="preserve"><value>% Gain</value></data>
+  <data name="Journal_Loading"              xml:space="preserve"><value>Loading trades...</value></data>
+
+  <!-- Analytics -->
+  <data name="Analytics_Title"              xml:space="preserve"><value>Trading Analysis</value></data>
+  <data name="Analytics_Subtitle"           xml:space="preserve"><value>Metrics and statistics of your trading</value></data>
+  <data name="Analytics_Export"             xml:space="preserve"><value>Export analysis</value></data>
+  <data name="Analytics_Section_Filters"    xml:space="preserve"><value>FILTERS</value></data>
+  <data name="Analytics_Filter_Account"     xml:space="preserve"><value>Account</value></data>
+  <data name="Analytics_Filter_Strategy"    xml:space="preserve"><value>Strategy</value></data>
+  <data name="Analytics_Filter_RatingMin"   xml:space="preserve"><value>Min. rating</value></data>
+  <data name="Analytics_Filter_RatingMax"   xml:space="preserve"><value>Max. rating</value></data>
+  <data name="Analytics_Filter_DateFrom"    xml:space="preserve"><value>Date from</value></data>
+  <data name="Analytics_Filter_DateTo"      xml:space="preserve"><value>Date to</value></data>
+  <data name="Analytics_Filter_NoMin"       xml:space="preserve"><value>— No minimum —</value></data>
+  <data name="Analytics_Filter_NoMax"       xml:space="preserve"><value>— No maximum —</value></data>
+  <data name="Analytics_NoData"             xml:space="preserve"><value>No data for the selected period</value></data>
+  <data name="Analytics_NoDataHint"         xml:space="preserve"><value>Adjust filters or record trades in the journal</value></data>
+  <data name="Analytics_Kpi_TotalTrades"    xml:space="preserve"><value>TOTAL TRADES</value></data>
+  <data name="Analytics_Kpi_WinRate"        xml:space="preserve"><value>WIN RATE</value></data>
+  <data name="Analytics_Kpi_PnlTotal"       xml:space="preserve"><value>P&amp;L TOTAL</value></data>
+  <data name="Analytics_Kpi_ProfitFactor"   xml:space="preserve"><value>PROFIT FACTOR</value></data>
+  <data name="Analytics_Kpi_ProfitFactorDesc" xml:space="preserve"><value>Gross profit / Gross loss</value></data>
+  <data name="Analytics_Kpi_AvgPnl"         xml:space="preserve"><value>AVERAGE P&amp;L</value></data>
+  <data name="Analytics_Kpi_AvgRR"          xml:space="preserve"><value>AVERAGE R:R</value></data>
+  <data name="Analytics_Kpi_BestTrade"      xml:space="preserve"><value>BEST TRADE</value></data>
+  <data name="Analytics_Kpi_WorstTrade"     xml:space="preserve"><value>WORST TRADE</value></data>
+  <data name="Analytics_Kpi_Expectancy"     xml:space="preserve"><value>EXPECTANCY</value></data>
+  <data name="Analytics_Kpi_ExpectancyDesc" xml:space="preserve"><value>Per trade (Win% × AvgWin + Loss% × AvgLoss)</value></data>
+  <data name="Analytics_Kpi_AvgRating"      xml:space="preserve"><value>AVERAGE RATING</value></data>
+  <data name="Analytics_Kpi_RatingScale"    xml:space="preserve"><value>Scale 1–10</value></data>
+  <data name="Analytics_Kpi_MaxWinStreak"   xml:space="preserve"><value>MAX. WIN STREAK</value></data>
+  <data name="Analytics_Kpi_MaxLossStreak"  xml:space="preserve"><value>MAX. LOSS STREAK</value></data>
+  <data name="Analytics_Trades_Suffix"      xml:space="preserve"><value> trades</value></data>
+  <data name="Analytics_Chart_PnlMonthly"   xml:space="preserve"><value>MONTHLY P&amp;L</value></data>
+  <data name="Analytics_Chart_Positive"     xml:space="preserve"><value>Positive</value></data>
+  <data name="Analytics_Chart_Negative"     xml:space="preserve"><value>Negative</value></data>
+  <data name="Analytics_Chart_Distribution" xml:space="preserve"><value>RESULTS DISTRIBUTION</value></data>
+  <data name="Analytics_Chart_Winners"      xml:space="preserve"><value>Winners</value></data>
+  <data name="Analytics_Chart_Losers"       xml:space="preserve"><value>Losers</value></data>
+  <data name="Analytics_Chart_BreakEven"    xml:space="preserve"><value>BreakEven</value></data>
+  <data name="Analytics_Chart_SessionWR"    xml:space="preserve"><value>WIN RATE BY SESSION</value></data>
+  <data name="Analytics_Col_Symbol"         xml:space="preserve"><value>SYMBOL</value></data>
+  <data name="Analytics_Col_Trades"         xml:space="preserve"><value>TRADES</value></data>
+  <data name="Analytics_Col_Won"            xml:space="preserve"><value>WON.</value></data>
+  <data name="Analytics_Col_Lost"           xml:space="preserve"><value>LOST.</value></data>
+  <data name="Analytics_Col_WinRate"        xml:space="preserve"><value>WIN RATE</value></data>
+  <data name="Analytics_Col_PnlL"           xml:space="preserve"><value>P&amp;L</value></data>
+  <data name="Analytics_Col_Strategy"       xml:space="preserve"><value>STRATEGY</value></data>
+  <data name="Analytics_Col_RR"             xml:space="preserve"><value>R:R</value></data>
+  <data name="Analytics_Col_Rating"         xml:space="preserve"><value>RATING</value></data>
+  <data name="Analytics_Col_Direction"      xml:space="preserve"><value>DIRECTION</value></data>
+  <data name="Analytics_Col_WinPct"         xml:space="preserve"><value>WIN %</value></data>
+  <data name="Analytics_Col_Session"        xml:space="preserve"><value>SESSION</value></data>
+  <data name="Analytics_Col_Month"          xml:space="preserve"><value>MONTH</value></data>
+  <data name="Analytics_Col_PnlTotal"       xml:space="preserve"><value>P&amp;L TOTAL</value></data>
+  <data name="Analytics_Section_BySymbol"   xml:space="preserve"><value>BY SYMBOL</value></data>
+  <data name="Analytics_Section_BySymbol_Sub" xml:space="preserve"><value>— sorted by P&amp;L</value></data>
+  <data name="Analytics_Section_ByStrategy" xml:space="preserve"><value>BY STRATEGY</value></data>
+  <data name="Analytics_Section_Monthly"    xml:space="preserve"><value>MONTHLY PERFORMANCE</value></data>
+  <data name="Analytics_Loading"            xml:space="preserve"><value>Calculating analysis...</value></data>
+
+  <!-- Playbook — list view -->
+  <data name="Playbook_Title"               xml:space="preserve"><value>Playbook</value></data>
+  <data name="Playbook_Subtitle"            xml:space="preserve"><value>Record your most significant trades for review and learning</value></data>
+  <data name="Playbook_NewEntry"            xml:space="preserve"><value>+ New record</value></data>
+  <data name="Playbook_Filter_Symbol"       xml:space="preserve"><value>Symbol</value></data>
+  <data name="Playbook_Filter_Strategy"     xml:space="preserve"><value>Strategy</value></data>
+  <data name="Playbook_Filter_Rating"       xml:space="preserve"><value>Personal rating</value></data>
+  <data name="Playbook_Filter_AllStrategies" xml:space="preserve"><value>— All —</value></data>
+  <data name="Playbook_Section_Records"     xml:space="preserve"><value>SAVED RECORDS</value></data>
+  <data name="Playbook_Empty"               xml:space="preserve"><value>Your playbook is empty</value></data>
+  <data name="Playbook_EmptyHint"           xml:space="preserve"><value>Save your most significant trades to analyze them and learn from them.</value></data>
+  <data name="Playbook_Loading"             xml:space="preserve"><value>Loading playbook…</value></data>
+  <!-- Playbook — form window -->
+  <data name="Playbook_Section_Symbol"      xml:space="preserve"><value>SYMBOL</value></data>
+  <data name="Playbook_Section_Strategy"    xml:space="preserve"><value>STRATEGY</value></data>
+  <data name="Playbook_Section_Confluences" xml:space="preserve"><value>CONFLUENCES</value></data>
+  <data name="Playbook_NoConfluencesHint"   xml:space="preserve"><value>Select a strategy with defined confluences.</value></data>
+  <data name="Playbook_Section_AvgConfl"    xml:space="preserve"><value>CONFLUENCE AVERAGE</value></data>
+  <data name="Playbook_Section_PersonalRating" xml:space="preserve"><value>PERSONAL RATING</value></data>
+  <data name="Playbook_ManualRating"        xml:space="preserve"><value>Manual rating</value></data>
+  <data name="Playbook_Section_Notes"       xml:space="preserve"><value>NOTES</value></data>
+  <data name="Playbook_SaveEntry"           xml:space="preserve"><value>Save record</value></data>
+  <data name="Playbook_SavingEntry"         xml:space="preserve"><value>Saving…</value></data>
+  <data name="Playbook_SelectImage"         xml:space="preserve"><value>Select image</value></data>
+  <data name="Playbook_RemoveImage"         xml:space="preserve"><value>✕ Remove</value></data>
+  <data name="Playbook_NoImage"             xml:space="preserve"><value>No image loaded</value></data>
+  <data name="Playbook_NoImageHint"         xml:space="preserve"><value>Click "Select image" to load a chart</value></data>
+  <data name="Playbook_NoStrategyItem"      xml:space="preserve"><value>— No strategy —</value></data>
+  <data name="Playbook_Saving"              xml:space="preserve"><value>Saving…</value></data>
+  <!-- Playbook — viewer window -->
+  <data name="Playbook_EscHint"             xml:space="preserve"><value>ESC to close</value></data>
+  <data name="Playbook_NoImageViewer"       xml:space="preserve"><value>No image in this record</value></data>
+
+  <!-- Strategy rater window -->
+  <data name="Strategy_RaterTitle"          xml:space="preserve"><value>CONFLUENCE RATER</value></data>
+  <data name="Strategy_RaterAvgLabel"       xml:space="preserve"><value>AVERAGE</value></data>
+  <data name="Strategy_RaterThreshold"      xml:space="preserve"><value>Minimum threshold: 6.5 / 10</value></data>
+  <data name="Strategy_RaterRatingLabel"    xml:space="preserve"><value>Rating:</value></data>
+  <data name="Strategy_RaterHint"           xml:space="preserve"><value>Click to rate · Click again to remove · Esc to cancel</value></data>
+  <data name="Strategy_RaterSave"           xml:space="preserve"><value>Save</value></data>
+  <data name="Strategy_RaterSaving"         xml:space="preserve"><value>Saving…</value></data>
+  <data name="Strategy_NoConfluences"       xml:space="preserve"><value>⚠ No confluences configured</value></data>
+  <data name="Strategy_NoConfluencesHint"   xml:space="preserve"><value>Add confluences when editing the strategy (S/R, Fibonacci, MAs, etc.)</value></data>
+
+  <!-- Nav — Settings menu descriptions -->
+  <data name="Nav_AccountDesc"                xml:space="preserve"><value>Manage trading accounts</value></data>
+
+  <!-- Settings — Journal Lists -->
+  <data name="Settings_JournalTitle"          xml:space="preserve"><value>Journal Settings</value></data>
+  <data name="Settings_JournalSubtitle"       xml:space="preserve"><value>Configure the lists of emotional states and mistake types that appear when registering trades.</value></data>
+  <data name="Settings_EmotionalStates"       xml:space="preserve"><value>Emotional States</value></data>
+  <data name="Settings_EmotionalStatesDesc"   xml:space="preserve"><value>States you can select when logging a trade.</value></data>
+  <data name="Settings_MistakeTypes"          xml:space="preserve"><value>Mistake Types</value></data>
+  <data name="Settings_MistakeTypesDesc"      xml:space="preserve"><value>Types of mistakes you can associate with a trade.</value></data>
+  <data name="Settings_Add"                   xml:space="preserve"><value>Add</value></data>
+  <data name="Settings_NewItemPlaceholder"    xml:space="preserve"><value>New item...</value></data>
+  <data name="Settings_Symbols"              xml:space="preserve"><value>Symbols</value></data>
+  <data name="Settings_SymbolsDesc"          xml:space="preserve"><value>Manage broker symbol mappings for MT5 import.</value></data>
+  <data name="Settings_SymbolsTitle"         xml:space="preserve"><value>Symbol Mappings</value></data>
+  <data name="Settings_SymbolsSubtitle"      xml:space="preserve"><value>Map broker symbol names (e.g. EURUSD.sc) to canonical symbols (e.g. EURUSD).</value></data>
+  <data name="Settings_SymBroker"            xml:space="preserve"><value>Broker Symbol</value></data>
+  <data name="Settings_SymCanonical"         xml:space="preserve"><value>Canonical Name</value></data>
+  <data name="Settings_SymCategory"          xml:space="preserve"><value>Category</value></data>
+  <data name="Settings_SymSearch"            xml:space="preserve"><value>Search symbols...</value></data>
+  <data name="Settings_SymAdd"               xml:space="preserve"><value>Add mapping</value></data>
+  <data name="Settings_SymSave"              xml:space="preserve"><value>Save</value></data>
+  <data name="Settings_SymCancel"            xml:space="preserve"><value>Cancel</value></data>
+  <data name="Settings_SymEdit"              xml:space="preserve"><value>Edit</value></data>
+  <data name="Settings_SymDelete"            xml:space="preserve"><value>Delete</value></data>
+  <data name="Settings_SymEmpty"             xml:space="preserve"><value>No symbol mappings found</value></data>
+
 </root>

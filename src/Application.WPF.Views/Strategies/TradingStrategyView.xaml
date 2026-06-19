@@ -150,7 +150,7 @@
                                                 Background="{DynamicResource SurfaceElevatedBrush}"
                                                 Margin="0,0,12,0"
                                                 Cursor="Hand"
-                                                ToolTip="Clic para ampliar"
+                                                ToolTip="{loc:Tr Strategy_TooltipExpand}"
                                                 Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
                                             <Image Source="{Binding ImageData, Converter={StaticResource BytesToImage}}"
                                                    Stretch="UniformToFill"
@@ -469,7 +469,7 @@
                                                     Command="{Binding DataContext.RemoveRuleCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
-                                                    ToolTip="Eliminar regla">
+                                                    ToolTip="{loc:Tr Strategy_DeleteRule}">
                                                 <TextBlock Text="✕" FontSize="11" />
                                             </Button>
                                         </Grid>
@@ -550,7 +550,7 @@
                                                     Command="{Binding DataContext.RemoveConfluenceCommand,
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
-                                                    ToolTip="Eliminar confluencia">
+                                                    ToolTip="{loc:Tr Strategy_DeleteConfluence}">
                                                 <TextBlock Text="✕" FontSize="11" />
                                             </Button>
                                         </Grid>

@@ -1,6 +1,7 @@
 using Application.WPF.Models.Entities;
 using Application.WPF.Models.Enums;
 
+
 namespace Application.WPF.Services.Interfaces;
 
 public interface ITradeService
@@ -32,11 +33,12 @@ public record TradeEntryData(
     TradeResult    Result,
     TradingSession? Session,
     string?        Timeframe,
+    TradingType?   TradingType,
     int?           SetupQuality,
     int?           ConfluencesCount,
     bool           IsFalseBreakout,
     int?           Rating,
-    EmotionalState? EmotionalState,
+    string?        EmotionalState,
     string?        MistakeType,
     string?        Notes,
     string?        ScreenshotUrl

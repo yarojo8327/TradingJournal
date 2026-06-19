@@ -37,8 +37,9 @@ public partial class App : System.Windows.Application
         _host = BuildHost();
         await _host.StartAsync();
 
-        // Initialize database schema
-        using (var db = _host.Services.GetRequiredService<TradingJournalDbContext>())
+        // Initialize database schema (use a scope — DbContext is Transient/Scoped)
+        using (var scope = _host.Services.CreateScope())
+        using (var db = scope.ServiceProvider.GetRequiredService<TradingJournalDbContext>())
         {
             await db.Database.EnsureCreatedAsync();
             await EnsureSchemaUpToDateAsync(db);
@@ -220,9 +221,34 @@ public partial class App : System.Windows.Application
         await db.Database.ExecuteSqlRawAsync(
             @"CREATE INDEX IF NOT EXISTS ""IX_PlaybookConfluenceRatings_PlaybookEntryId"" ON ""PlaybookConfluenceRatings"" (""PlaybookEntryId"");");
 
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""JournalListItems"" (
+                ""Id""        INTEGER NOT NULL CONSTRAINT ""PK_JournalListItems"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""    INTEGER NOT NULL,
+                ""Category""  TEXT    NOT NULL,
+                ""Name""      TEXT    NOT NULL,
+                ""SortOrder"" INTEGER NOT NULL DEFAULT 0,
+                CONSTRAINT ""FK_JournalListItems_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_JournalListItems_UserId_Category"" ON ""JournalListItems"" (""UserId"", ""Category"");");
+
         // Columnas agregadas después de la creación inicial — idempotentes vía try/catch
         // (SQLite no soporta ADD COLUMN IF NOT EXISTS)
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""SymbolMappings"" (
+                ""Id""            INTEGER NOT NULL CONSTRAINT ""PK_SymbolMappings"" PRIMARY KEY AUTOINCREMENT,
+                ""BrokerSymbol""  TEXT    NOT NULL,
+                ""CanonicalName"" TEXT    NOT NULL,
+                ""Category""      TEXT    NOT NULL DEFAULT 'Other'
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE UNIQUE INDEX IF NOT EXISTS ""IX_SymbolMappings_BrokerSymbol"" ON ""SymbolMappings"" (""BrokerSymbol"");");
+
+        await TryAddColumnAsync(db, @"ALTER TABLE ""TradingAccounts"" ADD COLUMN ""IsCentAccount"" INTEGER NOT NULL DEFAULT 0;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""Rating"" INTEGER;");
+        await TryAddColumnAsync(db, @"ALTER TABLE ""TradeEntries"" ADD COLUMN ""TradingType"" TEXT;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ManualRating"" INTEGER;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageData"" BLOB;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageMimeType"" TEXT;");
