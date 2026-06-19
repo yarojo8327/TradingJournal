@@ -89,13 +89,31 @@ public class SymbolMappingService : ISymbolMappingService
         var items = new List<SymbolMapping>();
 
         // ValuePerPoint defaults: $ per 1.0 price-unit move for 1.0 standard lot (account currency == quote currency).
-        // Indices and minor commodities vary too much by broker — left null, user must configure (HU-TRD-001 Scenario 4).
+        // Sourced from IC Markets' public contract specification sheets (commonly mirrored by most MT5 retail
+        // brokers); still broker-dependent — users can override per instrument in Configuración > Símbolos.
         var defaultValuePerPoint = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
         {
-            ["XAUUSD"] = 100m,   // 1 lot = 100 oz
-            ["XAGUSD"] = 5000m,  // 1 lot = 5000 oz
-            ["USOIL"]  = 1000m,  // 1 lot = 1000 barrels
-            ["UKOIL"]  = 1000m,
+            // Commodities — contract size (units per 1.0 lot)
+            ["XAUUSD"]  = 100m,     // 100 oz/lot
+            ["XAGUSD"]  = 1000m,    // 1,000 oz/lot
+            ["XPTUSD"]  = 100m,     // 100 oz/lot
+            ["XPDUSD"]  = 100m,     // 100 oz/lot
+            ["USOIL"]   = 100m,     // 100 barrels/lot
+            ["UKOIL"]   = 100m,     // 100 barrels/lot
+            ["NATGAS"]  = 10_000m,  // 10,000 units/lot
+            ["COPPER"]  = 25_000m,  // 25,000 lbs/lot
+            ["COCOA"]   = 1m,
+            ["COFFEE"]  = 10m,
+            ["SUGAR"]   = 100m,
+            ["COTTON"]  = 100m,
+            ["WHEAT"]   = 4m,
+            ["CORN"]    = 4m,
+            ["SOYBEAN"] = 4m,
+            // Indices — most MT5 brokers quote 1 unit of the index's base currency per point, per 1.0 lot
+            ["US30"]    = 1m, ["US500"]  = 1m, ["NAS100"] = 1m, ["GER40"]  = 1m,
+            ["UK100"]   = 1m, ["FRA40"]  = 1m, ["EU50"]   = 1m, ["JP225"]  = 1m,
+            ["AUS200"]  = 1m, ["HK50"]   = 1m, ["SPA35"]  = 1m, ["ITA40"]  = 1m,
+            ["CH20"]    = 1m, ["USDX"]   = 1m, ["VIX"]    = 1m,
         };
 
         void Add(string broker, string canonical, string category)

@@ -404,14 +404,7 @@
   <data name="LotCalc_LotSize"              xml:space="preserve"><value>Recommended lot size</value></data>
   <data name="LotCalc_RiskAmount"           xml:space="preserve"><value>Risk amount</value></data>
   <data name="LotCalc_RiskReward"           xml:space="preserve"><value>Risk:Reward</value></data>
-  <data name="LotCalc_Save"                 xml:space="preserve"><value>Save calculation</value></data>
-  <data name="LotCalc_History"              xml:space="preserve"><value>Recent calculations</value></data>
-  <data name="LotCalc_HistoryEmpty"         xml:space="preserve"><value>No calculations saved yet.</value></data>
-  <data name="LotCalc_Col_Date"             xml:space="preserve"><value>Date</value></data>
-  <data name="LotCalc_Col_Symbol"          xml:space="preserve"><value>Symbol</value></data>
-  <data name="LotCalc_Col_Risk"            xml:space="preserve"><value>Risk</value></data>
-  <data name="LotCalc_Col_LotSize"         xml:space="preserve"><value>Lot size</value></data>
-  <data name="LotCalc_Col_RR"              xml:space="preserve"><value>R:R</value></data>
+  <data name="LotCalc_Clear"                xml:space="preserve"><value>Clear</value></data>
 
   <!-- Playbook zoom controls -->
   <data name="Playbook_ZoomOut"             xml:space="preserve"><value>Zoom out (-)</value></data>

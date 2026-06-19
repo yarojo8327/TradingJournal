@@ -1,9 +1,7 @@
 using Application.WPF.Common.ViewModels;
-using Application.WPF.Models.Entities;
 using Application.WPF.Services.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using TradingAccountEntity = Application.WPF.Models.Entities.TradingAccount;
@@ -13,7 +11,7 @@ namespace Application.WPF.ViewModels.LotCalculator;
 /// <summary>
 /// Calculadora de lotaje basada en gestión de riesgo (HU-TRD-001).
 /// Calcula el tamaño de posición recomendado a partir del capital, % de riesgo
-/// y distancia del Stop Loss, validando las reglas de negocio RN-001, RN-002, RN-005 y RN-006.
+/// y distancia del Stop Loss, validando las reglas de negocio RN-001, RN-002 y RN-005.
 /// </summary>
 public partial class LotCalculatorViewModel : BaseViewModel
 {
@@ -21,7 +19,6 @@ public partial class LotCalculatorViewModel : BaseViewModel
     private readonly ISymbolMappingService     _symbolMappingService;
     private readonly ITradingAccountService    _accountService;
     private readonly ISessionService           _sessionService;
-    private readonly ILogger<LotCalculatorViewModel> _logger;
 
     private static readonly CultureInfo Ic = CultureInfo.InvariantCulture;
 
@@ -29,14 +26,12 @@ public partial class LotCalculatorViewModel : BaseViewModel
         ILotCalculatorService            calculatorService,
         ISymbolMappingService            symbolMappingService,
         ITradingAccountService           accountService,
-        ISessionService                  sessionService,
-        ILogger<LotCalculatorViewModel>  logger)
+        ISessionService                  sessionService)
     {
         _calculatorService    = calculatorService;
         _symbolMappingService = symbolMappingService;
         _accountService       = accountService;
         _sessionService       = sessionService;
-        _logger               = logger;
         Title                 = "Calculadora de Lotaje";
     }
 
@@ -69,9 +64,6 @@ public partial class LotCalculatorViewModel : BaseViewModel
     [ObservableProperty] private string  _riskRewardText   = "—";
     [ObservableProperty] private string  _errorMessage     = string.Empty;
     [ObservableProperty] private string  _warningMessage   = string.Empty;
-    [ObservableProperty] private string  _generalSuccess   = string.Empty;
-
-    [ObservableProperty] private ObservableCollection<LotCalculation> _history = new();
 
     // ── Inicialización ────────────────────────────────────────────────────
 
@@ -88,14 +80,6 @@ public partial class LotCalculatorViewModel : BaseViewModel
         await _symbolMappingService.EnsureDefaultsAsync();
         var canonicalNames = await _symbolMappingService.GetCanonicalNamesAsync();
         Symbols = new ObservableCollection<string>(canonicalNames);
-
-        await LoadHistoryAsync(user.Id);
-    }
-
-    private async Task LoadHistoryAsync(int userId)
-    {
-        var history = await _calculatorService.GetHistoryAsync(userId, take: 10);
-        History = new ObservableCollection<LotCalculation>(history);
     }
 
     // ── Recálculo automático (RN-004) ────────────────────────────────────
@@ -114,15 +98,11 @@ public partial class LotCalculatorViewModel : BaseViewModel
     partial void OnStopLossTextChanged(string value)            => _ = RecalculateAsync();
     partial void OnTakeProfitTextChanged(string value)          => _ = RecalculateAsync();
 
-    private LotCalculationResult? _lastResult;
-
     private async Task RecalculateAsync()
     {
-        GeneralSuccess = string.Empty;
         HasResult       = false;
         ErrorMessage    = string.Empty;
         WarningMessage  = string.Empty;
-        _lastResult     = null;
 
         if (string.IsNullOrWhiteSpace(SelectedSymbol)) return;
 
@@ -150,7 +130,6 @@ public partial class LotCalculatorViewModel : BaseViewModel
             MaxRiskPercentPerTrade: SelectedAccount?.MaxRiskPercentPerTrade);
 
         var result = await _calculatorService.CalculateAsync(request);
-        _lastResult = result;
 
         if (!result.Success)
         {
@@ -168,34 +147,17 @@ public partial class LotCalculatorViewModel : BaseViewModel
     // ── Comandos ──────────────────────────────────────────────────────────
 
     [RelayCommand]
-    private async Task SaveCalculationAsync()
+    private void Clear()
     {
-        var user = _sessionService.CurrentUser;
-        if (user is null || _lastResult is null || !_lastResult.Success) return;
-
-        var request = new LotCalculationRequest(
-            UserId:                 user.Id,
-            AccountId:              SelectedAccount?.Id,
-            Symbol:                 SelectedSymbol!,
-            Capital:                ParseDecimal(CapitalText)!.Value,
-            RiskPercent:            ParseDecimal(RiskPercentText)!.Value,
-            EntryPrice:             ParseDecimal(EntryPriceText)!.Value,
-            StopLoss:               ParseDecimal(StopLossText)!.Value,
-            TakeProfit:             ParseDecimal(TakeProfitText),
-            AccountCurrency:        AccountCurrency,
-            MaxRiskPercentPerTrade: SelectedAccount?.MaxRiskPercentPerTrade);
-
-        try
-        {
-            await _calculatorService.SaveAsync(request, _lastResult);
-            await LoadHistoryAsync(user.Id);
-            GeneralSuccess = "Cálculo guardado en el historial.";
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error saving lot calculation");
-            ErrorMessage = "Ocurrió un error al guardar el cálculo.";
-        }
+        SelectedSymbol   = null;
+        CapitalText      = SelectedAccount?.InitialCapital.ToString("0.##", Ic) ?? string.Empty;
+        RiskPercentText  = "1";
+        EntryPriceText   = string.Empty;
+        StopLossText     = string.Empty;
+        TakeProfitText   = string.Empty;
+        HasResult        = false;
+        ErrorMessage     = string.Empty;
+        WarningMessage   = string.Empty;
     }
 
     private static decimal? ParseDecimal(string? text)

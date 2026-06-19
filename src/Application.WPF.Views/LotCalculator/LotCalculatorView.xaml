@@ -20,23 +20,30 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                    <Border Width="4" Height="24" CornerRadius="2"
-                            Background="{DynamicResource CyanGlowBrush}" Margin="0,0,12,0" />
-                    <TextBlock Text="{loc:Tr LotCalc_Title}"
-                               FontSize="20" FontWeight="Bold"
-                               Foreground="{DynamicResource TextPrimaryBrush}"
-                               VerticalAlignment="Center" />
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <Border Width="4" Height="24" CornerRadius="2"
+                                Background="{DynamicResource CyanGlowBrush}" Margin="0,0,12,0" />
+                        <TextBlock Text="{loc:Tr LotCalc_Title}"
+                                   FontSize="20" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock Text="{loc:Tr LotCalc_Subtitle}"
+                               FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                               TextWrapping="Wrap" />
                 </StackPanel>
-                <TextBlock Text="{loc:Tr LotCalc_Subtitle}"
-                           FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
-                           TextWrapping="Wrap" />
-            </StackPanel>
+
+                <Button Content="{loc:Tr LotCalc_Clear}"
+                        Style="{DynamicResource GhostButton}"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Height="32" Padding="14,0"
+                        Command="{Binding ClearCommand}" />
+            </Grid>
 
             <!-- Form card -->
             <Border Grid.Row="1"
@@ -78,12 +85,12 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0">
-                            <TextBlock>
+                            <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,4">
                                 <Run Text="{loc:Tr LotCalc_Capital}" />
-                                <Run Text=" (" /><Run Text="{Binding AccountCurrency}" /><Run Text=")" />
+                                <Run Text="(" /><Run Text="{Binding AccountCurrency, Mode=OneWay}" /><Run Text=")" />
                             </TextBlock>
                             <TextBox Text="{Binding CapitalText, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{DynamicResource FormTextBox}" Margin="0,4,0,0" />
+                                     Style="{DynamicResource FormTextBox}" />
                         </StackPanel>
 
                         <StackPanel Grid.Column="2">
@@ -182,68 +189,6 @@
                                        Foreground="{DynamicResource TextPrimaryBrush}" />
                         </StackPanel>
                     </Grid>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
-                        <Button Content="{loc:Tr LotCalc_Save}"
-                                Style="{DynamicResource PrimaryButton}"
-                                Height="36" Padding="18,0"
-                                Command="{Binding SaveCalculationCommand}" />
-                        <TextBlock Text="{Binding GeneralSuccess}" FontSize="12"
-                                   Foreground="{DynamicResource AccentGreenBrush}"
-                                   VerticalAlignment="Center" Margin="12,0,0,0" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <!-- History -->
-            <Border Grid.Row="3"
-                    Background="{DynamicResource SurfaceBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="1" CornerRadius="8"
-                    Padding="20,16">
-                <StackPanel>
-                    <TextBlock Text="{loc:Tr LotCalc_History}"
-                               FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextMutedBrush}"
-                               Margin="0,0,0,10" />
-
-                    <TextBlock Text="{loc:Tr LotCalc_HistoryEmpty}"
-                               FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
-                               Visibility="{Binding History.Count,
-                                   Converter={StaticResource BoolToVisibility},
-                                   ConverterParameter=invert}" />
-
-                    <ItemsControl ItemsSource="{Binding History}"
-                                  Visibility="{Binding History.Count, Converter={StaticResource BoolToVisibility}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderBrush="{DynamicResource BorderBrush}"
-                                        BorderThickness="0,1,0,0" Padding="0,8">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="120" />
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="80" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat='dd/MM/yy HH:mm'}"
-                                                   FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
-                                        <TextBlock Grid.Column="1" Text="{Binding Symbol}" FontSize="12" FontWeight="SemiBold" />
-                                        <TextBlock Grid.Column="2" FontSize="12">
-                                            <Run Text="{Binding RiskPercent, StringFormat='0.##'}" /><Run Text="% — " />
-                                            <Run Text="{Binding RiskAmount, StringFormat='N2'}" /><Run Text=" " /><Run Text="{Binding AccountCurrency}" />
-                                        </TextBlock>
-                                        <TextBlock Grid.Column="3" Text="{Binding LotSize, StringFormat='0.00'}"
-                                                   FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource CyanGlowBrush}" />
-                                        <TextBlock Grid.Column="4" FontSize="12" Foreground="{DynamicResource TextMutedBrush}">
-                                            <Run Text="1:" /><Run Text="{Binding RiskRewardRatio, StringFormat='0.00'}" />
-                                        </TextBlock>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
                 </StackPanel>
             </Border>
         </Grid>
