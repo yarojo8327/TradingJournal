@@ -252,6 +252,32 @@ public partial class App : System.Windows.Application
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ManualRating"" INTEGER;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageData"" BLOB;");
         await TryAddColumnAsync(db, @"ALTER TABLE ""PlaybookEntries"" ADD COLUMN ""ImageMimeType"" TEXT;");
+        await TryAddColumnAsync(db, @"ALTER TABLE ""SymbolMappings"" ADD COLUMN ""ValuePerPoint"" TEXT;");
+        await TryAddColumnAsync(db, @"ALTER TABLE ""TradingAccounts"" ADD COLUMN ""MaxRiskPercentPerTrade"" TEXT NOT NULL DEFAULT 2.0;");
+
+        await db.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""LotCalculations"" (
+                ""Id""              INTEGER NOT NULL CONSTRAINT ""PK_LotCalculations"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId""          INTEGER NOT NULL,
+                ""AccountId""       INTEGER,
+                ""Symbol""          TEXT    NOT NULL,
+                ""Capital""         TEXT    NOT NULL,
+                ""RiskPercent""     TEXT    NOT NULL,
+                ""EntryPrice""      TEXT    NOT NULL,
+                ""StopLoss""        TEXT    NOT NULL,
+                ""TakeProfit""      TEXT,
+                ""RiskAmount""      TEXT    NOT NULL,
+                ""LotSize""         TEXT    NOT NULL,
+                ""RiskRewardRatio"" TEXT,
+                ""AccountCurrency"" TEXT    NOT NULL,
+                ""CreatedAt""       TEXT    NOT NULL,
+                CONSTRAINT ""FK_LotCalculations_Users_UserId""
+                    FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE,
+                CONSTRAINT ""FK_LotCalculations_TradingAccounts_AccountId""
+                    FOREIGN KEY (""AccountId"") REFERENCES ""TradingAccounts"" (""Id"") ON DELETE SET NULL
+            );");
+        await db.Database.ExecuteSqlRawAsync(
+            @"CREATE INDEX IF NOT EXISTS ""IX_LotCalculations_UserId"" ON ""LotCalculations"" (""UserId"");");
     }
 
     private static async Task TryAddColumnAsync(TradingJournalDbContext db, string alterSql)

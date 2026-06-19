@@ -114,6 +114,10 @@
                             Style="{DynamicResource GhostButton}"
                             Command="{Binding GoToPlaybookCommand}" />
 
+                    <Button Content="{loc:Tr Nav_LotCalculator}"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToLotCalculatorCommand}" />
+
                     <!-- Configuración dropdown -->
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                         <ToggleButton x:Name="SettingsMenuToggle"

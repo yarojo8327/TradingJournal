@@ -18,6 +18,7 @@ public class TradingJournalDbContext : DbContext
     public DbSet<PlaybookConfluenceRating> PlaybookConfluenceRatings => Set<PlaybookConfluenceRating>();
     public DbSet<JournalListItem>          JournalListItems          => Set<JournalListItem>();
     public DbSet<SymbolMapping>            SymbolMappings            => Set<SymbolMapping>();
+    public DbSet<LotCalculation>           LotCalculations           => Set<LotCalculation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -81,6 +82,7 @@ public class TradingJournalDbContext : DbContext
             e.Property(a => a.BaseCurrency).IsRequired().HasMaxLength(10);
             e.Property(a => a.Leverage).IsRequired().HasMaxLength(20);
             e.Property(a => a.IsCentAccount).HasDefaultValue(false);
+            e.Property(a => a.MaxRiskPercentPerTrade).HasColumnType("decimal(5,2)").HasDefaultValue(2.0m);
             e.Property(a => a.StartDate).IsRequired();
             e.Property(a => a.CreatedAt).IsRequired();
             e.HasOne(a => a.User)
@@ -133,6 +135,28 @@ public class TradingJournalDbContext : DbContext
             e.Property(s => s.BrokerSymbol).IsRequired().HasMaxLength(30);
             e.Property(s => s.CanonicalName).IsRequired().HasMaxLength(20);
             e.Property(s => s.Category).IsRequired().HasMaxLength(20);
+            e.Property(s => s.ValuePerPoint).HasColumnType("decimal(18,4)");
+        });
+
+        modelBuilder.Entity<LotCalculation>(e =>
+        {
+            e.HasKey(c => c.Id);
+            e.HasIndex(c => c.UserId);
+            e.Property(c => c.Symbol).IsRequired().HasMaxLength(20);
+            e.Property(c => c.Capital).HasColumnType("decimal(18,2)");
+            e.Property(c => c.RiskPercent).HasColumnType("decimal(5,2)");
+            e.Property(c => c.EntryPrice).HasColumnType("decimal(18,6)");
+            e.Property(c => c.StopLoss).HasColumnType("decimal(18,6)");
+            e.Property(c => c.TakeProfit).HasColumnType("decimal(18,6)");
+            e.Property(c => c.RiskAmount).HasColumnType("decimal(18,2)");
+            e.Property(c => c.LotSize).HasColumnType("decimal(18,4)");
+            e.Property(c => c.RiskRewardRatio).HasColumnType("decimal(8,2)");
+            e.Property(c => c.AccountCurrency).IsRequired().HasMaxLength(10);
+            e.Property(c => c.CreatedAt).IsRequired();
+            e.HasOne(c => c.User).WithMany().HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(c => c.Account).WithMany().HasForeignKey(c => c.AccountId)
+                .OnDelete(DeleteBehavior.SetNull).IsRequired(false);
         });
 
         modelBuilder.Entity<TradeEntry>(e =>

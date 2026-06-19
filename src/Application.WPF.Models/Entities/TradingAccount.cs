@@ -13,6 +13,8 @@ public class TradingAccount
     public string      BaseCurrency   { get; set; } = string.Empty;
     public string      Leverage       { get; set; } = string.Empty;
     public bool        IsCentAccount  { get; set; }
+    /// <summary>Maximum risk % per trade configured by the user (HU-TRD-001 RN-002). Default 2%.</summary>
+    public decimal     MaxRiskPercentPerTrade { get; set; } = 2.0m;
     public DateTime    StartDate      { get; set; }
     public DateTime    CreatedAt      { get; set; }
     public DateTime?   UpdatedAt      { get; set; }

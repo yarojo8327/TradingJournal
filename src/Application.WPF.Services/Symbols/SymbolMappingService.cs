@@ -27,26 +27,42 @@ public class SymbolMappingService : ISymbolMappingService
         return all.ToDictionary(s => s.BrokerSymbol, s => s.CanonicalName, StringComparer.OrdinalIgnoreCase);
     }
 
-    public async Task<SymbolMapping> CreateAsync(string brokerSymbol, string canonicalName, string category)
+    public async Task<SymbolMapping> CreateAsync(string brokerSymbol, string canonicalName, string category, decimal? valuePerPoint = null)
     {
         var item = new SymbolMapping
         {
             BrokerSymbol  = brokerSymbol.Trim().ToUpper(),
             CanonicalName = canonicalName.Trim().ToUpper(),
-            Category      = category
+            Category      = category,
+            ValuePerPoint = valuePerPoint
         };
         _db.SymbolMappings.Add(item);
         await _db.SaveChangesAsync();
         return item;
     }
 
-    public async Task UpdateAsync(int id, string brokerSymbol, string canonicalName, string category)
+    public async Task UpdateAsync(int id, string brokerSymbol, string canonicalName, string category, decimal? valuePerPoint = null)
     {
         var item = await _db.SymbolMappings.FindAsync(id)
                    ?? throw new InvalidOperationException($"SymbolMapping {id} not found");
         item.BrokerSymbol  = brokerSymbol.Trim().ToUpper();
         item.CanonicalName = canonicalName.Trim().ToUpper();
         item.Category      = category;
+        item.ValuePerPoint = valuePerPoint;
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<decimal?> GetValuePerPointAsync(string canonicalName) =>
+        await _db.SymbolMappings
+                 .Where(s => s.CanonicalName == canonicalName.Trim().ToUpper() && s.ValuePerPoint.HasValue)
+                 .Select(s => s.ValuePerPoint)
+                 .FirstOrDefaultAsync();
+
+    public async Task SetValuePerPointAsync(string canonicalName, decimal valuePerPoint)
+    {
+        var name = canonicalName.Trim().ToUpper();
+        var rows = await _db.SymbolMappings.Where(s => s.CanonicalName == name).ToListAsync();
+        foreach (var row in rows) row.ValuePerPoint = valuePerPoint;
         await _db.SaveChangesAsync();
     }
 
@@ -72,8 +88,26 @@ public class SymbolMappingService : ISymbolMappingService
     {
         var items = new List<SymbolMapping>();
 
-        void Add(string broker, string canonical, string category) =>
-            items.Add(new SymbolMapping { BrokerSymbol = broker, CanonicalName = canonical, Category = category });
+        // ValuePerPoint defaults: $ per 1.0 price-unit move for 1.0 standard lot (account currency == quote currency).
+        // Indices and minor commodities vary too much by broker — left null, user must configure (HU-TRD-001 Scenario 4).
+        var defaultValuePerPoint = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["XAUUSD"] = 100m,   // 1 lot = 100 oz
+            ["XAGUSD"] = 5000m,  // 1 lot = 5000 oz
+            ["USOIL"]  = 1000m,  // 1 lot = 1000 barrels
+            ["UKOIL"]  = 1000m,
+        };
+
+        void Add(string broker, string canonical, string category)
+        {
+            decimal? vpp = category switch
+            {
+                SymbolCategory.Forex  => 100_000m,                                  // 1 lot = 100,000 units
+                SymbolCategory.Crypto => 1m,                                         // 1 lot = 1 unit
+                _ => defaultValuePerPoint.TryGetValue(canonical, out var v) ? v : null
+            };
+            items.Add(new SymbolMapping { BrokerSymbol = broker, CanonicalName = canonical, Category = category, ValuePerPoint = vpp });
+        }
 
         // Suffixes applied to every base symbol
         string[] brokerSuffixes = { ".r", ".sc", ".m", ".pro", ".ecn", ".s", ".raw", ".std", ".i", ".o", ".stp" };

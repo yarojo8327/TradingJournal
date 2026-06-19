@@ -241,6 +241,8 @@
   <data name="Account_CentLabel"            xml:space="preserve"><value>Cent account (USDc / EURc)</value></data>
   <data name="Account_CentHint"             xml:space="preserve"><value>MT5 reports P&amp;L in cents. The import will divide all P&amp;L values by 100 to convert to standard units. Enter your initial capital in the standard currency (e.g., USD), not in cents.</value></data>
   <data name="Account_CentBadge"            xml:space="preserve"><value>¢ CENT</value></data>
+  <data name="Account_MaxRiskLabel"         xml:space="preserve"><value>Maximum risk per trade (%)</value></data>
+  <data name="Account_MaxRiskHint"          xml:space="preserve"><value>The Lot Calculator will warn you when the risk you enter exceeds this percentage for this account.</value></data>
 
   <!-- Trade Journal -->
   <data name="Journal_Header"               xml:space="preserve"><value>Trade Journal</value></data>
@@ -388,6 +390,28 @@
 
   <!-- Navigation extras -->
   <data name="Nav_Playbook"                 xml:space="preserve"><value>Playbook</value></data>
+  <data name="Nav_LotCalculator"            xml:space="preserve"><value>Lot Calculator</value></data>
+  <data name="LotCalc_Title"                xml:space="preserve"><value>Lot Size Calculator</value></data>
+  <data name="LotCalc_Subtitle"             xml:space="preserve"><value>Calculate the recommended position size based on your capital, risk %, and Stop Loss distance.</value></data>
+  <data name="LotCalc_Account"              xml:space="preserve"><value>Account</value></data>
+  <data name="LotCalc_Symbol"               xml:space="preserve"><value>Symbol</value></data>
+  <data name="LotCalc_Capital"              xml:space="preserve"><value>Capital</value></data>
+  <data name="LotCalc_RiskPercent"          xml:space="preserve"><value>Risk %</value></data>
+  <data name="LotCalc_EntryPrice"           xml:space="preserve"><value>Entry Price</value></data>
+  <data name="LotCalc_StopLoss"             xml:space="preserve"><value>Stop Loss</value></data>
+  <data name="LotCalc_TakeProfit"           xml:space="preserve"><value>Take Profit (optional)</value></data>
+  <data name="LotCalc_Result"               xml:space="preserve"><value>Result</value></data>
+  <data name="LotCalc_LotSize"              xml:space="preserve"><value>Recommended lot size</value></data>
+  <data name="LotCalc_RiskAmount"           xml:space="preserve"><value>Risk amount</value></data>
+  <data name="LotCalc_RiskReward"           xml:space="preserve"><value>Risk:Reward</value></data>
+  <data name="LotCalc_Save"                 xml:space="preserve"><value>Save calculation</value></data>
+  <data name="LotCalc_History"              xml:space="preserve"><value>Recent calculations</value></data>
+  <data name="LotCalc_HistoryEmpty"         xml:space="preserve"><value>No calculations saved yet.</value></data>
+  <data name="LotCalc_Col_Date"             xml:space="preserve"><value>Date</value></data>
+  <data name="LotCalc_Col_Symbol"          xml:space="preserve"><value>Symbol</value></data>
+  <data name="LotCalc_Col_Risk"            xml:space="preserve"><value>Risk</value></data>
+  <data name="LotCalc_Col_LotSize"         xml:space="preserve"><value>Lot size</value></data>
+  <data name="LotCalc_Col_RR"              xml:space="preserve"><value>R:R</value></data>
 
   <!-- Playbook zoom controls -->
   <data name="Playbook_ZoomOut"             xml:space="preserve"><value>Zoom out (-)</value></data>
@@ -618,6 +642,7 @@
   <data name="Settings_SymBroker"            xml:space="preserve"><value>Broker Symbol</value></data>
   <data name="Settings_SymCanonical"         xml:space="preserve"><value>Canonical Name</value></data>
   <data name="Settings_SymCategory"          xml:space="preserve"><value>Category</value></data>
+  <data name="Settings_SymValuePerPoint"     xml:space="preserve"><value>Value per point</value></data>
   <data name="Settings_SymSearch"            xml:space="preserve"><value>Search symbols...</value></data>
   <data name="Settings_SymAdd"               xml:space="preserve"><value>Add mapping</value></data>
   <data name="Settings_SymSave"              xml:space="preserve"><value>Save</value></data>

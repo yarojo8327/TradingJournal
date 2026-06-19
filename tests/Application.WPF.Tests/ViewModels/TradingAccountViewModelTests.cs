@@ -192,7 +192,7 @@ public class TradingAccountViewModelTests
         _accountSvc.Verify(s => s.CreateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>()), Times.Never);
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<decimal>()), Times.Never);
     }
 
     [Fact]
@@ -229,14 +229,14 @@ public class TradingAccountViewModelTests
         _accountSvc.Setup(s => s.CreateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<decimal>()))
             .ReturnsAsync(SampleAccount);
 
         await _sut.SaveCommand.ExecuteAsync(null);
 
         _accountSvc.Verify(s => s.CreateAsync(
             1, "Pepperstone", "ACC123", AccountType.Real, 10000m,
-            "USD", "1:200", It.IsAny<DateTime>(), It.IsAny<bool>()), Times.Once);
+            "USD", "1:200", It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<decimal>()), Times.Once);
     }
 
     [Fact]
@@ -249,7 +249,7 @@ public class TradingAccountViewModelTests
         _accountSvc.Setup(s => s.CreateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<decimal>()))
             .ReturnsAsync(SampleAccount);
 
         await _sut.SaveCommand.ExecuteAsync(null);
@@ -267,7 +267,7 @@ public class TradingAccountViewModelTests
         _accountSvc.Setup(s => s.CreateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<decimal>()))
             .ReturnsAsync(SampleAccount);
 
         await _sut.SaveCommand.ExecuteAsync(null);
@@ -287,7 +287,7 @@ public class TradingAccountViewModelTests
         _accountSvc.Setup(s => s.UpdateAsync(
             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<decimal>()))
             .ReturnsAsync(SampleAccount);
 
         await _sut.SaveCommand.ExecuteAsync(null);
@@ -295,7 +295,7 @@ public class TradingAccountViewModelTests
         _accountSvc.Verify(s => s.UpdateAsync(
             SampleAccount.Id, It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<AccountType>(), It.IsAny<decimal>(),
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>()), Times.Once);
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<decimal>()), Times.Once);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────
