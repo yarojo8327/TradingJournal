@@ -37,8 +37,9 @@ public partial class App : System.Windows.Application
         _host = BuildHost();
         await _host.StartAsync();
 
-        // Initialize database schema
-        using (var db = _host.Services.GetRequiredService<TradingJournalDbContext>())
+        // Initialize database schema (use a scope — DbContext is Transient/Scoped)
+        using (var scope = _host.Services.CreateScope())
+        using (var db = scope.ServiceProvider.GetRequiredService<TradingJournalDbContext>())
         {
             await db.Database.EnsureCreatedAsync();
             await EnsureSchemaUpToDateAsync(db);
