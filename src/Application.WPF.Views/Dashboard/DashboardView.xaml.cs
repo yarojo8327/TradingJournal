@@ -219,6 +219,55 @@ public partial class DashboardView : UserControl
             DrawDateLabel(dates[dates.Count / 2],    IndexToX(dates.Count / 2),     canvasH, padBottom, padLeft, false);
             DrawDateLabel(dates[^1],                 IndexToX(dates.Count - 1),     canvasH, padBottom, padLeft, false);
         }
+
+        // ── Important points: highest peak and lowest trough ──────────────
+        if (dates != null && dates.Count == values.Count)
+        {
+            int maxIdx = 0, minIdx = 0;
+            for (int i = 1; i < values.Count; i++)
+            {
+                if (values[i] > values[maxIdx]) maxIdx = i;
+                if (values[i] < values[minIdx]) minIdx = i;
+            }
+
+            if (maxIdx != values.Count - 1 && maxIdx != 0)
+                DrawMarker(IndexToX(maxIdx), DataToY(values[maxIdx]), values[maxIdx], dates[maxIdx],
+                    Color.FromRgb(0, 230, 118), canvasW, canvasH, padLeft, padRight, padTop, padBottom);
+
+            if (minIdx != values.Count - 1 && minIdx != 0)
+                DrawMarker(IndexToX(minIdx), DataToY(values[minIdx]), values[minIdx], dates[minIdx],
+                    Color.FromRgb(255, 68, 68), canvasW, canvasH, padLeft, padRight, padTop, padBottom);
+        }
+    }
+
+    private void DrawMarker(double x, double y, double value, DateTime date, Color color,
+        double canvasW, double canvasH, double padLeft, double padRight, double padTop, double padBottom)
+    {
+        var dot = new Ellipse { Width = 6, Height = 6, Fill = new SolidColorBrush(color) };
+        Canvas.SetLeft(dot, x - 3);
+        Canvas.SetTop (dot, y - 3);
+        EquityCanvas.Children.Add(dot);
+
+        const double lblW = 42, lblH = 24;
+        bool placeAbove = (y - padTop) > (canvasH - padBottom - y);
+
+        var lbl = new TextBlock
+        {
+            Text          = $"{FormatValue(value)}\n{date:dd/MM/yy}",
+            FontSize      = 8,
+            TextAlignment = System.Windows.TextAlignment.Center,
+            Foreground    = new SolidColorBrush(color),
+            Width         = lblW,
+        };
+
+        double left = Math.Clamp(x - lblW / 2, padLeft, canvasW - padRight - lblW);
+        double top  = placeAbove
+            ? Math.Max(padTop, y - lblH - 4)
+            : Math.Min(canvasH - padBottom - lblH, y + 6);
+
+        Canvas.SetLeft(lbl, left);
+        Canvas.SetTop (lbl, top);
+        EquityCanvas.Children.Add(lbl);
     }
 
     private void DrawDateLabel(DateTime date, double cx, double canvasH, double padBottom, double padLeft, bool isFirst)

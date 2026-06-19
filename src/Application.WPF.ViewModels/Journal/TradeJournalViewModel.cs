@@ -82,10 +82,13 @@ public partial class TradeJournalViewModel : BaseViewModel
 
     /// <summary>Cumulative balance per closed trade, starting from initial capital.</summary>
     private List<double> _equityPoints = new();
+    /// <summary>Date associated with each equity point (entry/exit date of the trade, or account start date for the first point).</summary>
+    private List<DateTime> _equityDates = new();
     /// <summary>P&L value per closed trade (in trade order).</summary>
     private List<double> _pnlPoints    = new();
-    public IReadOnlyList<double> EquityPoints => _equityPoints;
-    public IReadOnlyList<double> PnlPoints    => _pnlPoints;
+    public IReadOnlyList<double>   EquityPoints => _equityPoints;
+    public IReadOnlyList<DateTime> EquityDates  => _equityDates;
+    public IReadOnlyList<double>   PnlPoints    => _pnlPoints;
     public int StatsWonCount  { get; private set; }
     public int StatsLostCount { get; private set; }
 
@@ -451,16 +454,24 @@ public partial class TradeJournalViewModel : BaseViewModel
         // ── Chart data ────────────────────────────────────────────────────
 
         _equityPoints = new List<double>();
+        _equityDates  = new List<DateTime>();
         _pnlPoints    = new List<double>();
 
         double cum = initial > 0 ? (double)initial : 0;
-        if (cum > 0) _equityPoints.Add(cum);   // starting point
+        if (cum > 0)
+        {
+            _equityPoints.Add(cum);   // starting point
+            var startDate = FilterAccount?.StartDate
+                ?? closed.Select(t => t.ExitDate ?? t.EntryDate).DefaultIfEmpty(DateTime.Today).Min();
+            _equityDates.Add(startDate);
+        }
 
         foreach (var t in closed.Where(t => t.ProfitLoss.HasValue))
         {
             var pnl = (double)t.ProfitLoss!.Value;
             cum += pnl;
             _equityPoints.Add(cum);
+            _equityDates.Add(t.ExitDate ?? t.EntryDate);
             _pnlPoints.Add(pnl);
         }
 

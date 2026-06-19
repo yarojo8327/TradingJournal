@@ -659,24 +659,24 @@
                             CornerRadius="6,6,0,0" Padding="0,10">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="88" />   <!-- 0  Fecha -->
-                                <ColumnDefinition Width="68" />   <!-- 1  Símbolo -->
-                                <ColumnDefinition Width="42" />   <!-- 2  Dir -->
-                                <ColumnDefinition Width="88" />   <!-- 3  Cuenta -->
-                                <ColumnDefinition Width="85" />   <!-- 4  Estrategia -->
-                                <ColumnDefinition Width="70" />   <!-- 5  Entrada -->
-                                <ColumnDefinition Width="70" />   <!-- 6  Salida -->
-                                <ColumnDefinition Width="58" />   <!-- 7  SL -->
-                                <ColumnDefinition Width="58" />   <!-- 8  TP -->
-                                <ColumnDefinition Width="46" />   <!-- 9  Lotes -->
-                                <ColumnDefinition Width="68" />   <!-- 10 P&L -->
-                                <ColumnDefinition Width="60" />   <!-- 11 % Cap -->
-                                <ColumnDefinition Width="42" />   <!-- 12 R:R -->
-                                <ColumnDefinition Width="68" />   <!-- 13 Resultado -->
-                                <ColumnDefinition Width="65" />   <!-- 14 Sesión -->
-                                <ColumnDefinition Width="40" />   <!-- 15 Cal -->
-                                <ColumnDefinition Width="16" />   <!-- 16 separador -->
-                                <ColumnDefinition Width="Auto" /> <!-- 17 Acciones -->
+                                <ColumnDefinition Width="0.88*" /> <!-- 0  Fecha -->
+                                <ColumnDefinition Width="0.68*" /> <!-- 1  Símbolo -->
+                                <ColumnDefinition Width="0.42*" /> <!-- 2  Dir -->
+                                <ColumnDefinition Width="0.88*" /> <!-- 3  Cuenta -->
+                                <ColumnDefinition Width="0.85*" /> <!-- 4  Estrategia -->
+                                <ColumnDefinition Width="0.70*" /> <!-- 5  Entrada -->
+                                <ColumnDefinition Width="0.70*" /> <!-- 6  Salida -->
+                                <ColumnDefinition Width="0.58*" /> <!-- 7  SL -->
+                                <ColumnDefinition Width="0.58*" /> <!-- 8  TP -->
+                                <ColumnDefinition Width="0.46*" /> <!-- 9  Lotes -->
+                                <ColumnDefinition Width="0.68*" /> <!-- 10 P&L -->
+                                <ColumnDefinition Width="0.60*" /> <!-- 11 % Cap -->
+                                <ColumnDefinition Width="0.42*" /> <!-- 12 R:R -->
+                                <ColumnDefinition Width="0.68*" /> <!-- 13 Resultado -->
+                                <ColumnDefinition Width="0.65*" /> <!-- 14 Sesión -->
+                                <ColumnDefinition Width="0.40*" /> <!-- 15 Cal -->
+                                <ColumnDefinition Width="16" />    <!-- 16 separador -->
+                                <ColumnDefinition Width="220" />   <!-- 17 Acciones -->
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"  Text="{loc:Tr Journal_Col_Date}"      Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="1"  Text="{loc:Tr Journal_Col_Symbol}"    Style="{StaticResource ColHeader}" />
@@ -694,7 +694,7 @@
                             <TextBlock Grid.Column="13" Text="{loc:Tr Journal_Col_Result}"    Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="14" Text="{loc:Tr Journal_Col_Session}"   Style="{StaticResource ColHeader}" />
                             <TextBlock Grid.Column="15" Text="{loc:Tr Journal_Col_Rating}"    Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
-                            <TextBlock Grid.Column="17" Text="{loc:Tr Journal_Col_Actions}"   Style="{StaticResource ColHeader}" />
+                            <TextBlock Grid.Column="17" Text="{loc:Tr Journal_Col_Actions}"   Style="{StaticResource ColHeader}" HorizontalAlignment="Center" />
                         </Grid>
                     </Border>
 
@@ -715,24 +715,24 @@
                                     </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="88" />
-                                            <ColumnDefinition Width="68" />
-                                            <ColumnDefinition Width="42" />
-                                            <ColumnDefinition Width="88" />
-                                            <ColumnDefinition Width="85" />
-                                            <ColumnDefinition Width="70" />
-                                            <ColumnDefinition Width="70" />
-                                            <ColumnDefinition Width="58" />
-                                            <ColumnDefinition Width="58" />
-                                            <ColumnDefinition Width="46" />
-                                            <ColumnDefinition Width="68" />
-                                            <ColumnDefinition Width="60" />
-                                            <ColumnDefinition Width="42" />
-                                            <ColumnDefinition Width="68" />
-                                            <ColumnDefinition Width="65" />
-                                            <ColumnDefinition Width="40" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="172" />
+                                            <ColumnDefinition Width="0.88*" />
+                                            <ColumnDefinition Width="0.68*" />
+                                            <ColumnDefinition Width="0.42*" />
+                                            <ColumnDefinition Width="0.88*" />
+                                            <ColumnDefinition Width="0.85*" />
+                                            <ColumnDefinition Width="0.70*" />
+                                            <ColumnDefinition Width="0.70*" />
+                                            <ColumnDefinition Width="0.58*" />
+                                            <ColumnDefinition Width="0.58*" />
+                                            <ColumnDefinition Width="0.46*" />
+                                            <ColumnDefinition Width="0.68*" />
+                                            <ColumnDefinition Width="0.60*" />
+                                            <ColumnDefinition Width="0.42*" />
+                                            <ColumnDefinition Width="0.68*" />
+                                            <ColumnDefinition Width="0.65*" />
+                                            <ColumnDefinition Width="0.40*" />
+                                            <ColumnDefinition Width="16" />
+                                            <ColumnDefinition Width="220" />
                                         </Grid.ColumnDefinitions>
 
                                         <!-- Fecha -->
@@ -942,6 +942,7 @@
 
                                         <!-- Acciones: ↗ Gráfico | Editar | Eliminar -->
                                         <StackPanel Grid.Column="17" Orientation="Horizontal"
+                                                    HorizontalAlignment="Center"
                                                     VerticalAlignment="Center" Margin="4,0,0,0">
 
                                             <!-- Abrir gráfico (solo si hay URL) -->
