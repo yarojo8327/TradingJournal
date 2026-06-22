@@ -344,6 +344,7 @@
   <data name="Strategy_DescriptionHint"     xml:space="preserve"><value>Describe brevemente la estrategia…</value></data>
   <data name="Strategy_ImageSection"        xml:space="preserve"><value>Imagen de referencia (opcional)</value></data>
   <data name="Strategy_NoImage"             xml:space="preserve"><value>Sin imagen seleccionada</value></data>
+  <data name="Strategy_SelectToView"        xml:space="preserve"><value>Selecciona una estrategia de la lista para ver sus detalles.</value></data>
   <data name="Strategy_SelectImage"         xml:space="preserve"><value>Seleccionar imagen</value></data>
   <data name="Strategy_RemoveImage"         xml:space="preserve"><value>Quitar imagen</value></data>
   <data name="Strategy_RulesSection"        xml:space="preserve"><value>Reglas de la estrategia</value></data>
