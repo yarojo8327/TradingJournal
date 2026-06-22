@@ -35,6 +35,9 @@ public partial class LotCalculatorViewModel : BaseViewModel
         Title                 = "Calculadora de Lotaje";
     }
 
+    /// <summary>When false, hides the title/subtitle header — used when embedding this view inside another screen (e.g. Evaluador de Trading).</summary>
+    [ObservableProperty] private bool _showHeader = true;
+
     // ── Catálogos ─────────────────────────────────────────────────────────
 
     [ObservableProperty] private ObservableCollection<TradingAccountEntity> _accounts = new();

@@ -1,4 +1,3 @@
-using Application.WPF.Models.Entities;
 using Application.WPF.ViewModels.Strategies;
 using Application.WPF.Views.Common;
 using Microsoft.Win32;
@@ -7,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TradingStrategyEntity = Application.WPF.Models.Entities.TradingStrategy;
-using Application.WPF.Views.Strategies;
 
 namespace Application.WPF.Views.Strategies;
 
@@ -21,6 +19,16 @@ public partial class TradingStrategyView : UserControl
     public TradingStrategyView(TradingStrategyViewModel viewModel) : this()
     {
         DataContext = viewModel;
+    }
+
+    // ── Lista: clic en la tarjeta muestra el detalle de solo lectura ────
+
+    private void OnStrategyCardClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: TradingStrategyEntity strategy }) return;
+        if (DataContext is not TradingStrategyViewModel vm) return;
+
+        vm.SelectStrategyCommand.Execute(strategy);
     }
 
     // ── Imagen: selección desde disco ────────────────────────────────────
@@ -69,17 +77,6 @@ public partial class TradingStrategyView : UserControl
         OpenViewer(data, vm.StrategyTitle);
     }
 
-    // ── Imagen: visor ampliado desde la tarjeta en la lista ─────────────
-
-    private void OnCardImageClick(object sender, MouseButtonEventArgs e)
-    {
-        if (sender is FrameworkElement { Tag: TradingStrategy strategy }
-            && strategy.ImageData is { Length: > 0 } data)
-        {
-            OpenViewer(data, strategy.Title);
-        }
-    }
-
     private static void OpenViewer(byte[] data, string title)
     {
         var viewer = new ImageViewerWindow(data, title)
@@ -87,22 +84,5 @@ public partial class TradingStrategyView : UserControl
             Owner = System.Windows.Application.Current.MainWindow
         };
         viewer.ShowDialog();
-    }
-
-    // ── Calificador ─────────────────────────────────────────────────────
-
-    private void OnRateStrategy(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { Tag: TradingStrategyEntity strategy }) return;
-        if (DataContext is not TradingStrategyViewModel listVm) return;
-
-        var raterVm = listVm.CreateRater(strategy);
-        var window  = new StrategyRaterWindow(raterVm)
-        {
-            Owner = System.Windows.Application.Current.MainWindow
-        };
-        window.ShowDialog();
-
-        _ = listVm.RefreshAsync();
     }
 }

@@ -1,6 +1,7 @@
 using Application.WPF.Common.Localization;
 using Application.WPF.Common.ViewModels;
 using Application.WPF.Services.Interfaces;
+using Application.WPF.ViewModels.Evaluator;
 using Application.WPF.ViewModels.Journal;
 using Application.WPF.ViewModels.Login;
 using Application.WPF.ViewModels.LotCalculator;
@@ -135,6 +136,10 @@ public partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private void GoToLotCalculator() =>
         _navigationService.NavigateTo<LotCalculatorViewModel>();
+
+    [RelayCommand]
+    private void GoToTradingEvaluator() =>
+        _navigationService.NavigateTo<TradingEvaluatorViewModel>();
 
     [RelayCommand]
     private void Logout()

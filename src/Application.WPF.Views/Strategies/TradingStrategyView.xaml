@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Application.WPF.ViewModels.Strategies;assembly=Application.WPF.ViewModels"
              xmlns:converters="clr-namespace:Application.WPF.Views.Converters"
+             xmlns:common="clr-namespace:Application.WPF.Views.Common"
              xmlns:loc="clr-namespace:Application.WPF.Views.Localization"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:TradingStrategyViewModel}"
@@ -127,148 +128,90 @@
                 <ItemsControl ItemsSource="{Binding Strategies}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{DynamicResource Card}" Margin="0,0,0,12" Padding="16">
+                            <Border Style="{DynamicResource Card}" Margin="0,0,0,10" Padding="16,12"
+                                    Cursor="Hand"
+                                    Tag="{Binding}"
+                                    MouseLeftButtonUp="OnStrategyCardClick">
                                 <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                    <!-- Fila 1: Imagen + Título + Botones -->
-                                    <Grid Grid.Row="0" Margin="0,0,0,8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                    <!-- Miniatura de imagen (solo si HasImage) -->
+                                    <Border Grid.Column="0" Width="40" Height="40"
+                                            CornerRadius="6" ClipToBounds="True"
+                                            Background="{DynamicResource SurfaceElevatedBrush}"
+                                            Margin="0,0,12,0"
+                                            Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
+                                        <Image Source="{Binding ImageData, Converter={StaticResource BytesToImage}}"
+                                               Stretch="UniformToFill" IsHitTestVisible="False" />
+                                    </Border>
 
-                                        <!-- Miniatura de imagen (solo si HasImage) -->
-                                        <Border Grid.Column="0" Width="48" Height="48"
-                                                CornerRadius="6" ClipToBounds="True"
-                                                Background="{DynamicResource SurfaceElevatedBrush}"
-                                                Margin="0,0,12,0"
-                                                Cursor="Hand"
-                                                ToolTip="{loc:Tr Strategy_TooltipExpand}"
-                                                Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility}}">
-                                            <Image Source="{Binding ImageData, Converter={StaticResource BytesToImage}}"
-                                                   Stretch="UniformToFill"
-                                                   Tag="{Binding}"
-                                                   MouseLeftButtonDown="OnCardImageClick" />
-                                        </Border>
+                                    <!-- Ícono cuando no hay imagen -->
+                                    <Border Grid.Column="0" Width="40" Height="40"
+                                            CornerRadius="6"
+                                            Background="{DynamicResource SurfaceElevatedBrush}"
+                                            Margin="0,0,12,0">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="📊" FontSize="18"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
 
-                                        <!-- Ícono cuando no hay imagen -->
-                                        <Border Grid.Column="0" Width="48" Height="48"
-                                                CornerRadius="6"
-                                                Background="{DynamicResource SurfaceElevatedBrush}"
-                                                Margin="0,0,12,0"
-                                                Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibility},
-                                                             ConverterParameter=inverse}">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding HasImage}" Value="True">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <TextBlock Text="📊" FontSize="22"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center" />
-                                        </Border>
-
-                                        <!-- Título -->
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Title}"
-                                                       FontSize="14" FontWeight="Bold"
-                                                       Foreground="{DynamicResource TextPrimaryBrush}"
-                                                       TextTrimming="CharacterEllipsis" />
-                                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                                <TextBlock FontSize="11"
-                                                           Foreground="{DynamicResource TextMutedBrush}">
-                                                    <Run Text="{Binding Rules.Count, Mode=OneWay, StringFormat={}{0}}" />
-                                                    <Run Text=" regla(s)" />
-                                                </TextBlock>
-                                                <TextBlock FontSize="11" FontWeight="SemiBold"
-                                                           Foreground="#FFD700"
-                                                           Margin="8,0,0,0"
-                                                           Visibility="{Binding HasAverageRating,
-                                                           Converter={StaticResource BoolToVisibility}}">
-                                                    <Run Text="★" />
-                                                    <Run Text="{Binding AverageRating, Mode=OneWay, StringFormat={}{0:F1}}" />
-                                                    <Run Text="/10" />
-                                                </TextBlock>
-                                            </StackPanel>
+                                    <!-- Título + nro. de reglas -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontSize="14" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                            <TextBlock FontSize="11"
+                                                       Foreground="{DynamicResource TextMutedBrush}">
+                                                <Run Text="{Binding Rules.Count, Mode=OneWay, StringFormat={}{0}}" />
+                                                <Run Text=" regla(s)" />
+                                            </TextBlock>
+                                            <TextBlock FontSize="11" FontWeight="SemiBold"
+                                                       Foreground="#FFD700"
+                                                       Margin="8,0,0,0"
+                                                       Visibility="{Binding HasAverageRating,
+                                                       Converter={StaticResource BoolToVisibility}}">
+                                                <Run Text="★" />
+                                                <Run Text="{Binding AverageRating, Mode=OneWay, StringFormat={}{0:F1}}" />
+                                                <Run Text="/10" />
+                                            </TextBlock>
                                         </StackPanel>
+                                    </StackPanel>
 
-                                        <!-- Botones -->
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
-                                            <Button Style="{StaticResource CardActionButton}"
-                                                    Foreground="{DynamicResource CyanGlowBrush}"
-                                                    Command="{Binding DataContext.EditStrategyCommand,
-                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Margin="0,0,4,0">
-                                                <TextBlock Text="{loc:Tr Strategy_Edit}" FontSize="11" />
-                                            </Button>
-                                            <Button Style="{StaticResource CardActionButton}"
-                                                    Foreground="#FFD700"
-                                                    Tag="{Binding}"
-                                                    Click="OnRateStrategy"
-                                                    Margin="0,0,4,0">
-                                                <TextBlock Text="{loc:Tr Strategy_Rate}" FontSize="11" />
-                                            </Button>
-                                            <Button Style="{StaticResource CardActionButton}"
-                                                    Foreground="{DynamicResource AccentRedBrush}"
-                                                    Command="{Binding DataContext.DeleteStrategyCommand,
-                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}">
-                                                <TextBlock Text="{loc:Tr Strategy_Delete}" FontSize="11" />
-                                            </Button>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <!-- Descripción -->
-                                    <TextBlock Grid.Row="1"
-                                               Text="{Binding Description}"
-                                               FontSize="12"
-                                               Foreground="{DynamicResource TextSecondaryBrush}"
-                                               TextWrapping="Wrap"
-                                               MaxHeight="40"
-                                               TextTrimming="CharacterEllipsis"
-                                               Margin="0,0,0,8"
-                                               Visibility="{Binding Description, Converter={StaticResource StringToVisibility}}" />
-
-                                    <!-- Separador -->
-                                    <Rectangle Grid.Row="2" Height="1"
-                                               Fill="{DynamicResource BorderBrush}"
-                                               Margin="0,0,0,8"
-                                               Visibility="{Binding Rules.Count, Mode=OneWay, Converter={StaticResource IntToVisibility}}" />
-
-                                    <!-- Primeras 2 reglas como preview -->
-                                    <ItemsControl Grid.Row="3"
-                                                  ItemsSource="{Binding Rules}"
-                                                  Visibility="{Binding Rules.Count, Mode=OneWay, Converter={StaticResource IntToVisibility}}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal" Margin="0,2">
-                                                    <Ellipse Width="5" Height="5"
-                                                             Fill="{DynamicResource CyanGlowBrush}"
-                                                             VerticalAlignment="Center"
-                                                             Margin="0,0,7,0" />
-                                                    <TextBlock Text="{Binding Description}"
-                                                               FontSize="11"
-                                                               Foreground="{DynamicResource TextSecondaryBrush}"
-                                                               TextTrimming="CharacterEllipsis" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-
+                                    <!-- Botones -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <Button Style="{StaticResource CardActionButton}"
+                                                Foreground="{DynamicResource CyanGlowBrush}"
+                                                Command="{Binding DataContext.EditStrategyCommand,
+                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Margin="0,0,4,0">
+                                            <TextBlock Text="{loc:Tr Strategy_Edit}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource CardActionButton}"
+                                                Foreground="{DynamicResource AccentRedBrush}"
+                                                Command="{Binding DataContext.DeleteStrategyCommand,
+                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}">
+                                            <TextBlock Text="{loc:Tr Strategy_Delete}" FontSize="11" />
+                                        </Button>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -601,6 +544,107 @@
                 </Button>
 
             </StackPanel>
+
+            <!-- ══════════════════════════════════════
+                 COLUMNA DERECHA — Detalles (solo lectura)
+                 ══════════════════════════════════════ -->
+            <StackPanel Grid.Column="2"
+                        Visibility="{Binding ShowViewingPanel, Converter={StaticResource BoolToVisibility}}">
+
+                <!-- Encabezado -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="3" Height="20" CornerRadius="1.5"
+                                Background="{DynamicResource CyanGlowBrush}"
+                                Margin="0,0,10,0" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding ViewingStrategy.Title}"
+                                   FontSize="18" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                    <Button Grid.Column="1" Style="{StaticResource CardActionButton}"
+                            Foreground="{DynamicResource CyanGlowBrush}"
+                            Command="{Binding EditStrategyCommand}"
+                            CommandParameter="{Binding ViewingStrategy}">
+                        <TextBlock Text="{loc:Tr Strategy_Edit}" FontSize="12" />
+                    </Button>
+                </Grid>
+
+                <!-- Descripción -->
+                <Border Style="{DynamicResource Card}" Margin="0,0,0,16"
+                        Visibility="{Binding ViewingStrategy.Description, Converter={StaticResource StringToVisibility}}">
+                    <StackPanel>
+                        <TextBlock Text="{loc:Tr Strategy_DescriptionLabel}"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource CyanGlowBrush}"
+                                   Margin="0,0,0,8" />
+                        <TextBlock Text="{Binding ViewingStrategy.Description}"
+                                   FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Gráfico (zoom con rueda, pan con clic+arrastre) -->
+                <Border Style="{DynamicResource Card}" Padding="0" Height="520"
+                        ClipToBounds="True" Margin="0,0,0,16">
+                    <Grid>
+                        <common:ZoomableImage Source="{Binding ViewingImage}"
+                                              Visibility="{Binding ViewingHasImage, Converter={StaticResource BoolToVisibility}}" />
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Visibility="{Binding ViewingHasNoImage, Converter={StaticResource BoolToVisibility}}">
+                            <TextBlock Text="📊" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,8" />
+                            <TextBlock Text="{loc:Tr Strategy_NoImage}"
+                                       FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Reglas -->
+                <Border Style="{DynamicResource Card}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="{loc:Tr Strategy_RulesSection}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource CyanGlowBrush}"
+                                   Margin="0,0,0,14" />
+                        <ItemsControl ItemsSource="{Binding ViewingStrategy.Rules}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource SurfaceElevatedBrush}"
+                                            CornerRadius="6" Margin="0,0,0,6" Padding="10,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse Width="6" Height="6"
+                                                     Fill="{DynamicResource CyanGlowBrush}"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,10,0" />
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}"
+                                                       TextWrapping="Wrap" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Placeholder cuando no hay nada seleccionado ni en edición -->
+            <Border Grid.Column="2" Style="{DynamicResource Card}"
+                    HorizontalAlignment="Stretch" Padding="24,40"
+                    Visibility="{Binding ShowDetailsPlaceholder, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="👈" FontSize="28" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                    <TextBlock Text="{loc:Tr Strategy_SelectToView}"
+                               FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
+                               HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
 
         </Grid>
     </ScrollViewer>

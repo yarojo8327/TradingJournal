@@ -118,6 +118,10 @@
                             Style="{DynamicResource GhostButton}"
                             Command="{Binding GoToLotCalculatorCommand}" />
 
+                    <Button Content="{loc:Tr Nav_TradingEvaluator}"
+                            Style="{DynamicResource GhostButton}"
+                            Command="{Binding GoToTradingEvaluatorCommand}" />
+
                     <!-- Configuración dropdown -->
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                         <ToggleButton x:Name="SettingsMenuToggle"

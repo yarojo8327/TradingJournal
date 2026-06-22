@@ -30,7 +30,10 @@ public partial class TradingStrategyViewModel : BaseViewModel
 
     // ── Estado del formulario ─────────────────────────────────────────────
 
-    [ObservableProperty] private bool   _isFormVisible;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowViewingPanel))]
+    [NotifyPropertyChangedFor(nameof(ShowDetailsPlaceholder))]
+    private bool   _isFormVisible;
     [ObservableProperty] private bool   _isEditMode;
     [ObservableProperty] private string _formTitle     = "Nueva estrategia";
     [ObservableProperty] private string _generalError  = string.Empty;
@@ -66,6 +69,30 @@ public partial class TradingStrategyViewModel : BaseViewModel
     [ObservableProperty] private BitmapImage? _imagePreview;
 
     public bool HasImage => ImageData != null && ImageData.Length > 0;
+
+    // ── Panel de detalles (lectura) ─────────────────────────────────────────
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasViewingStrategy))]
+    [NotifyPropertyChangedFor(nameof(ShowViewingPanel))]
+    [NotifyPropertyChangedFor(nameof(ShowDetailsPlaceholder))]
+    private StrategyEntity? _viewingStrategy;
+
+    public bool HasViewingStrategy => ViewingStrategy is not null;
+
+    /// <summary>El panel de detalles se muestra cuando hay una estrategia seleccionada y el formulario está cerrado.</summary>
+    public bool ShowViewingPanel => !IsFormVisible && HasViewingStrategy;
+
+    /// <summary>El placeholder se muestra cuando no hay nada seleccionado ni en edición.</summary>
+    public bool ShowDetailsPlaceholder => !IsFormVisible && !HasViewingStrategy;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ViewingHasImage))]
+    [NotifyPropertyChangedFor(nameof(ViewingHasNoImage))]
+    private BitmapImage? _viewingImage;
+
+    public bool ViewingHasImage   => ViewingImage is not null;
+    public bool ViewingHasNoImage => ViewingImage is null;
 
     public TradingStrategyViewModel(
         ITradingStrategyService           strategyService,
@@ -109,26 +136,39 @@ public partial class TradingStrategyViewModel : BaseViewModel
 
     // ── Comandos de lista ─────────────────────────────────────────────────
 
+    /// <summary>Selecciona una estrategia para mostrar sus detalles de solo lectura en el panel derecho.</summary>
+    [RelayCommand]
+    private void SelectStrategy(StrategyEntity strategy)
+    {
+        IsFormVisible   = false;
+        ViewingStrategy = strategy;
+        ViewingImage    = strategy.ImageData is { Length: > 0 }
+            ? BytesToBitmap(strategy.ImageData)
+            : null;
+    }
+
     [RelayCommand]
     private void NewStrategy()
     {
         ClearForm();
-        IsEditMode    = false;
-        IsFormVisible = true;
-        FormTitle     = "Nueva estrategia";
-        GeneralError  = GeneralSuccess = string.Empty;
+        IsEditMode      = false;
+        IsFormVisible   = true;
+        ViewingStrategy = null;
+        FormTitle       = "Nueva estrategia";
+        GeneralError    = GeneralSuccess = string.Empty;
     }
 
     [RelayCommand]
     private void EditStrategy(StrategyEntity strategy)
     {
-        _strategyId   = strategy.Id;
-        StrategyTitle = strategy.Title;
-        Description   = strategy.Description ?? string.Empty;
-        IsEditMode    = true;
-        IsFormVisible = true;
-        FormTitle     = "Editar estrategia";
-        GeneralError  = GeneralSuccess = string.Empty;
+        _strategyId     = strategy.Id;
+        StrategyTitle   = strategy.Title;
+        Description     = strategy.Description ?? string.Empty;
+        IsEditMode      = true;
+        IsFormVisible   = true;
+        ViewingStrategy = null;
+        FormTitle       = "Editar estrategia";
+        GeneralError    = GeneralSuccess = string.Empty;
 
         Rules = new ObservableCollection<StrategyRuleItem>(
             strategy.Rules.OrderBy(r => r.OrderIndex).Select((r, i) => new StrategyRuleItem
@@ -162,6 +202,11 @@ public partial class TradingStrategyViewModel : BaseViewModel
         try
         {
             await _strategyService.DeleteAsync(strategy.Id);
+            if (ViewingStrategy?.Id == strategy.Id)
+            {
+                ViewingStrategy = null;
+                ViewingImage    = null;
+            }
             var user = _sessionService.CurrentUser;
             if (user is not null) await LoadStrategiesAsync(user.Id);
             GeneralSuccess = "Estrategia eliminada correctamente.";
