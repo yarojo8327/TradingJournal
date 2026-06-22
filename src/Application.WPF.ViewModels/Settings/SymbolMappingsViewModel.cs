@@ -18,6 +18,7 @@ public partial class SymbolMappingsViewModel : BaseViewModel
     [ObservableProperty] private string  _newBrokerSymbol  = string.Empty;
     [ObservableProperty] private string  _newCanonicalName = string.Empty;
     [ObservableProperty] private string  _newCategory      = SymbolCategory.Forex;
+    [ObservableProperty] private string  _newValuePerPoint = string.Empty;
     [ObservableProperty] private bool    _isEditing;
     [ObservableProperty] private SymbolMapping? _editingItem;
     [ObservableProperty] private string  _errorMessage = string.Empty;
@@ -79,16 +80,20 @@ public partial class SymbolMappingsViewModel : BaseViewModel
             return;
         }
 
+        decimal? valuePerPoint = decimal.TryParse(NewValuePerPoint,
+            System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var vpp)
+            ? vpp : null;
+
         IsBusy = true;
         try
         {
             if (IsEditing && EditingItem is not null)
             {
-                await _service.UpdateAsync(EditingItem.Id, NewBrokerSymbol, NewCanonicalName, NewCategory);
+                await _service.UpdateAsync(EditingItem.Id, NewBrokerSymbol, NewCanonicalName, NewCategory, valuePerPoint);
             }
             else
             {
-                await _service.CreateAsync(NewBrokerSymbol, NewCanonicalName, NewCategory);
+                await _service.CreateAsync(NewBrokerSymbol, NewCanonicalName, NewCategory, valuePerPoint);
             }
             CancelEdit();
             await ReloadAsync();
@@ -107,6 +112,7 @@ public partial class SymbolMappingsViewModel : BaseViewModel
         NewBrokerSymbol  = item.BrokerSymbol;
         NewCanonicalName = item.CanonicalName;
         NewCategory      = item.Category;
+        NewValuePerPoint = item.ValuePerPoint?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
         IsEditing        = true;
         ErrorMessage     = string.Empty;
     }
@@ -118,6 +124,7 @@ public partial class SymbolMappingsViewModel : BaseViewModel
         NewBrokerSymbol  = string.Empty;
         NewCanonicalName = string.Empty;
         NewCategory      = SymbolCategory.Forex;
+        NewValuePerPoint = string.Empty;
         IsEditing        = false;
         ErrorMessage     = string.Empty;
     }

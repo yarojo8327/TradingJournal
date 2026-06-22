@@ -55,7 +55,9 @@
                         <ColumnDefinition Width="12" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="12" />
-                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="130" />
                         <ColumnDefinition Width="12" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="8" />
@@ -86,14 +88,22 @@
                                   Style="{DynamicResource FormComboBox}" />
                     </StackPanel>
 
-                    <Button Grid.Column="6"
+                    <StackPanel Grid.Column="6">
+                        <TextBlock Text="{loc:Tr Settings_SymValuePerPoint}" FontSize="11"
+                                   Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding NewValuePerPoint, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{DynamicResource FormTextBox}"
+                                 Tag="100000" />
+                    </StackPanel>
+
+                    <Button Grid.Column="8"
                             Content="{loc:Tr Settings_SymSave}"
                             Style="{DynamicResource PrimaryButton}"
                             Height="36" Padding="18,0"
                             VerticalAlignment="Bottom"
                             Command="{Binding SaveCommand}" />
 
-                    <Button Grid.Column="8"
+                    <Button Grid.Column="10"
                             Content="{loc:Tr Settings_SymCancel}"
                             Style="{DynamicResource GhostButton}"
                             Height="36" Padding="14,0"
@@ -183,6 +193,9 @@
                         <DataGridTextColumn Header="{loc:Tr Settings_SymCategory}"
                                             Binding="{Binding Category}"
                                             Width="120" />
+                        <DataGridTextColumn Header="{loc:Tr Settings_SymValuePerPoint}"
+                                            Binding="{Binding ValuePerPoint, StringFormat='0.####'}"
+                                            Width="130" />
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

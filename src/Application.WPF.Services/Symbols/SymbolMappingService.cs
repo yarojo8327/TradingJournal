@@ -27,26 +27,42 @@ public class SymbolMappingService : ISymbolMappingService
         return all.ToDictionary(s => s.BrokerSymbol, s => s.CanonicalName, StringComparer.OrdinalIgnoreCase);
     }
 
-    public async Task<SymbolMapping> CreateAsync(string brokerSymbol, string canonicalName, string category)
+    public async Task<SymbolMapping> CreateAsync(string brokerSymbol, string canonicalName, string category, decimal? valuePerPoint = null)
     {
         var item = new SymbolMapping
         {
             BrokerSymbol  = brokerSymbol.Trim().ToUpper(),
             CanonicalName = canonicalName.Trim().ToUpper(),
-            Category      = category
+            Category      = category,
+            ValuePerPoint = valuePerPoint
         };
         _db.SymbolMappings.Add(item);
         await _db.SaveChangesAsync();
         return item;
     }
 
-    public async Task UpdateAsync(int id, string brokerSymbol, string canonicalName, string category)
+    public async Task UpdateAsync(int id, string brokerSymbol, string canonicalName, string category, decimal? valuePerPoint = null)
     {
         var item = await _db.SymbolMappings.FindAsync(id)
                    ?? throw new InvalidOperationException($"SymbolMapping {id} not found");
         item.BrokerSymbol  = brokerSymbol.Trim().ToUpper();
         item.CanonicalName = canonicalName.Trim().ToUpper();
         item.Category      = category;
+        item.ValuePerPoint = valuePerPoint;
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<decimal?> GetValuePerPointAsync(string canonicalName) =>
+        await _db.SymbolMappings
+                 .Where(s => s.CanonicalName == canonicalName.Trim().ToUpper() && s.ValuePerPoint.HasValue)
+                 .Select(s => s.ValuePerPoint)
+                 .FirstOrDefaultAsync();
+
+    public async Task SetValuePerPointAsync(string canonicalName, decimal valuePerPoint)
+    {
+        var name = canonicalName.Trim().ToUpper();
+        var rows = await _db.SymbolMappings.Where(s => s.CanonicalName == name).ToListAsync();
+        foreach (var row in rows) row.ValuePerPoint = valuePerPoint;
         await _db.SaveChangesAsync();
     }
 
@@ -72,8 +88,44 @@ public class SymbolMappingService : ISymbolMappingService
     {
         var items = new List<SymbolMapping>();
 
-        void Add(string broker, string canonical, string category) =>
-            items.Add(new SymbolMapping { BrokerSymbol = broker, CanonicalName = canonical, Category = category });
+        // ValuePerPoint defaults: $ per 1.0 price-unit move for 1.0 standard lot (account currency == quote currency).
+        // Sourced from IC Markets' public contract specification sheets (commonly mirrored by most MT5 retail
+        // brokers); still broker-dependent — users can override per instrument in Configuración > Símbolos.
+        var defaultValuePerPoint = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
+        {
+            // Commodities — contract size (units per 1.0 lot)
+            ["XAUUSD"]  = 100m,     // 100 oz/lot
+            ["XAGUSD"]  = 1000m,    // 1,000 oz/lot
+            ["XPTUSD"]  = 100m,     // 100 oz/lot
+            ["XPDUSD"]  = 100m,     // 100 oz/lot
+            ["USOIL"]   = 100m,     // 100 barrels/lot
+            ["UKOIL"]   = 100m,     // 100 barrels/lot
+            ["NATGAS"]  = 10_000m,  // 10,000 units/lot
+            ["COPPER"]  = 25_000m,  // 25,000 lbs/lot
+            ["COCOA"]   = 1m,
+            ["COFFEE"]  = 10m,
+            ["SUGAR"]   = 100m,
+            ["COTTON"]  = 100m,
+            ["WHEAT"]   = 4m,
+            ["CORN"]    = 4m,
+            ["SOYBEAN"] = 4m,
+            // Indices — most MT5 brokers quote 1 unit of the index's base currency per point, per 1.0 lot
+            ["US30"]    = 1m, ["US500"]  = 1m, ["NAS100"] = 1m, ["GER40"]  = 1m,
+            ["UK100"]   = 1m, ["FRA40"]  = 1m, ["EU50"]   = 1m, ["JP225"]  = 1m,
+            ["AUS200"]  = 1m, ["HK50"]   = 1m, ["SPA35"]  = 1m, ["ITA40"]  = 1m,
+            ["CH20"]    = 1m, ["USDX"]   = 1m, ["VIX"]    = 1m,
+        };
+
+        void Add(string broker, string canonical, string category)
+        {
+            decimal? vpp = category switch
+            {
+                SymbolCategory.Forex  => 100_000m,                                  // 1 lot = 100,000 units
+                SymbolCategory.Crypto => 1m,                                         // 1 lot = 1 unit
+                _ => defaultValuePerPoint.TryGetValue(canonical, out var v) ? v : null
+            };
+            items.Add(new SymbolMapping { BrokerSymbol = broker, CanonicalName = canonical, Category = category, ValuePerPoint = vpp });
+        }
 
         // Suffixes applied to every base symbol
         string[] brokerSuffixes = { ".r", ".sc", ".m", ".pro", ".ecn", ".s", ".raw", ".std", ".i", ".o", ".stp" };

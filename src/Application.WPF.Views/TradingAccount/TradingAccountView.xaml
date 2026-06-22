@@ -446,6 +446,17 @@
                                 </StackPanel>
                             </Border>
 
+                            <!-- Riesgo máximo por operación -->
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="{loc:Tr Account_MaxRiskLabel}" FontSize="11"
+                                           Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,4" />
+                                <TextBox Text="{Binding MaxRiskPercentText, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{DynamicResource FormTextBox}" Tag="2" />
+                                <TextBlock Text="{loc:Tr Account_MaxRiskHint}"
+                                           FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" />
+                            </StackPanel>
+
                             <Button Command="{Binding SaveCommand}"
                                     IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
                                     Height="44" Margin="0,8,0,0">

@@ -11,11 +11,11 @@ public interface ITradingAccountService
     Task<TradingAccount>  CreateAsync(int userId, string broker, string accountNumber,
                                       AccountType accountType, decimal initialCapital,
                                       string baseCurrency, string leverage, DateTime startDate,
-                                      bool isCentAccount = false);
+                                      bool isCentAccount = false, decimal maxRiskPercentPerTrade = 2.0m);
     Task<TradingAccount>  UpdateAsync(int accountId, string broker, string accountNumber,
                                       AccountType accountType, decimal initialCapital,
                                       string baseCurrency, string leverage, DateTime startDate,
-                                      bool isCentAccount = false);
+                                      bool isCentAccount = false, decimal maxRiskPercentPerTrade = 2.0m);
 
     /// <summary>
     /// Returns true if the account has at least one trade registered in the journal.

@@ -241,6 +241,8 @@
   <data name="Account_CentLabel"            xml:space="preserve"><value>Cuenta en centavos (USDc / EURc)</value></data>
   <data name="Account_CentHint"             xml:space="preserve"><value>MT5 reporta el P&amp;L en centavos. Al importar, todos los valores de P&amp;L se dividirán entre 100 para convertirlos a la unidad estándar. Ingresa el capital inicial en la moneda estándar (ej. USD), no en centavos.</value></data>
   <data name="Account_CentBadge"            xml:space="preserve"><value>¢ CENT</value></data>
+  <data name="Account_MaxRiskLabel"         xml:space="preserve"><value>Riesgo máximo por operación (%)</value></data>
+  <data name="Account_MaxRiskHint"          xml:space="preserve"><value>La Calculadora de Lotaje te advertirá cuando el riesgo que ingreses supere este porcentaje para esta cuenta.</value></data>
 
   <!-- Bitácora de Trading -->
   <data name="Journal_Header"               xml:space="preserve"><value>Bitácora de Trading</value></data>
@@ -388,6 +390,22 @@
 
   <!-- Navigation extras -->
   <data name="Nav_Playbook"                 xml:space="preserve"><value>Playbook</value></data>
+  <data name="Nav_LotCalculator"            xml:space="preserve"><value>Calculadora de Lotaje</value></data>
+  <data name="LotCalc_Title"                xml:space="preserve"><value>Calculadora de Lotaje</value></data>
+  <data name="LotCalc_Subtitle"             xml:space="preserve"><value>Calcula el tamaño de posición recomendado según tu capital, % de riesgo y distancia del Stop Loss.</value></data>
+  <data name="LotCalc_Account"              xml:space="preserve"><value>Cuenta</value></data>
+  <data name="LotCalc_Symbol"               xml:space="preserve"><value>Símbolo</value></data>
+  <data name="LotCalc_Capital"              xml:space="preserve"><value>Capital</value></data>
+  <data name="LotCalc_RiskPercent"          xml:space="preserve"><value>Riesgo %</value></data>
+  <data name="LotCalc_EntryPrice"           xml:space="preserve"><value>Precio de Entrada</value></data>
+  <data name="LotCalc_StopLoss"             xml:space="preserve"><value>Stop Loss</value></data>
+  <data name="LotCalc_TakeProfit"           xml:space="preserve"><value>Take Profit (opcional)</value></data>
+  <data name="LotCalc_Result"               xml:space="preserve"><value>Resultado</value></data>
+  <data name="LotCalc_LotSize"              xml:space="preserve"><value>Lotaje recomendado</value></data>
+  <data name="LotCalc_RiskAmount"           xml:space="preserve"><value>Monto en riesgo</value></data>
+  <data name="LotCalc_RewardAmount"         xml:space="preserve"><value>Ganancia potencial</value></data>
+  <data name="LotCalc_RiskReward"           xml:space="preserve"><value>Riesgo:Beneficio</value></data>
+  <data name="LotCalc_Clear"                xml:space="preserve"><value>Limpiar</value></data>
 
   <!-- Playbook zoom controls -->
   <data name="Playbook_ZoomOut"             xml:space="preserve"><value>Reducir (-)</value></data>
@@ -618,6 +636,7 @@
   <data name="Settings_SymBroker"            xml:space="preserve"><value>Símbolo Bróker</value></data>
   <data name="Settings_SymCanonical"         xml:space="preserve"><value>Nombre Canónico</value></data>
   <data name="Settings_SymCategory"          xml:space="preserve"><value>Categoría</value></data>
+  <data name="Settings_SymValuePerPoint"     xml:space="preserve"><value>Valor por punto</value></data>
   <data name="Settings_SymSearch"            xml:space="preserve"><value>Buscar símbolos...</value></data>
   <data name="Settings_SymAdd"               xml:space="preserve"><value>Agregar mapeo</value></data>
   <data name="Settings_SymSave"              xml:space="preserve"><value>Guardar</value></data>

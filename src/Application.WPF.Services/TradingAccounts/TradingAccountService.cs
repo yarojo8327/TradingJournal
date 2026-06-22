@@ -34,20 +34,21 @@ public class TradingAccountService : ITradingAccountService
         int userId, string broker, string accountNumber,
         AccountType accountType, decimal initialCapital,
         string baseCurrency, string leverage, DateTime startDate,
-        bool isCentAccount = false)
+        bool isCentAccount = false, decimal maxRiskPercentPerTrade = 2.0m)
     {
         var account = new TradingAccount
         {
-            UserId         = userId,
-            Broker         = broker.Trim(),
-            AccountNumber  = accountNumber.Trim(),
-            AccountType    = accountType,
-            InitialCapital = initialCapital,
-            BaseCurrency   = baseCurrency.Trim().ToUpper(),
-            Leverage       = leverage.Trim(),
-            IsCentAccount  = isCentAccount,
-            StartDate      = startDate.Date,
-            CreatedAt      = DateTime.UtcNow
+            UserId                 = userId,
+            Broker                 = broker.Trim(),
+            AccountNumber          = accountNumber.Trim(),
+            AccountType            = accountType,
+            InitialCapital         = initialCapital,
+            BaseCurrency           = baseCurrency.Trim().ToUpper(),
+            Leverage               = leverage.Trim(),
+            IsCentAccount          = isCentAccount,
+            MaxRiskPercentPerTrade = maxRiskPercentPerTrade,
+            StartDate              = startDate.Date,
+            CreatedAt              = DateTime.UtcNow
         };
 
         _db.TradingAccounts.Add(account);
@@ -75,20 +76,21 @@ public class TradingAccountService : ITradingAccountService
         int accountId, string broker, string accountNumber,
         AccountType accountType, decimal initialCapital,
         string baseCurrency, string leverage, DateTime startDate,
-        bool isCentAccount = false)
+        bool isCentAccount = false, decimal maxRiskPercentPerTrade = 2.0m)
     {
         var account = await _db.TradingAccounts.FindAsync(accountId)
             ?? throw new InvalidOperationException("Cuenta de trading no encontrada.");
 
-        account.Broker         = broker.Trim();
-        account.AccountNumber  = accountNumber.Trim();
-        account.AccountType    = accountType;
-        account.InitialCapital = initialCapital;
-        account.BaseCurrency   = baseCurrency.Trim().ToUpper();
-        account.Leverage       = leverage.Trim();
-        account.IsCentAccount  = isCentAccount;
-        account.StartDate      = startDate.Date;
-        account.UpdatedAt      = DateTime.UtcNow;
+        account.Broker                 = broker.Trim();
+        account.AccountNumber          = accountNumber.Trim();
+        account.AccountType            = accountType;
+        account.InitialCapital         = initialCapital;
+        account.BaseCurrency           = baseCurrency.Trim().ToUpper();
+        account.Leverage               = leverage.Trim();
+        account.IsCentAccount          = isCentAccount;
+        account.MaxRiskPercentPerTrade = maxRiskPercentPerTrade;
+        account.StartDate              = startDate.Date;
+        account.UpdatedAt              = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
 

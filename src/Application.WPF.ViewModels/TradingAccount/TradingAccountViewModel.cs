@@ -69,6 +69,11 @@ public partial class TradingAccountViewModel : BaseViewModel
     [ObservableProperty] private DateTime _startDate    = DateTime.Today;
     [ObservableProperty] private bool     _isCentAccount;
 
+    [ObservableProperty]
+    [NotifyDataErrorInfo]
+    [CustomValidation(typeof(TradingAccountViewModel), nameof(ValidateMaxRiskPercent))]
+    private string _maxRiskPercentText = "2";
+
     // ── Estado ────────────────────────────────────────────────────────────
 
     [ObservableProperty] private bool   _isEditMode;
@@ -156,6 +161,8 @@ public partial class TradingAccountViewModel : BaseViewModel
         Leverage            = account.Leverage;
         StartDate           = account.StartDate;
         IsCentAccount       = account.IsCentAccount;
+        MaxRiskPercentText  = account.MaxRiskPercentPerTrade.ToString("0.##",
+                                  System.Globalization.CultureInfo.InvariantCulture);
         IsEditMode          = true;
         IsFormVisible       = true;
         FormTitle           = "Editar cuenta de trading";
@@ -243,6 +250,10 @@ public partial class TradingAccountViewModel : BaseViewModel
             return;
         }
 
+        var maxRiskPercent = decimal.TryParse(MaxRiskPercentText,
+            System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out var mr) ? mr : 2.0m;
+
         var user = _sessionService.CurrentUser;
         if (user is null) return;
 
@@ -254,7 +265,7 @@ public partial class TradingAccountViewModel : BaseViewModel
                 await _accountService.UpdateAsync(
                     _accountId, Broker, AccountNumber,
                     SelectedAccountType!.Value, capital,
-                    BaseCurrency, Leverage, StartDate, IsCentAccount);
+                    BaseCurrency, Leverage, StartDate, IsCentAccount, maxRiskPercent);
                 GeneralSuccess = "Cuenta actualizada correctamente.";
             }
             else
@@ -262,7 +273,7 @@ public partial class TradingAccountViewModel : BaseViewModel
                 await _accountService.CreateAsync(
                     user.Id, Broker, AccountNumber,
                     SelectedAccountType!.Value, capital,
-                    BaseCurrency, Leverage, StartDate, IsCentAccount);
+                    BaseCurrency, Leverage, StartDate, IsCentAccount, maxRiskPercent);
                 GeneralSuccess = "Cuenta registrada correctamente.";
             }
 
@@ -295,6 +306,17 @@ public partial class TradingAccountViewModel : BaseViewModel
         return ValidationResult.Success;
     }
 
+    public static ValidationResult? ValidateMaxRiskPercent(string value, ValidationContext _)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return ValidationResult.Success;
+        if (!decimal.TryParse(value,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out var d) || d <= 0 || d > 100)
+            return new ValidationResult("Debe ser un porcentaje entre 0 y 100.");
+        return ValidationResult.Success;
+    }
+
     private void ValidateFormFields()
     {
         ValidateProperty(Broker,             nameof(Broker));
@@ -303,6 +325,7 @@ public partial class TradingAccountViewModel : BaseViewModel
         ValidateProperty(InitialCapitalText, nameof(InitialCapitalText));
         ValidateProperty(BaseCurrency,       nameof(BaseCurrency));
         ValidateProperty(Leverage,           nameof(Leverage));
+        ValidateProperty(MaxRiskPercentText, nameof(MaxRiskPercentText));
     }
 
     private void ClearForm()
@@ -316,6 +339,7 @@ public partial class TradingAccountViewModel : BaseViewModel
         Leverage            = string.Empty;
         StartDate           = DateTime.Today;
         IsCentAccount       = false;
+        MaxRiskPercentText  = "2";
         ClearErrors();
     }
 }

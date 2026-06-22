@@ -1,5 +1,6 @@
 using Application.WPF.ViewModels.Journal;
 using Application.WPF.ViewModels.Login;
+using Application.WPF.ViewModels.LotCalculator;
 using Application.WPF.ViewModels.Main;
 using Application.WPF.ViewModels.Playbook;
 using Application.WPF.ViewModels.Profile;
@@ -31,6 +32,7 @@ public static class ViewModelsRegistration
         services.AddTransient<EmotionalStatesViewModel>();
         services.AddTransient<MistakeTypesViewModel>();
         services.AddTransient<SymbolMappingsViewModel>();
+        services.AddTransient<LotCalculatorViewModel>();
         services.AddTransient<StrategyRaterViewModel>();
         services.AddTransient<Func<StrategyRaterViewModel>>(sp => () => sp.GetRequiredService<StrategyRaterViewModel>());
         return services;
