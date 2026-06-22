@@ -38,8 +38,10 @@ public class LotCalculatorService : ILotCalculatorService
             return new LotCalculationResult(false, null, 0, null, null,
                 $"El activo \"{request.Symbol}\" no tiene configurado un valor por punto. Configúrelo en Configuración > Símbolos.", null);
 
+        var adjustedValuePerPoint = AdjustForQuoteCurrency(request.Symbol, valuePerPoint.Value, request.EntryPrice, request.AccountCurrency);
+
         var riskAmount = request.Capital * (request.RiskPercent / 100m);
-        var lotSize    = Math.Round(riskAmount / (priceDistance * valuePerPoint.Value), 2);
+        var lotSize    = Math.Round(riskAmount / (priceDistance * adjustedValuePerPoint), 2);
 
         decimal? riskReward   = null;
         decimal? rewardAmount = null;
@@ -47,7 +49,7 @@ public class LotCalculatorService : ILotCalculatorService
         {
             var rewardDistance = Math.Abs(request.TakeProfit.Value - request.EntryPrice);
             riskReward   = Math.Round(rewardDistance / priceDistance, 2);
-            rewardAmount = Math.Round(rewardDistance * valuePerPoint.Value * lotSize, 2);
+            rewardAmount = Math.Round(rewardDistance * adjustedValuePerPoint * lotSize, 2);
         }
 
         // RN-002: warn (not block) when the requested risk exceeds the account's configured maximum.
@@ -56,6 +58,29 @@ public class LotCalculatorService : ILotCalculatorService
             warning = $"El riesgo ingresado ({request.RiskPercent:0.##}%) supera el máximo configurado para esta cuenta ({request.MaxRiskPercentPerTrade.Value:0.##}%).";
 
         return new LotCalculationResult(true, lotSize, riskAmount, riskReward, rewardAmount, null, warning);
+    }
+
+    /// <summary>
+    /// ValuePerPoint is configured assuming the pair's quote currency equals the account currency
+    /// (e.g. EURUSD with a USD account: PnL is already in USD, no adjustment needed).
+    /// For 6-letter forex symbols where the BASE currency equals the account currency instead
+    /// (e.g. USDJPY with a USD account: PnL is generated in JPY), the configured value must be
+    /// converted back to the account currency by dividing by the entry price — derivable from the
+    /// request itself, no external FX rate required. Cross pairs matching neither currency are left
+    /// as configured (known approximation under the MVP's no-FX-conversion scope).
+    /// </summary>
+    private static decimal AdjustForQuoteCurrency(string symbol, decimal valuePerPoint, decimal entryPrice, string accountCurrency)
+    {
+        var s = symbol.Trim();
+        if (s.Length != 6) return valuePerPoint;
+
+        var baseCcy  = s[..3];
+        var quoteCcy = s[3..];
+        if (quoteCcy.Equals(accountCurrency, StringComparison.OrdinalIgnoreCase)) return valuePerPoint;
+        if (baseCcy.Equals(accountCurrency, StringComparison.OrdinalIgnoreCase) && entryPrice > 0)
+            return valuePerPoint / entryPrice;
+
+        return valuePerPoint;
     }
 
     public async Task<LotCalculation> SaveAsync(LotCalculationRequest request, LotCalculationResult result)

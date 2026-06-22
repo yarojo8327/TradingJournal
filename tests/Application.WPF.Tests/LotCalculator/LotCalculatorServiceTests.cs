@@ -148,6 +148,51 @@ public class LotCalculatorServiceTests : IDisposable
         Assert.Null(result.RewardAmount);
     }
 
+    // ── Quote-currency adjustment for USD-base forex pairs (e.g. USDJPY) ──
+
+    [Fact]
+    public async Task Calculate_UsdBasePair_UsdAccount_AdjustsValuePerPointByEntryPrice()
+    {
+        await SeedSymbolAsync("USDJPY", 100_000m);
+        // RiskAmount = 1602.63 * 1% = 16.0263
+        // Distance = |161.505 - 161.655| = 0.150
+        // Adjusted VPP = 100000 / 161.505 ≈ 619.0
+        // LotSize = 16.0263 / (0.150 * 619.0) ≈ 0.17
+        var request = BuildRequest(symbol: "USDJPY", capital: 1602.63m, riskPercent: 1m,
+            entryPrice: 161.505m, stopLoss: 161.655m);
+
+        var result = await _sut.CalculateAsync(request);
+
+        Assert.True(result.Success);
+        Assert.True(result.LotSize > 0.15m && result.LotSize < 0.19m,
+            $"Expected lot size around 0.17, got {result.LotSize}");
+    }
+
+    [Fact]
+    public async Task Calculate_UsdQuotePair_UsdAccount_DoesNotAdjustValuePerPoint()
+    {
+        // EURUSD: quote currency (USD) already matches account currency, no adjustment expected.
+        await SeedSymbolAsync("EURUSD", 100_000m);
+        var result = await _sut.CalculateAsync(BuildRequest());
+
+        Assert.True(result.Success);
+        Assert.Equal(0.20m, result.LotSize); // same as Calculate_ValidInputs_ReturnsExpectedLotSize
+    }
+
+    [Fact]
+    public async Task Calculate_CrossPair_UsdAccount_LeavesValuePerPointUnadjusted()
+    {
+        // EURGBP: neither currency matches the USD account — known approximation, no crash expected.
+        await SeedSymbolAsync("EURGBP", 100_000m);
+        var request = BuildRequest(symbol: "EURGBP", entryPrice: 0.8600m, stopLoss: 0.8550m);
+
+        var result = await _sut.CalculateAsync(request);
+
+        Assert.True(result.Success);
+        // Unadjusted: 100 / (0.0050 * 100000) = 0.20 (same formula as before the fix)
+        Assert.Equal(0.20m, result.LotSize);
+    }
+
     // ── RN-002: warn (not block) when risk exceeds the account's configured max ──
 
     [Fact]
