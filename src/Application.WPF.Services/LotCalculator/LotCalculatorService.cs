@@ -20,32 +20,34 @@ public class LotCalculatorService : ILotCalculatorService
     {
         // RN-001: Stop Loss or Entry Price cannot be zero, and they cannot be equal (zero distance).
         if (request.EntryPrice == 0 || request.StopLoss == 0)
-            return new LotCalculationResult(false, null, 0, null,
+            return new LotCalculationResult(false, null, 0, null, null,
                 "El precio de entrada y el Stop Loss son obligatorios y deben ser distintos de cero.", null);
 
         var priceDistance = Math.Abs(request.EntryPrice - request.StopLoss);
         if (priceDistance == 0)
-            return new LotCalculationResult(false, null, 0, null,
+            return new LotCalculationResult(false, null, 0, null, null,
                 "El Stop Loss no puede ser igual al precio de entrada.", null);
 
         if (request.Capital <= 0 || request.RiskPercent <= 0)
-            return new LotCalculationResult(false, null, 0, null,
+            return new LotCalculationResult(false, null, 0, null, null,
                 "El capital y el porcentaje de riesgo deben ser mayores que cero.", null);
 
         // Scenario 4: the instrument must have a configured point value.
         var valuePerPoint = await _symbolMappingService.GetValuePerPointAsync(request.Symbol);
         if (valuePerPoint is null || valuePerPoint <= 0)
-            return new LotCalculationResult(false, null, 0, null,
+            return new LotCalculationResult(false, null, 0, null, null,
                 $"El activo \"{request.Symbol}\" no tiene configurado un valor por punto. Configúrelo en Configuración > Símbolos.", null);
 
         var riskAmount = request.Capital * (request.RiskPercent / 100m);
         var lotSize    = Math.Round(riskAmount / (priceDistance * valuePerPoint.Value), 2);
 
-        decimal? riskReward = null;
+        decimal? riskReward   = null;
+        decimal? rewardAmount = null;
         if (request.TakeProfit.HasValue && request.TakeProfit.Value != 0)
         {
             var rewardDistance = Math.Abs(request.TakeProfit.Value - request.EntryPrice);
-            riskReward = Math.Round(rewardDistance / priceDistance, 2);
+            riskReward   = Math.Round(rewardDistance / priceDistance, 2);
+            rewardAmount = Math.Round(rewardDistance * valuePerPoint.Value * lotSize, 2);
         }
 
         // RN-002: warn (not block) when the requested risk exceeds the account's configured maximum.
@@ -53,7 +55,7 @@ public class LotCalculatorService : ILotCalculatorService
         if (request.MaxRiskPercentPerTrade.HasValue && request.RiskPercent > request.MaxRiskPercentPerTrade.Value)
             warning = $"El riesgo ingresado ({request.RiskPercent:0.##}%) supera el máximo configurado para esta cuenta ({request.MaxRiskPercentPerTrade.Value:0.##}%).";
 
-        return new LotCalculationResult(true, lotSize, riskAmount, riskReward, null, warning);
+        return new LotCalculationResult(true, lotSize, riskAmount, riskReward, rewardAmount, null, warning);
     }
 
     public async Task<LotCalculation> SaveAsync(LotCalculationRequest request, LotCalculationResult result)

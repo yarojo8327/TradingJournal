@@ -59,8 +59,10 @@ public partial class LotCalculatorViewModel : BaseViewModel
     // ── Resultado ─────────────────────────────────────────────────────────
 
     [ObservableProperty] private bool    _hasResult;
+    [ObservableProperty] private bool    _hasRewardAmount;
     [ObservableProperty] private string  _lotSizeText      = "—";
     [ObservableProperty] private string  _riskAmountText   = "—";
+    [ObservableProperty] private string  _rewardAmountText = "—";
     [ObservableProperty] private string  _riskRewardText   = "—";
     [ObservableProperty] private string  _errorMessage     = string.Empty;
     [ObservableProperty] private string  _warningMessage   = string.Empty;
@@ -142,6 +144,11 @@ public partial class LotCalculatorViewModel : BaseViewModel
         RiskAmountText  = $"{result.RiskAmount:N2} {AccountCurrency}";
         RiskRewardText  = result.RiskRewardRatio.HasValue ? $"1 : {result.RiskRewardRatio:0.00}" : "—";
         WarningMessage  = result.WarningMessage ?? string.Empty;
+
+        HasRewardAmount = result.RewardAmount.HasValue;
+        RewardAmountText = result.RewardAmount.HasValue
+            ? $"{result.RewardAmount:N2} {AccountCurrency}"
+            : "—";
     }
 
     // ── Comandos ──────────────────────────────────────────────────────────
@@ -156,6 +163,7 @@ public partial class LotCalculatorViewModel : BaseViewModel
         StopLossText     = string.Empty;
         TakeProfitText   = string.Empty;
         HasResult        = false;
+        HasRewardAmount  = false;
         ErrorMessage     = string.Empty;
         WarningMessage   = string.Empty;
     }

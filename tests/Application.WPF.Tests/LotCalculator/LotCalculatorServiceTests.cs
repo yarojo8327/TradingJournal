@@ -127,6 +127,27 @@ public class LotCalculatorServiceTests : IDisposable
         Assert.Equal(2.00m, result.RiskRewardRatio);
     }
 
+    [Fact]
+    public async Task Calculate_WithTakeProfit_ReturnsRewardAmount()
+    {
+        await SeedSymbolAsync("EURUSD", 100_000m);
+        // LotSize = 0.20, reward distance 0.0100 => RewardAmount = 0.0100 * 100000 * 0.20 = 200
+        var result = await _sut.CalculateAsync(BuildRequest(takeProfit: 1.1100m));
+
+        Assert.True(result.Success);
+        Assert.Equal(200m, result.RewardAmount);
+    }
+
+    [Fact]
+    public async Task Calculate_WithoutTakeProfit_RewardAmountIsNull()
+    {
+        await SeedSymbolAsync("EURUSD", 100_000m);
+        var result = await _sut.CalculateAsync(BuildRequest());
+
+        Assert.True(result.Success);
+        Assert.Null(result.RewardAmount);
+    }
+
     // ── RN-002: warn (not block) when risk exceeds the account's configured max ──
 
     [Fact]

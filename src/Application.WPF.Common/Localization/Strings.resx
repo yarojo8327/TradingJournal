@@ -403,6 +403,7 @@
   <data name="LotCalc_Result"               xml:space="preserve"><value>Result</value></data>
   <data name="LotCalc_LotSize"              xml:space="preserve"><value>Recommended lot size</value></data>
   <data name="LotCalc_RiskAmount"           xml:space="preserve"><value>Risk amount</value></data>
+  <data name="LotCalc_RewardAmount"         xml:space="preserve"><value>Potential gain</value></data>
   <data name="LotCalc_RiskReward"           xml:space="preserve"><value>Risk:Reward</value></data>
   <data name="LotCalc_Clear"                xml:space="preserve"><value>Clear</value></data>
 

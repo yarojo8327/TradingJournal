@@ -23,27 +23,19 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <Grid Grid.Row="0" Margin="0,0,0,16">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                        <Border Width="4" Height="24" CornerRadius="2"
-                                Background="{DynamicResource CyanGlowBrush}" Margin="0,0,12,0" />
-                        <TextBlock Text="{loc:Tr LotCalc_Title}"
-                                   FontSize="20" FontWeight="Bold"
-                                   Foreground="{DynamicResource TextPrimaryBrush}"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
-                    <TextBlock Text="{loc:Tr LotCalc_Subtitle}"
-                               FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
-                               TextWrapping="Wrap" />
+            <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                    <Border Width="4" Height="24" CornerRadius="2"
+                            Background="{DynamicResource CyanGlowBrush}" Margin="0,0,12,0" />
+                    <TextBlock Text="{loc:Tr LotCalc_Title}"
+                               FontSize="20" FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
+                               VerticalAlignment="Center" />
                 </StackPanel>
-
-                <Button Content="{loc:Tr LotCalc_Clear}"
-                        Style="{DynamicResource GhostButton}"
-                        HorizontalAlignment="Right" VerticalAlignment="Top"
-                        Height="32" Padding="14,0"
-                        Command="{Binding ClearCommand}" />
-            </Grid>
+                <TextBlock Text="{loc:Tr LotCalc_Subtitle}"
+                           FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
 
             <!-- Form card -->
             <Border Grid.Row="1"
@@ -52,6 +44,29 @@
                     BorderThickness="1" CornerRadius="8"
                     Padding="20,16" Margin="0,0,0,16">
                 <StackPanel>
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="1" Content="{loc:Tr LotCalc_Clear}"
+                                Style="{DynamicResource SecondaryButton}"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                Height="34" Padding="16,0" FontSize="12"
+                                Command="{Binding ClearCommand}">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                    </Grid>
+
                     <Grid Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -166,6 +181,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0">
@@ -179,10 +195,18 @@
                             <TextBlock Text="{loc:Tr LotCalc_RiskAmount}" FontSize="11"
                                        Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,4" />
                             <TextBlock Text="{Binding RiskAmountText}" FontSize="22" FontWeight="Bold"
-                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                                       Foreground="{DynamicResource AccentRedBrush}" />
                         </StackPanel>
 
-                        <StackPanel Grid.Column="2">
+                        <StackPanel Grid.Column="2"
+                                    Visibility="{Binding HasRewardAmount, Converter={StaticResource BoolToVisibility}}">
+                            <TextBlock Text="{loc:Tr LotCalc_RewardAmount}" FontSize="11"
+                                       Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,4" />
+                            <TextBlock Text="{Binding RewardAmountText}" FontSize="22" FontWeight="Bold"
+                                       Foreground="{DynamicResource AccentGreenBrush}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="3">
                             <TextBlock Text="{loc:Tr LotCalc_RiskReward}" FontSize="11"
                                        Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,4" />
                             <TextBlock Text="{Binding RiskRewardText}" FontSize="22" FontWeight="Bold"

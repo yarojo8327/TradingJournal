@@ -21,6 +21,7 @@ public record LotCalculationResult(
     decimal? LotSize,
     decimal  RiskAmount,
     decimal? RiskRewardRatio,
+    decimal? RewardAmount,
     string?  ErrorMessage,
     string?  WarningMessage);
 
