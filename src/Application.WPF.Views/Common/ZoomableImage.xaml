@@ -1,0 +1,39 @@
+<UserControl x:Class="Application.WPF.Views.Common.ZoomableImage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <Grid>
+        <ScrollViewer x:Name="ImageScrollViewer"
+                      HorizontalScrollBarVisibility="Hidden"
+                      VerticalScrollBarVisibility="Hidden"
+                      PanningMode="Both"
+                      PreviewMouseWheel="OnMouseWheel">
+            <Grid MinWidth="{Binding ViewportWidth,  ElementName=ImageScrollViewer}"
+                  MinHeight="{Binding ViewportHeight, ElementName=ImageScrollViewer}">
+                <Image x:Name="ViewerImage"
+                       Source="{Binding Source, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       Stretch="Uniform"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Cursor="Hand"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       MouseLeftButtonDown="OnImageMouseDown"
+                       MouseMove="OnImageMouseMove"
+                       MouseLeftButtonUp="OnImageMouseUp">
+                    <Image.LayoutTransform>
+                        <ScaleTransform x:Name="ImageScale" ScaleX="1" ScaleY="1" />
+                    </Image.LayoutTransform>
+                </Image>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Nivel de zoom -->
+        <Border CornerRadius="4" Background="#CC0A0E1A"
+                Padding="8,4" Margin="8"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <TextBlock x:Name="ZoomLabel" Text="100%" FontSize="11" Foreground="#AAAAAA" />
+        </Border>
+    </Grid>
+</UserControl>

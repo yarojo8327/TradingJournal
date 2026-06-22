@@ -391,6 +391,17 @@
   <!-- Navigation extras -->
   <data name="Nav_Playbook"                 xml:space="preserve"><value>Playbook</value></data>
   <data name="Nav_LotCalculator"            xml:space="preserve"><value>Lot Calculator</value></data>
+  <data name="Nav_TradingEvaluator"         xml:space="preserve"><value>Trade Evaluator</value></data>
+  <data name="Evaluator_Title"              xml:space="preserve"><value>Trade Evaluator</value></data>
+  <data name="Evaluator_Subtitle"           xml:space="preserve"><value>Select a strategy to review its chart, rate confluences, and calculate the lot size before opening the trade.</value></data>
+  <data name="Evaluator_SelectStrategy"     xml:space="preserve"><value>Strategy</value></data>
+  <data name="Evaluator_OpenLotCalculator"  xml:space="preserve"><value>Calculate Lot Size</value></data>
+  <data name="Evaluator_NoStrategySelected" xml:space="preserve"><value>Select a strategy to get started.</value></data>
+  <data name="Evaluator_NoChart"            xml:space="preserve"><value>This strategy has no chart attached.</value></data>
+  <data name="Evaluator_RulesTitle"         xml:space="preserve"><value>Strategy Rules</value></data>
+  <data name="Evaluator_RulesNone"          xml:space="preserve"><value>This strategy has no rules configured.</value></data>
+  <data name="Evaluator_RulesValid"         xml:space="preserve"><value>✓ Valid trade</value></data>
+  <data name="Evaluator_RulesInvalid"       xml:space="preserve"><value>✗ Rules pending</value></data>
   <data name="LotCalc_Title"                xml:space="preserve"><value>Lot Size Calculator</value></data>
   <data name="LotCalc_Subtitle"             xml:space="preserve"><value>Calculate the recommended position size based on your capital, risk %, and Stop Loss distance.</value></data>
   <data name="LotCalc_Account"              xml:space="preserve"><value>Account</value></data>

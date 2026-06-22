@@ -391,6 +391,17 @@
   <!-- Navigation extras -->
   <data name="Nav_Playbook"                 xml:space="preserve"><value>Playbook</value></data>
   <data name="Nav_LotCalculator"            xml:space="preserve"><value>Calculadora de Lotaje</value></data>
+  <data name="Nav_TradingEvaluator"         xml:space="preserve"><value>Evaluador de Trading</value></data>
+  <data name="Evaluator_Title"              xml:space="preserve"><value>Evaluador de Trading</value></data>
+  <data name="Evaluator_Subtitle"           xml:space="preserve"><value>Selecciona una estrategia para revisar su gráfico, calificar las confluencias y calcular el lotaje antes de abrir la operación.</value></data>
+  <data name="Evaluator_SelectStrategy"     xml:space="preserve"><value>Estrategia</value></data>
+  <data name="Evaluator_OpenLotCalculator"  xml:space="preserve"><value>Calcular Lotaje</value></data>
+  <data name="Evaluator_NoStrategySelected" xml:space="preserve"><value>Selecciona una estrategia para comenzar.</value></data>
+  <data name="Evaluator_NoChart"            xml:space="preserve"><value>Esta estrategia no tiene un gráfico adjunto.</value></data>
+  <data name="Evaluator_RulesTitle"         xml:space="preserve"><value>Reglas de la Estrategia</value></data>
+  <data name="Evaluator_RulesNone"          xml:space="preserve"><value>Esta estrategia no tiene reglas configuradas.</value></data>
+  <data name="Evaluator_RulesValid"         xml:space="preserve"><value>✓ Trade válido</value></data>
+  <data name="Evaluator_RulesInvalid"       xml:space="preserve"><value>✗ Faltan reglas</value></data>
   <data name="LotCalc_Title"                xml:space="preserve"><value>Calculadora de Lotaje</value></data>
   <data name="LotCalc_Subtitle"             xml:space="preserve"><value>Calcula el tamaño de posición recomendado según tu capital, % de riesgo y distancia del Stop Loss.</value></data>
   <data name="LotCalc_Account"              xml:space="preserve"><value>Cuenta</value></data>
